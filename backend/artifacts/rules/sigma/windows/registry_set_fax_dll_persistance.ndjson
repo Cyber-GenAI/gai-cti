@@ -1,0 +1,70 @@
+{
+  "id": "497fed61-e43f-4e55-8cf3-67841fb23d33",
+  "name": "Change the Fax Dll",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect possible persistence using Fax DLL load when service restart",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4d0c7abe-9b55-4692-a2e0-9e6ddf501215",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/dottor_morte/status/1544652325570191361",
+    "https://raw.githubusercontent.com/RiccardoAncarani/talks/master/F-Secure/unorthodox-lateral-movement.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Software\\\\Microsoft\\\\Fax\\\\Device\\ Providers\\\\* AND registry.path:*\\\\ImageName*) AND (NOT winlog.event_data.Details:%systemroot%\\\\system32\\\\fxst30.dll)"
+}

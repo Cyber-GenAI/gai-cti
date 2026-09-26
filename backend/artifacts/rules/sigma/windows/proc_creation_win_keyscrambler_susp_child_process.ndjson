@@ -1,0 +1,104 @@
+{
+  "id": "e83c1f98-ea72-4427-8cde-1233f350b9e8",
+  "name": "Potentially Suspicious Child Process of KeyScrambler.exe",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1203",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious child processes of KeyScrambler.exe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7c61d09c-f3bd-4bc5-ab41-6c2d1032f31e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1203",
+          "name": "Exploitation for Client Execution",
+          "reference": "https://attack.mitre.org/techniques/T1203/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/DTCERT/status/1712785421845790799"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\KeyScrambler.exe AND ((process.executable:(*\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\wscript.exe)) OR (process.pe.original_file_name:(Cmd.Exe OR cscript.exe OR mshta.exe OR PowerShell.EXE OR pwsh.dll OR regsvr32.exe OR RUNDLL32.EXE OR wscript.exe)))"
+}

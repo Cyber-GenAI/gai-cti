@@ -1,0 +1,88 @@
+{
+  "id": "182b6c66-e249-48af-8e53-525cf44ac75c",
+  "name": "Renamed PingCastle Binary Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a renamed \"PingCastle\" binary based on the PE metadata fields.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "77958c86-d72c-4a49-8666-6c0a97a85cf5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2023/10/30/netsupport-intrusion-results-in-domain-compromise/",
+    "https://www.pingcastle.com/documentation/scanner/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.pe.original_file_name:(PingCastleReporting.exe OR PingCastleCloud.exe OR PingCastle.exe)) OR (process.command_line:(*\\-\\-scanner\\ aclcheck* OR *\\-\\-scanner\\ antivirus* OR *\\-\\-scanner\\ computerversion* OR *\\-\\-scanner\\ foreignusers* OR *\\-\\-scanner\\ laps_bitlocker* OR *\\-\\-scanner\\ localadmin* OR *\\-\\-scanner\\ nullsession* OR *\\-\\-scanner\\ nullsession\\-trust* OR *\\-\\-scanner\\ oxidbindings* OR *\\-\\-scanner\\ remote* OR *\\-\\-scanner\\ share* OR *\\-\\-scanner\\ smb* OR *\\-\\-scanner\\ smb3querynetwork* OR *\\-\\-scanner\\ spooler* OR *\\-\\-scanner\\ startup* OR *\\-\\-scanner\\ zerologon*)) OR process.command_line:*\\-\\-no\\-enum\\-limit* OR (process.command_line:*\\-\\-healthcheck* AND process.command_line:*\\-\\-level\\ Full*) OR (process.command_line:*\\-\\-healthcheck* AND process.command_line:*\\-\\-server\\ *)) AND (NOT (process.executable:(*\\\\PingCastleReporting.exe OR *\\\\PingCastleCloud.exe OR *\\\\PingCastle.exe)))"
+}

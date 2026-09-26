@@ -1,0 +1,86 @@
+{
+  "id": "aceac0c9-e4f4-40c5-b7ea-45145f6e0df9",
+  "name": "UAC Bypass Using Windows Media Player - Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1548.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the pattern of UAC Bypass using Windows Media Player osksupport.dll (UACMe 32)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8bc82a3b-e2f3-4667-ab83-0484d5da3419",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/hfiref0x/UACME"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:C\\:\\\\Program\\ Files\\\\Windows\\ Media\\ Player\\\\osk.exe OR (process.executable:C\\:\\\\Windows\\\\System32\\\\cmd.exe AND process.parent.command_line:\\\"C\\:\\\\Windows\\\\system32\\\\mmc.exe\\\"\\ \\\"C\\:\\\\Windows\\\\system32\\\\eventvwr.msc\\\"\\ \\/s)) AND (winlog.event_data.IntegrityLevel:(High OR System OR S\\-1\\-16\\-16384 OR S\\-1\\-16\\-12288))"
+}

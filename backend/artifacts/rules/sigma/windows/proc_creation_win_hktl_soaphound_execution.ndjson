@@ -1,0 +1,70 @@
+{
+  "id": "54bd3a51-6b70-44ee-a2fb-fd87ad1b93b2",
+  "name": "HackTool - SOAPHound Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of SOAPHound, a .NET tool for collecting Active Directory data, using specific command-line arguments that may indicate an attempt to extract sensitive AD information.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8b56b2b9-0e68-47f2-9e41-5657dc734f3f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/FalconForceTeam/SOAPHound",
+    "https://medium.com/falconforce/soaphound-tool-to-collect-active-directory-data-via-adws-165aca78288c"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\ \\-\\-buildcache\\ * OR *\\ \\-\\-bhdump\\ * OR *\\ \\-\\-certdump\\ * OR *\\ \\-\\-dnsdump\\ *)) AND (process.command_line:(*\\ \\-c\\ * OR *\\ \\-\\-cachefilename\\ * OR *\\ \\-o\\ * OR *\\ \\-\\-outputdirectory*))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "26b3d70b-319f-44ea-89d4-763109a24c94",
+  "name": "Regsvr32 Execution From Potential Suspicious Location",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of regsvr32 where the DLL is located in a potentially suspicious location.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some installers might execute \"regsvr32\" with DLLs located in %TEMP% or in %PROGRAMDATA%. Apply additional filters if necessary."
+  ],
+  "from": "now-360s",
+  "rule_id": "1544a4ff-232f-4eb9-afdf-d8b520322488",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20171001085340/https://subt0x10.blogspot.com/2017/04/bypass-application-whitelisting-script.html",
+    "https://app.any.run/tasks/34221348-072d-4b70-93f3-aa71f6ebecad/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\regsvr32.exe OR process.pe.original_file_name:REGSVR32.EXE) AND (process.command_line:(*\\:\\\\ProgramData\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Roaming\\\\*))"
+}

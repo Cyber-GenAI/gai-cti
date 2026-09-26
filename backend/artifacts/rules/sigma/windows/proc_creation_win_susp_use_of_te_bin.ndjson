@@ -1,0 +1,71 @@
+{
+  "id": "7bd588a8-8fa2-413f-97db-1e8ced84515b",
+  "name": "Malicious Windows Script Components File Execution by TAEF Detection",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Windows Test Authoring and Execution Framework (TAEF) framework allows you to run automation by executing tests files written on different languages (C, C#, Microsoft COM Scripting interfaces\nAdversaries may execute malicious code (such as WSC file with VBScript, dll and so on) directly by running te.exe\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "It's not an uncommon to use te.exe directly to execute legal TAEF tests"
+  ],
+  "from": "now-360s",
+  "rule_id": "cefa54da-6e07-49f0-ac23-fbc387d2b67e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Te/",
+    "https://twitter.com/pabraeken/status/993298228840992768",
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/taef/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\te.exe OR process.parent.executable:*\\\\te.exe OR process.pe.original_file_name:\\\\te.exe"
+}

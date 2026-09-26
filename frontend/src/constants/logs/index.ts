@@ -1,0 +1,1 @@
+export const DEFAULT_LOGS_QUERY_SIZE = 4000

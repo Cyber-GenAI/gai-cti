@@ -1,0 +1,70 @@
+{
+  "id": "9270f010-f600-4af8-bd78-c84bfdff7d8f",
+  "name": "Potentially Suspicious Cabinet File Expansion",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the expansion or decompression of cabinet files from potentially suspicious or uncommon locations, e.g. seen in Iranian MeteorExpress related attacks",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "System administrator Usage"
+  ],
+  "from": "now-360s",
+  "rule_id": "3791db45-3679-4b0f-a0b8-528fb43bbbde",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://labs.sentinelone.com/meteorexpress-mysterious-wiper-paralyzes-iranian-trains-with-epic-troll",
+    "https://blog.malwarebytes.com/threat-intelligence/2021/08/new-variant-of-konni-malware-used-in-campaign-targetting-russia/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\expand.exe AND process.command_line:(*\\-F\\:* OR *\\/F\\:* OR *\u2013F\\:* OR *\u2014F\\:* OR *\u2015F\\:*)) AND ((process.command_line:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\ProgramData* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\Admin$\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Roaming\\\\* OR *\\\\C$\\\\* OR *\\\\Temporary\\ Internet*)) OR ((process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favorites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favourites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Contacts\\\\*))) AND (NOT (process.parent.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Dell\\\\UpdateService\\\\ServiceShell.exe AND process.command_line:*C\\:\\\\ProgramData\\\\Dell\\\\UpdateService\\\\Temp\\\\*))"
+}

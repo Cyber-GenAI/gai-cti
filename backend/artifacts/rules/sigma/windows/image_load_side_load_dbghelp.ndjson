@@ -1,0 +1,103 @@
+{
+  "id": "f60f6e70-82e3-41ac-b923-ea9aacf18bd6",
+  "name": "Potential DLL Sideloading Of DBGHELP.DLL",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL sideloading of \"dbghelp.dll\"",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate applications loading their own versions of the DLL mentioned in this rule"
+  ],
+  "from": "now-360s",
+  "rule_id": "75a438a4-854f-499a-8322-bc2d931e08da",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://hijacklibs.net/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\dbghelp.dll AND (NOT (file.path:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Windows\\\\SoftwareDistribution\\\\* OR C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Windows\\\\SystemTemp\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\* OR C\\:\\\\Windows\\\\WinSxS\\\\*))) AND (NOT ((file.path:(*\\\\Anaconda3\\\\Lib\\\\site\\-packages\\\\vtrace\\\\platforms\\\\windll\\\\amd64\\\\dbghelp.dll OR *\\\\Anaconda3\\\\Lib\\\\site\\-packages\\\\vtrace\\\\platforms\\\\windll\\\\i386\\\\dbghelp.dll)) OR (file.path:(*\\\\Epic\\ Games\\\\Launcher\\\\Engine\\\\Binaries\\\\ThirdParty\\\\DbgHelp\\\\dbghelp.dll OR *\\\\Epic\\ Games\\\\MagicLegends\\\\x86\\\\dbghelp.dll))))"
+}

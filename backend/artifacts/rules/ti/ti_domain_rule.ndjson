@@ -1,0 +1,48 @@
+{
+  "author": [
+    "GAI-CTI"
+  ],
+  "description": "This rule is triggered when an domain indicator from the Threat Intel Filebeat module or integrations matches an event containing domain-related data, such as logs from domain security gateways or domain service providers.",
+  "from": "now-10h",
+  "index": [
+      "log*",
+      "*packetbeat*"
+  ],
+  "interval": "1h",
+  "language": "kuery",
+  "name": "Threat Intel Domain Indicator Match",
+  "query": "*:*",
+  "required_fields": [
+    {
+      "ecs": true,
+      "name": "destination.domain",
+      "type": "keyword"
+    }
+  ],
+  "risk_score": 99,
+  "rule_id": "b2cd2879-486f-4423-aa44-c870e805a787",
+  "severity": "critical",
+  "tags": [
+    "Rule Type: Threat Match",
+    "Type: GAI_CTI_TI"
+  ],
+  "threat_index": [
+     "opencti*"
+  ],
+  "threat_indicator_path": "threat.indicator",
+  "threat_language": "kuery",
+  "threat_mapping": [
+    {
+      "entries": [
+        {
+          "field": "destination.domain",
+          "type": "mapping",
+          "value": "threatintel.indicator.domain.keyword"
+        }
+      ]
+    }
+  ],
+  "threat_query": "*:*",
+  "type": "threat_match",
+  "version": 1
+}

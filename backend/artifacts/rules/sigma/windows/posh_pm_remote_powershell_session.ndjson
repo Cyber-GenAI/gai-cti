@@ -1,0 +1,87 @@
+{
+  "id": "beb14da8-0aa8-4ce4-aba0-017c83ba74f7",
+  "name": "Remote PowerShell Session (PS Module)",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "attack.lateral-movement",
+    "attack.t1021.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects remote PowerShell sessions",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use remote PowerShell sessions"
+  ],
+  "from": "now-360s",
+  "rule_id": "6ceac280-a75b-4cc2-926a-a4e12f9188c5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://threathunterplaybook.com/hunts/windows/190511-RemotePwshExecution/notebook.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.ContextInfo:*\\ \\=\\ ServerRemoteHost\\ * AND winlog.event_data.ContextInfo:*wsmprovhost.exe*) AND (NOT winlog.event_data.ContextInfo:*\\\\Windows\\\\system32\\\\WindowsPowerShell\\\\v1.0\\\\Modules\\\\Microsoft.PowerShell.Archive\\\\Microsoft.PowerShell.Archive.psm1*)"
+}

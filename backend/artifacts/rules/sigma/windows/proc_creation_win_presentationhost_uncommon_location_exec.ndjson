@@ -1,0 +1,70 @@
+{
+  "id": "cf43dff3-35fc-4229-a6b7-d21ca7a00dee",
+  "name": "XBAP Execution From Uncommon Locations Via PresentationHost.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \".xbap\" (Browser Applications) files via PresentationHost.EXE from an uncommon location. These files can be abused to run malicious \".xbap\" files any bypass AWL\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate \".xbap\" being executed via \"PresentationHost\""
+  ],
+  "from": "now-360s",
+  "rule_id": "88c33df4-219c-4bfd-8d98-644c1fb19de3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Presentationhost/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\presentationhost.exe OR process.pe.original_file_name:PresentationHost.exe) AND process.command_line:*.xbap*) AND (NOT (process.command_line:(*\\ C\\:\\\\Windows\\\\* OR *\\ C\\:\\\\Program\\ Files*)))"
+}

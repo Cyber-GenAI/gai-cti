@@ -1,0 +1,87 @@
+{
+  "id": "2dba29f2-ebce-4b34-93b9-55129245131a",
+  "name": "UEFI Persistence Via Wpbbin - FileCreation",
+  "tags": [
+    "attack.persistence",
+    "attack.defense-evasion",
+    "attack.t1542.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of a file named \"wpbbin\" in the \"%systemroot%\\system32\\\" directory. Which could be indicative of UEFI based persistence method",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the file by hardware manufacturer such as lenovo (Thanks @0gtweet for the tip)"
+  ],
+  "from": "now-360s",
+  "rule_id": "d01c9738-2dd2-4715-8658-0b7e598c51df",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1542",
+          "name": "Pre-OS Boot",
+          "reference": "https://attack.mitre.org/techniques/T1542/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1542",
+          "name": "Pre-OS Boot",
+          "reference": "https://attack.mitre.org/techniques/T1542/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://grzegorztworek.medium.com/using-uefi-to-inject-executable-files-into-bitlocker-protected-drives-8ff4ca59c94c",
+    "https://persistence-info.github.io/Data/wpbbin.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:C\\:\\\\Windows\\\\System32\\\\wpbbin.exe"
+}

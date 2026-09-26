@@ -1,0 +1,69 @@
+{
+  "id": "92cd9f8c-6007-409a-8de0-fc3cf194cd5b",
+  "name": "Exchange Set OabVirtualDirectory ExternalUrl Property",
+  "tags": [
+    "attack.persistence",
+    "attack.t1505.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Rule to detect an adversary setting OabVirtualDirectory External URL property to a script in Exchange Management log",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4ef016ed-2778-4d41-89ca-e517757d98ee",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/OTR_Community/status/1371053369071132675"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:MSExchange\\ Management AND (*Set\\-OabVirtualDirectory* AND *ExternalUrl* AND *Page_Load* AND *script*)"
+}

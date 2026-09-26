@@ -1,0 +1,70 @@
+{
+  "id": "95c743af-6aec-49b1-b4fe-af403d1ccdc0",
+  "name": "Auditing Configuration Changes on Linux Host",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.006",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect changes in auditd configuration files",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "a667c358-19b0-4336-8a31-04c2cdd89428",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Neo23x0/auditd/blob/master/audit.rules",
+    "Self Experience"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "type:PATH AND (name:(\\/etc\\/audit\\/* OR \\/etc\\/libaudit.conf OR \\/etc\\/audisp\\/*))"
+}

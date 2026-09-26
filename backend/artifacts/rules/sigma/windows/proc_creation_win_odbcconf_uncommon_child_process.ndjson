@@ -1,0 +1,72 @@
+{
+  "id": "0ad0eab9-edbd-4c7e-812d-5d354f063d8e",
+  "name": "Uncommon Child Process Spawned By Odbcconf.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an uncommon child process of \"odbcconf.exe\" binary which normally shouldn't have any child processes.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "In rare occurrences where \"odbcconf\" crashes. It might spawn a \"werfault\" process",
+    "Other child processes will depend on the DLL being registered by actions like \"regsvr\". In case where the DLLs have external calls (which should be rare). Other child processes might spawn and additional filters need to be applied."
+  ],
+  "from": "now-360s",
+  "rule_id": "ab0a719f-aa99-4660-98d1-e54145b70efe",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sql/odbc/odbcconf-exe?view=sql-server-ver16",
+    "https://lolbas-project.github.io/lolbas/Binaries/Odbcconf/",
+    "https://medium.com/@cyberjyot/t1218-008-dll-execution-using-odbcconf-exe-803fa9e08dac"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\odbcconf.exe"
+}

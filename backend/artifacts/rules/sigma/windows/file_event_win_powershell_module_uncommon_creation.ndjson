@@ -1,0 +1,52 @@
+{
+  "id": "3a831db7-2d13-45df-bf75-64f75441e9cf",
+  "name": "PowerShell Module File Created By Non-PowerShell Process",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a new PowerShell module \".psm1\", \".psd1\", \".dll\", \".ps1\", etc. by a non-PowerShell process",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "03062118-0f8d-4ecf-b4f7-3a552d3d08a1",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://learn.microsoft.com/en-us/powershell/scripting/developer/module/understanding-a-windows-powershell-module?view=powershell-7.3"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\WindowsPowerShell\\\\Modules\\\\* OR *\\\\PowerShell\\\\7\\\\Modules\\\\*)) AND (NOT (process.executable:(*\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\pwsh.exe OR *\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe OR *\\:\\\\Windows\\\\System32\\\\poqexec.exe OR *\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe OR *\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\poqexec.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe)))"
+}

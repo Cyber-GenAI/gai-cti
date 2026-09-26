@@ -1,0 +1,70 @@
+{
+  "id": "ce313c3d-8768-40de-b0c7-2ad611f23eff",
+  "name": "Service StartupType Change Via Sc.EXE",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect the use of \"sc.exe\" to change the startup type of a service to \"disabled\" or \"demand\"",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives may occur with troubleshooting scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "81363939-2eb3-4537-9932-04219656ad5f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.virustotal.com/gui/file/38283b775552da8981452941ea74191aa0d203edd3f61fb2dee7b0aea3514955"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\sc.exe OR process.pe.original_file_name:sc.exe) AND ((process.command_line:*\\ config\\ * AND process.command_line:*start*) AND (process.command_line:(*disabled* OR *demand*)))"
+}

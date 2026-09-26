@@ -1,0 +1,74 @@
+{
+  "id": "01a65abf-9e52-4d1d-9a37-ec10583d3c0b",
+  "name": "New DLL Registered Via Odbcconf.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"odbcconf\" with \"REGSVR\" in order to register a new DLL (equivalent to running regsvr32). Attackers abuse this to install and run malicious DLLs.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate DLLs being registered via \"odbcconf\" will generate false positives. Investigate the path of the DLL and its content to determine if the action is authorized."
+  ],
+  "from": "now-360s",
+  "rule_id": "f8232473-15d9-4d28-846b-6778d881fd5c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sql/odbc/odbcconf-exe?view=sql-server-ver16",
+    "https://lolbas-project.github.io/lolbas/Binaries/Odbcconf/",
+    "https://redcanary.com/blog/raspberry-robin/",
+    "https://web.archive.org/web/20191023232753/https://twitter.com/Hexacorn/status/1187143326673330176",
+    "https://www.hexacorn.com/blog/2020/08/23/odbcconf-lolbin-trifecta/",
+    "https://www.trendmicro.com/en_us/research/17/h/backdoor-carrying-emails-set-sights-on-russian-speaking-businesses.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\odbcconf.exe OR process.pe.original_file_name:odbcconf.exe) AND (process.command_line:*REGSVR\\ * AND process.command_line:*.dll*)"
+}

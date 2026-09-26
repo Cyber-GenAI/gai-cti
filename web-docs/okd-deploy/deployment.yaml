@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gai-cti-docs
+  namespace: gai-cti-docs-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gai-cti-docs
+  template:
+    metadata:
+      labels:
+        app: gai-cti-docs
+    spec:
+      containers:
+        - name: gai-cti-docs
+          image: image-registry.openshift-image-registry.svc:5000/gai-cti-docs-project/gai-cti-docs:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "1"       
+              memory: "512Mi"   
+            limits:
+              cpu: "1"       
+              memory: "512Mi"   

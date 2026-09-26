@@ -1,0 +1,73 @@
+{
+  "id": "132fa846-b280-4ab6-8e18-ec462279ab0a",
+  "name": "Network Communication Initiated To File Sharing Domains From Process Located In Suspicious Folder",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1105",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects executables located in potentially suspicious directories initiating network connections towards file sharing domains.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some installers located in the temp directory might communicate with the Github domains in order to download additional software. Baseline these cases or move the github domain to a lower level hunting rule."
+  ],
+  "from": "now-360s",
+  "rule_id": "e2437513-8600-4c24-9dab-e769eef73a3d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/M_haggis/status/900741347035889665",
+    "https://twitter.com/M_haggis/status/1032799638213066752",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/ransomware-hive-conti-avoslocker",
+    "https://www.cisa.gov/uscert/ncas/alerts/aa22-321a",
+    "https://github.com/EmpireProject/Empire/blob/e37fb2eef8ff8f5a0a689f1589f424906fe13055/data/module_source/exfil/Invoke-ExfilDataToGitHub.ps1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\:\\\\$Recycle.bin* OR *\\:\\\\Perflogs\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Users\\\\Default\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Fonts\\\\* OR *\\:\\\\Windows\\\\IME\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks\\\\* OR *\\:\\\\Windows\\\\Tasks\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Temp\\\\* OR *\\\\config\\\\systemprofile\\\\* OR *\\\\Windows\\\\addins\\\\*)) AND (network.direction:true AND (destination.domain:(*.githubusercontent.com OR *anonfiles.com OR *cdn.discordapp.com OR *ddns.net OR *dl.dropboxusercontent.com OR *ghostbin.co OR *glitch.me OR *gofile.io OR *hastebin.com OR *mediafire.com OR *mega.co.nz OR *mega.nz OR *onrender.com OR *pages.dev OR *paste.ee OR *pastebin.com OR *pastebin.pl OR *pastetext.net OR *pixeldrain.com OR *privatlab.com OR *privatlab.net OR *send.exploit.in OR *sendspace.com OR *storage.googleapis.com OR *storjshare.io OR *supabase.co OR *temp.sh OR *transfer.sh OR *trycloudflare.com OR *ufile.io OR *w3spaces.com OR *workers.dev)))"
+}

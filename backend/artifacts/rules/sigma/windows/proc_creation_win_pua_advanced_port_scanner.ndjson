@@ -1,0 +1,77 @@
+{
+  "id": "79beec4c-510a-4d09-8664-b1e939c80314",
+  "name": "PUA - Advanced Port Scanner Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1046",
+    "attack.t1135",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of Advanced Port Scanner.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative use",
+    "Tools with similar commandline (very rare)"
+  ],
+  "from": "now-360s",
+  "rule_id": "d5b735ea-d9d2-476c-bfbf-f78573ab3a2b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1046",
+          "name": "Network Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1046/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1135",
+          "name": "Network Share Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1135/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/3CORESec/MAL-CL/tree/master/Descriptors/Other/Advanced%20Port%20Scanner"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\advanced_port_scanner* OR process.pe.original_file_name:*advanced_port_scanner* OR process.pe.description:*Advanced\\ Port\\ Scanner*) OR (process.command_line:*\\/portable* AND process.command_line:*\\/lng*)"
+}

@@ -1,0 +1,72 @@
+{
+  "id": "af445b52-5a33-411c-b1b5-ca5b67bac144",
+  "name": "Persistence and Execution at Scale via GPO Scheduled Task",
+  "tags": [
+    "attack.persistence",
+    "attack.lateral-movement",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect lateral movement using GPO scheduled task, usually used to deploy ransomware at scale",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "If the source IP is not localhost then it's super suspicious, better to monitor both local and remote changes to GPO scheduled tasks."
+  ],
+  "from": "now-360s",
+  "rule_id": "3d198f21-6f3f-47f1-b19e-ac52630f94e8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/menasec1/status/1106899890377052160",
+    "https://www.secureworks.com/blog/ransomware-as-a-distraction",
+    "https://www.elastic.co/guide/en/security/7.17/prebuilt-rule-0-16-1-scheduled-task-execution-at-scale-via-gpo.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:5136 AND (winlog.event_data.AttributeLDAPDisplayName:(gPCMachineExtensionNames OR gPCUserExtensionNames)) AND (winlog.event_data.AttributeValue:(*CAB54552\\-DEEA\\-4691\\-817E\\-ED4A4D1AFC72* OR *AADCED64\\-746C\\-4633\\-A97C\\-D61349046527*))) OR (event.code:5145 AND winlog.event_data.ShareName:*\\\\SYSVOL AND winlog.event_data.RelativeTargetName:*ScheduledTasks.xml AND (winlog.event_data.AccessList:(*WriteData* OR *%%4417*))))"
+}

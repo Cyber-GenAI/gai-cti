@@ -1,0 +1,72 @@
+{
+  "id": "af31cbca-4024-4c2e-b506-3ca6225fa42d",
+  "name": "Remote Task Creation via ATSVC Named Pipe",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.persistence",
+    "car.2013-05-004",
+    "car.2015-04-001",
+    "attack.t1053.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects remote task creation via at.exe or API interacting with ATSVC namedpipe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4cf5c1e5-8ff4-4b08-b32a-74ece5aa0f5e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20230409194125/https://blog.menasec.net/2019/03/threat-hunting-25-scheduled-tasks-for.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:5145 AND winlog.event_data.ShareName:\\\\\\\\\\*\\\\IPC$ AND winlog.event_data.RelativeTargetName:atsvc AND winlog.event_data.AccessList:*WriteData*)"
+}

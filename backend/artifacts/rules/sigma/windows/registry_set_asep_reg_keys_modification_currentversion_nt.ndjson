@@ -1,0 +1,72 @@
+{
+  "id": "3cc34bb2-931a-4e00-bd9f-9041ebaac3a0",
+  "name": "CurrentVersion NT Autorun Keys Modification",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects modification of autostart extensibility point (ASEP) in registry.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate software automatically (mostly, during installation) sets up autorun keys for legitimate reason",
+    "Legitimate administrator sets up autorun keys for legitimate reason"
+  ],
+  "from": "now-360s",
+  "rule_id": "c292f566-4782-473a-8677-54e2ec6724b2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1547.001/T1547.001.md",
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns",
+    "https://gist.github.com/GlebSukhodolskiy/0fc5fa5f482903064b448890db1eaf9d"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion* AND (registry.path:(*\\\\Winlogon\\\\VmApplet* OR *\\\\Winlogon\\\\Userinit* OR *\\\\Winlogon\\\\Taskman* OR *\\\\Winlogon\\\\Shell* OR *\\\\Winlogon\\\\GpExtensions* OR *\\\\Winlogon\\\\AppSetup* OR *\\\\Winlogon\\\\AlternateShells\\\\AvailableShells* OR *\\\\Windows\\\\IconServiceLib* OR *\\\\Windows\\\\Appinit_Dlls* OR *\\\\Image\\ File\\ Execution\\ Options* OR *\\\\Font\\ Drivers* OR *\\\\Drivers32* OR *\\\\Windows\\\\Run* OR *\\\\Windows\\\\Load*)) AND (NOT (winlog.event_data.Details:\\(Empty\\) OR (registry.path:*\\\\Image\\ File\\ Execution\\ Options\\\\* AND (registry.path:(*\\\\DisableExceptionChainValidation OR *\\\\MitigationOptions))) OR (process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Temp\\\\* AND process.executable:*\\\\MicrosoftEdgeUpdate.exe) OR ((registry.path:(*\\\\ClickToRunStore\\\\HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\* OR *\\\\ClickToRun\\\\REGISTRY\\\\MACHINE\\\\Software\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\*)) OR (process.executable:(C\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\root\\\\integration\\\\integrator.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\root\\\\integration\\\\integrator.exe))) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\ClickToRun\\\\* OR C\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\ClickToRun\\\\Updates\\\\*)) AND process.executable:*\\\\OfficeClickToRun.exe) OR (process.executable:C\\:\\\\Windows\\\\system32\\\\svchost.exe AND (registry.path:(*\\\\Winlogon\\\\GPExtensions\\\\\\{827D319E\\-6EAC\\-11D2\\-A4EA\\-00C04F79F83A\\}\\\\PreviousPolicyAreas* OR *\\\\Winlogon\\\\GPExtensions\\\\\\{827D319E\\-6EAC\\-11D2\\-A4EA\\-00C04F79F83A\\}\\\\MaxNoGPOListChangesInterval*)) AND (winlog.event_data.Details:(DWORD\\ \\(0x00000009\\) OR DWORD\\ \\(0x000003c0\\)))) OR (process.executable:C\\:\\\\Windows\\\\Microsoft.NET\\\\Framework* AND process.executable:*\\\\ngen.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\StandaloneUpdater\\\\OneDriveSetup.exe AND registry.path:*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\Delete\\ Cached\\ Update\\ Binary AND winlog.event_data.Details:C\\:\\\\Windows\\\\system32\\\\cmd.exe\\ \\/q\\ \\/c\\ del\\ \\/q\\ \\\"C\\:\\\\Users\\\\* AND winlog.event_data.Details:*\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\Update\\\\OneDriveSetup.exe\\\")))"
+}

@@ -1,0 +1,88 @@
+{
+  "id": "65497d21-7ed2-4039-9767-61a6dcedfad7",
+  "name": "Port Forwarding Activity Via SSH.EXE",
+  "tags": [
+    "attack.command-and-control",
+    "attack.lateral-movement",
+    "attack.t1572",
+    "attack.t1021.001",
+    "attack.t1021.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects port forwarding activity via SSH.exe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative activity using a remote port forwarding to a local port"
+  ],
+  "from": "now-360s",
+  "rule_id": "87b14624-fadb-469c-8f25-6ba0ace4efd7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1572",
+          "name": "Protocol Tunneling",
+          "reference": "https://attack.mitre.org/techniques/T1572/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\ssh.exe AND process.command_line:(*\\ \\-R\\ * OR *\\ \\/R\\ * OR *\\ \u2013R\\ * OR *\\ \u2014R\\ * OR *\\ \u2015R\\ *)"
+}

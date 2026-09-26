@@ -1,0 +1,70 @@
+{
+  "id": "0e0e7b04-1b09-4d69-bfc7-9ec987e77a36",
+  "name": "PUA - Process Hacker Driver Load",
+  "tags": [
+    "attack.privilege-escalation",
+    "cve.2021-21551",
+    "attack.t1543",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects driver load of the Process Hacker tool",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of process hacker or system informer by developers or system administrators"
+  ],
+  "from": "now-360s",
+  "rule_id": "37eccc73-b030-4521-92f5-96be7d7d2f95",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://processhacker.sourceforge.io/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\kprocesshacker.sys OR (winlog.event_data.Hashes:(*IMPHASH\\=821D74031D3F625BCBD0DF08B70F1E77* OR *IMPHASH\\=F86759BB4DE4320918615DC06E998A39* OR *IMPHASH\\=0A64EEB85419257D0CE32BD5D55C3A18* OR *IMPHASH\\=6E7B34DFC017700B1517B230DF6FF0D0*))"
+}

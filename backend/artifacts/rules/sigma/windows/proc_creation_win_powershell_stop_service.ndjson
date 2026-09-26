@@ -1,0 +1,69 @@
+{
+  "id": "5bb86e37-2f47-40ff-a384-9e5c0c682e2b",
+  "name": "Stop Windows Service Via PowerShell Stop-Service",
+  "tags": [
+    "attack.impact",
+    "attack.t1489",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the stopping of a Windows service via the PowerShell Cmdlet \"Stop-Service\"",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "There are many legitimate reasons to stop a service. This rule isn't looking for any suspicious behaviour in particular. Filter legitimate activity accordingly"
+  ],
+  "from": "now-360s",
+  "rule_id": "d156c77a-2de8-41f1-9ba9-84a425cc94bf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/stop-service?view=powershell-7.4"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll)) OR (process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe))) AND process.command_line:*Stop\\-Service\\ *"
+}

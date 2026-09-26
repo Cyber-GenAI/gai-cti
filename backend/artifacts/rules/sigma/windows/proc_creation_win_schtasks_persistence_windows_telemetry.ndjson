@@ -1,0 +1,69 @@
+{
+  "id": "f2de375a-40b0-43be-b6c2-b4bfa147a903",
+  "name": "Potential Persistence Via Microsoft Compatibility Appraiser",
+  "tags": [
+    "attack.persistence",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects manual execution of the \"Microsoft Compatibility Appraiser\" task via schtasks.\nIn order to trigger persistence stored in the \"\\AppCompatFlags\\TelemetryController\" registry key.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f61b0be6-1119-49c0-9fc1-a9cf821fff0b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trustedsec.com/blog/abusing-windows-telemetry-for-persistence/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\schtasks.exe OR process.pe.original_file_name:schtasks.exe) AND (process.command_line:*run\\ * AND process.command_line:*\\\\Application\\ Experience\\\\Microsoft\\ Compatibility\\ Appraiser*)"
+}

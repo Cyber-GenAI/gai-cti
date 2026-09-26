@@ -1,0 +1,71 @@
+{
+  "id": "fb1700fa-a243-4562-8d2e-4f65e6cff6c7",
+  "name": "PUA - NSudo Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1569.002",
+    "attack.s0029",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of NSudo tool for command execution",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use by administrators"
+  ],
+  "from": "now-360s",
+  "rule_id": "0e61c45f-b1a5-42c4-862b-848da6696b92",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20221019044836/https://nsudo.m2team.org/en-us/",
+    "https://www.winhelponline.com/blog/run-program-as-system-localsystem-account-windows/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\NSudo.exe OR *\\\\NSudoLC.exe OR *\\\\NSudoLG.exe)) OR (process.pe.original_file_name:(NSudo.exe OR NSudoLC.exe OR NSudoLG.exe))) AND (process.command_line:(*\\-U\\:S\\ * OR *\\-U\\:T\\ * OR *\\-U\\:E\\ * OR *\\-P\\:E\\ * OR *\\-M\\:S\\ * OR *\\-M\\:H\\ * OR *\\-U\\=S\\ * OR *\\-U\\=T\\ * OR *\\-U\\=E\\ * OR *\\-P\\=E\\ * OR *\\-M\\=S\\ * OR *\\-M\\=H\\ * OR *\\-ShowWindowMode\\:Hide*))"
+}

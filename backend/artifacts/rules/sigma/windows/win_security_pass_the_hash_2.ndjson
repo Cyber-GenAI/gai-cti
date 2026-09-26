@@ -1,0 +1,71 @@
+{
+  "id": "3c1ae808-2227-415b-8969-79f6c11f1bb4",
+  "name": "Pass the Hash Activity 2",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1550.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the attack technique pass the hash which is used to move laterally inside the network",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "4cf6a8e5-8dfe-4901-9255-b4ecfca21c7d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1550",
+          "name": "Use Alternate Authentication Material",
+          "reference": "https://attack.mitre.org/techniques/T1550/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/iadgov/Event-Forwarding-Guidance/tree/master/Events",
+    "https://web.archive.org/web/20170909091934/https://blog.binarydefense.com/reliably-detecting-pass-the-hash-through-event-log-analysis",
+    "https://blog.stealthbits.com/how-to-detect-pass-the-hash-attacks/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (((event.code:4624 AND user.id:S\\-1\\-0\\-0 AND winlog.event_data.LogonType:3 AND winlog.event_data.LogonProcessName:NtLmSsp AND winlog.event_data.KeyLength:0) OR (event.code:4624 AND winlog.event_data.LogonType:9 AND winlog.event_data.LogonProcessName:seclogo)) AND (NOT winlog.event_data.TargetUserName:ANONYMOUS\\ LOGON))"
+}

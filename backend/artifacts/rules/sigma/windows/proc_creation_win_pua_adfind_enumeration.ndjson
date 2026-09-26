@@ -1,0 +1,71 @@
+{
+  "id": "6378e53a-357c-43d4-a7ed-33d80ae88f7f",
+  "name": "PUA - Suspicious ActiveDirectory Enumeration Via AdFind.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects active directory enumeration activity using known AdFind CLI flags",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Authorized administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "d08f82a2-119c-41cc-810a-b9741eecbe59",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.joeware.net/freetools/tools/adfind/",
+    "https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1087.002/T1087.002.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*lockoutduration* OR *lockoutthreshold* OR *lockoutobservationwindow* OR *maxpwdage* OR *minpwdage* OR *minpwdlength* OR *pwdhistorylength* OR *pwdproperties*)) OR process.command_line:*\\-sc\\ admincountdmp* OR process.command_line:*\\-sc\\ exchaddresses*"
+}

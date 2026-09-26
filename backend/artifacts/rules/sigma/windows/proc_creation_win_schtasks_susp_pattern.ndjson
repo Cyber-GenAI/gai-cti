@@ -1,0 +1,71 @@
+{
+  "id": "22610e49-e69c-4dae-ba65-747989d3fd0b",
+  "name": "Suspicious Command Patterns In Scheduled Task Creation",
+  "tags": [
+    "attack.execution",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects scheduled task creation using \"schtasks\" that contain potentially suspicious or uncommon commands",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Software installers that run from temporary folders and also install scheduled tasks are expected to generate some false positives"
+  ],
+  "from": "now-360s",
+  "rule_id": "66622085-61fd-4aeb-ac2f-ac9bb8c6370e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/512c1352-6380-4436-b27d-bb62f0c020d6/",
+    "https://twitter.com/RedDrip7/status/1506480588827467785",
+    "https://www.ncsc.gov.uk/static-assets/documents/malware-analysis-reports/devil-bait/NCSC-MAR-Devil-Bait.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\schtasks.exe AND process.command_line:*\\/Create\\ *) AND (((process.command_line:(*\\/sc\\ minute\\ * OR *\\/ru\\ system\\ *)) AND (process.command_line:(*cmd\\ \\/c* OR *cmd\\ \\/k* OR *cmd\\ \\/r* OR *cmd.exe\\ \\/c\\ * OR *cmd.exe\\ \\/k\\ * OR *cmd.exe\\ \\/r\\ *))) OR (process.command_line:(*\\ \\-decode\\ * OR *\\ \\-enc\\ * OR *\\ \\-w\\ hidden\\ * OR *\\ bypass\\ * OR *\\ IEX* OR *.DownloadData* OR *.DownloadFile* OR *.DownloadString* OR *\\/c\\ start\\ \\/min\\ * OR *FromBase64String* OR *mshta\\ http* OR *mshta.exe\\ http*)) OR ((process.command_line:(*\\:\\\\ProgramData\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Tmp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\* OR *%AppData%* OR *%Temp%* OR *%tmp%*)) AND (process.command_line:(*cscript* OR *curl* OR *wscript*))))"
+}

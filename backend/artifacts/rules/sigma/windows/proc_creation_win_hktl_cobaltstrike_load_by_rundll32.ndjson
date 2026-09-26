@@ -1,0 +1,71 @@
+{
+  "id": "df240c93-9e41-42a8-8f35-06696d84e475",
+  "name": "CobaltStrike Load by Rundll32",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Rundll32 can be use by Cobalt Strike with StartW function to load DLLs from the command line.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "694d16e9-14a1-48ef-b66b-46009d16996d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.cobaltstrike.com/help-windows-executable",
+    "https://redcanary.com/threat-detection-report/",
+    "https://thedfirreport.com/2020/10/18/ryuk-in-5-hours/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE OR (process.command_line:(*rundll32.exe* OR *rundll32\\ *))) AND (process.command_line:*.dll* AND (process.command_line:(*\\ StartW OR *,StartW)))"
+}

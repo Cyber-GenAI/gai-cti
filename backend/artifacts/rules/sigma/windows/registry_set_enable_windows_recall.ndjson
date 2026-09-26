@@ -1,0 +1,70 @@
+{
+  "id": "3e9f3a67-793d-4b04-8348-606215f66e15",
+  "name": "Windows Recall Feature Enabled - Registry",
+  "tags": [
+    "attack.collection",
+    "attack.t1113",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the enabling of the Windows Recall feature via registry manipulation. Windows Recall can be enabled by setting the value of \"DisableAIDataAnalysis\" to \"0\".\nAdversaries may enable Windows Recall as part of post-exploitation discovery and collection activities.\nThis rule assumes that Recall is already explicitly disabled on the host, and subsequently enabled by the adversary.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use/activation of Windows Recall"
+  ],
+  "from": "now-360s",
+  "rule_id": "50731ed0-1768-4a8e-bdef-25544d54ed28",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1113",
+          "name": "Screen Capture",
+          "reference": "https://attack.mitre.org/techniques/T1113/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/client-management/manage-recall",
+    "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#disableaidataanalysis"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Software\\\\Policies\\\\Microsoft\\\\Windows\\\\WindowsAI\\\\DisableAIDataAnalysis AND winlog.event_data.Details:DWORD\\ \\(0x00000000\\)"
+}

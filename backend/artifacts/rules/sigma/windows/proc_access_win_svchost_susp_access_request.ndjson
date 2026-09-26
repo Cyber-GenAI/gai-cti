@@ -1,0 +1,70 @@
+{
+  "id": "720362a3-e1cc-4989-9d3a-d201cfadfe11",
+  "name": "Suspicious Svchost Process Access",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious access to the \"svchost\" process such as that used by Invoke-Phantom to kill the thread of the Windows event logging service.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "445cd8e5-bee1-4012-bb5e-3ca675dc1101",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/hlldz/Invoke-Phant0m",
+    "https://twitter.com/timbmsft/status/900724491076214784"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.TargetImage:*\\:\\\\Windows\\\\System32\\\\svchost.exe AND winlog.event_data.GrantedAccess:0x1F3FFF AND winlog.event_data.CallTrace:*UNKNOWN*) AND (NOT (process.executable:*\\:\\\\Program\\ Files\\\\Microsoft\\ Visual\\ Studio\\\\* AND process.executable:*\\\\MSBuild\\\\Current\\\\Bin\\\\MSBuild.exe AND (winlog.event_data.CallTrace:(*Microsoft.Build.ni.dll* OR *System.ni.dll*))))"
+}

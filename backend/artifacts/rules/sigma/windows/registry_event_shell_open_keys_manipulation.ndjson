@@ -1,0 +1,96 @@
+{
+  "id": "acd50db5-c572-4a54-ae18-5987d2a4096b",
+  "name": "Shell Open Registry Keys Manipulation",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1548.002",
+    "attack.t1546.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the shell open key manipulation (exefile and ms-settings) used for persistence and the pattern of UAC Bypass using fodhelper.exe, computerdefaults.exe, slui.exe via registry keys (e.g. UACMe 33 or 62)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3e87ea77-968e-487a-ba30-1450698b53fd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/hfiref0x/UACME",
+    "https://winscripting.blog/2017/05/12/first-entry-welcome-and-uac-bypass/",
+    "https://github.com/RhinoSecurityLabs/Aggressor-Scripts/tree/master/UACBypass",
+    "https://tria.ge/211119-gs7rtshcfr/behavioral2 [Lokibot sample from Nov 2021]"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:SetValue AND registry.path:*Classes\\\\ms\\-settings\\\\shell\\\\open\\\\command\\\\SymbolicLinkValue AND winlog.event_data.Details:*\\\\Software\\\\Classes\\\\\\{*) OR registry.path:*Classes\\\\ms\\-settings\\\\shell\\\\open\\\\command\\\\DelegateExecute OR ((winlog.event_data.EventType:SetValue AND (registry.path:(*Classes\\\\ms\\-settings\\\\shell\\\\open\\\\command\\\\\\(Default\\) OR *Classes\\\\exefile\\\\shell\\\\open\\\\command\\\\\\(Default\\)))) AND (NOT winlog.event_data.Details:\\(Empty\\)))"
+}

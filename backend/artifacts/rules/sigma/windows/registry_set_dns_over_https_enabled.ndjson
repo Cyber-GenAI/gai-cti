@@ -1,0 +1,79 @@
+{
+  "id": "22b53eba-f4c0-4e0e-ad1e-ed72d95f2fd4",
+  "name": "DNS-over-HTTPS Enabled by Registry",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1140",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when a user enables DNS-over-HTTPS.\nThis can be used to hide internet activity or be used to hide the process of exfiltrating data.\nWith this enabled organization will lose visibility into data such as query type, response and originating IP that are used to determine bad actors.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "1e0b223b-aa04-4bfd-87a2-1539c6d15e1b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1140",
+          "name": "Deobfuscate/Decode Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1140/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.tenforums.com/tutorials/151318-how-enable-disable-dns-over-https-doh-microsoft-edge.html",
+    "https://github.com/elastic/detection-rules/issues/1371",
+    "https://chromeenterprise.google/policies/?policy=DnsOverHttpsMode",
+    "https://admx.help/HKLM/Software/Policies/Mozilla/Firefox/DNSOverHTTPS"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Edge\\\\BuiltInDnsClientEnabled AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\)) OR (registry.path:*\\\\SOFTWARE\\\\Google\\\\Chrome\\\\DnsOverHttpsMode AND winlog.event_data.Details:secure) OR (registry.path:*\\\\SOFTWARE\\\\Policies\\\\Mozilla\\\\Firefox\\\\DNSOverHTTPS\\\\Enabled AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\))"
+}

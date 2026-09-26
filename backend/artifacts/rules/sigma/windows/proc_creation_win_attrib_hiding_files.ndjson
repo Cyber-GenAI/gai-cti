@@ -1,0 +1,71 @@
+{
+  "id": "6b05a21e-8f56-4931-be0f-5ac88a8b2a3e",
+  "name": "Hiding Files with Attrib.exe",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of attrib.exe to hide files from users.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "IgfxCUIService.exe hiding *.cui files via .bat script (attrib.exe a child of cmd.exe and igfxCUIService.exe is the parent of the cmd.exe)",
+    "Msiexec.exe hiding desktop.ini"
+  ],
+  "from": "now-360s",
+  "rule_id": "1522139b-3df8-4838-a80c-005edbfb7e93",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://unit42.paloaltonetworks.com/unit42-sure-ill-take-new-combojack-malware-alters-clipboards-steal-cryptocurrency/",
+    "https://www.uptycs.com/blog/lolbins-are-no-laughing-matter"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\attrib.exe OR process.pe.original_file_name:ATTRIB.EXE) AND process.command_line:*\\ \\+h\\ *) AND (NOT process.command_line:*\\\\desktop.ini\\ *) AND (NOT (process.parent.executable:*\\\\cmd.exe AND process.command_line:\\+R\\ \\+H\\ \\+S\\ \\+A\\ \\\\\\*.cui AND process.parent.command_line:C\\:\\\\WINDOWS\\\\system32\\\\\\*.bat))"
+}

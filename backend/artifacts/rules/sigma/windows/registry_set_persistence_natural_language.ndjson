@@ -1,0 +1,52 @@
+{
+  "id": "60250356-25a1-4c77-86fb-e80aa4acdc91",
+  "name": "Potential Persistence Via DLLPathOverride",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker adds a new \"DLLPathOverride\" value to the \"Natural Language\" key in order to achieve persistence which will get invoked by \"SearchIndexer.exe\" process",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b23bda7a-72ec-4ae2-8228-2738b7761c5f",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/naturallanguage6.html",
+    "https://www.hexacorn.com/blog/2018/12/30/beyond-good-ol-run-key-part-98/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\ContentIndex\\\\Language\\\\* AND (registry.path:(*\\\\StemmerDLLPathOverride* OR *\\\\WBDLLPathOverride* OR *\\\\StemmerClass* OR *\\\\WBreakerClass*))"
+}

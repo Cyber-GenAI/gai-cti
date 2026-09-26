@@ -1,0 +1,52 @@
+{
+  "id": "f2ea53fa-8602-4abe-b918-fe816b82fcb0",
+  "name": "OneNote Attachment File Dropped In Suspicious Location",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of files with the \".one\"/\".onepkg\" extension in suspicious or uncommon locations. This could be a sign of attackers abusing OneNote attachments",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of \".one\" or \".onepkg\" files from those locations"
+  ],
+  "from": "now-360s",
+  "rule_id": "b35165f4-86cd-4c5c-a759-6178068fc0bc",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.bleepingcomputer.com/news/security/hackers-now-use-microsoft-onenote-attachments-to-spread-malware/",
+    "https://blog.osarmor.com/319/onenote-attachment-delivers-asyncrat-malware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((file.path:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\* OR *\\\\Windows\\\\Temp\\\\* OR *\\:\\\\Temp\\\\*)) AND (file.path:(*.one OR *.onepkg))) AND (NOT (process.executable:*\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\* AND process.executable:*\\\\ONENOTE.EXE))"
+}

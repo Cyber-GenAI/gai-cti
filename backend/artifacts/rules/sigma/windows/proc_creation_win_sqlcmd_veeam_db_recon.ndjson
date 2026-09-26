@@ -1,0 +1,69 @@
+{
+  "id": "9c949f5f-11ee-4138-b2bd-7a33f77fa9fd",
+  "name": "Veeam Backup Database Suspicious Query",
+  "tags": [
+    "attack.collection",
+    "attack.t1005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious SQL queries using SQLCmd targeting the Veeam backup databases in order to steal information.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "baba1305-feec-4b5c-9dc1-504886794036",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1005",
+          "name": "Data from Local System",
+          "reference": "https://attack.mitre.org/techniques/T1005/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://labs.withsecure.com/publications/fin7-target-veeam-servers"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\sqlcmd.exe AND (process.command_line:*VeeamBackup* AND process.command_line:*From\\ *)) AND (process.command_line:(*BackupRepositories* OR *Backups* OR *Credentials* OR *HostCreds* OR *SmbFileShares* OR *Ssh_creds* OR *VSphereInfo*))"
+}

@@ -1,0 +1,87 @@
+{
+  "id": "b10cfc9e-dbba-452b-8fd5-ecd9425be985",
+  "name": "Schtasks Creation Or Modification With SYSTEM Privileges",
+  "tags": [
+    "attack.execution",
+    "attack.persistence",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation or update of a scheduled task to run with \"NT AUTHORITY\\SYSTEM\" privileges",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4fee0574-5fc7-4c83-a2a6-be2e49ce0fe3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/security-labs/exploring-the-qbot-attack-pattern",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\schtasks.exe AND (process.command_line:(*\\ \\/change\\ * OR *\\ \\/create\\ *))) AND process.command_line:*\\/ru\\ * AND (process.command_line:(*NT\\ AUT* OR *\\ SYSTEM\\ *))) AND (NOT ((process.executable:*\\\\schtasks.exe AND (process.command_line:*\\/TN\\ TVInstallRestore* AND process.command_line:*\\\\TeamViewer_.exe*)) OR (process.command_line:*Subscription\\ Heartbeat* AND process.command_line:*\\\\HeartbeatConfig.xml* AND process.command_line:*\\\\Microsoft\\ Shared\\\\OFFICE*) OR (process.command_line:(*\\/Create\\ \\/F\\ \\/RU\\ System\\ \\/SC\\ WEEKLY\\ \\/TN\\ AviraSystemSpeedupVerify\\ \\/TR\\ * OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Avira\\\\System\\ Speedup\\\\setup\\\\avira_speedup_setup.exe* OR *\\/VERIFY\\ \\/VERYSILENT\\ \\/NOSTART\\ \\/NODOTNET\\ \\/NORESTART\\\"\\ \\/RL\\ HIGHEST*))))"
+}

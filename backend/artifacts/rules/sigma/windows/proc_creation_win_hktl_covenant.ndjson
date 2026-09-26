@@ -1,0 +1,85 @@
+{
+  "id": "992296d6-37ab-4758-8d34-ba7af18317a8",
+  "name": "HackTool - Covenant PowerShell Launcher",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1059.001",
+    "attack.t1564.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious command lines used in Covenant luanchers",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [],
+  "from": "now-360s",
+  "rule_id": "ef3d07f9-0bdc-4bf3-ab92-3bec431d6d20",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://posts.specterops.io/covenant-v0-5-eee0507b85ba"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:*\\-Sta* AND process.command_line:*\\-Nop* AND process.command_line:*\\-Window* AND process.command_line:*Hidden*) AND (process.command_line:(*\\-Command* OR *\\-EncodedCommand*))) OR (process.command_line:(*sv\\ o\\ \\(New\\-Object\\ IO.MemorySteam\\);sv\\ d\\ * OR *mshta\\ file.hta* OR *GruntHTTP* OR *\\-EncodedCommand\\ cwB2ACAAbwAgA*))"
+}

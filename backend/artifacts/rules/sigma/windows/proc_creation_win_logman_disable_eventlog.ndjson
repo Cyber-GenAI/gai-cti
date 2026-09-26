@@ -1,0 +1,78 @@
+{
+  "id": "6e92a205-0f33-411f-87c5-c5e11ffa5354",
+  "name": "Suspicious Windows Trace ETW Session Tamper Via Logman.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "attack.t1070.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"logman\" utility in order to disable or delete Windows trace sessions",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate deactivation by administrative staff",
+    "Installer tools that disable services, e.g. before log collection agent installation"
+  ],
+  "from": "now-360s",
+  "rule_id": "2b9ffa08-fb80-437d-a99f-4fddebc3a446",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/0gtweet/status/1359039665232306183?s=21",
+    "https://ss64.com/nt/logman.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\logman.exe OR process.pe.original_file_name:Logman.exe) AND (process.command_line:(*stop\\ * OR *delete\\ *)) AND (process.command_line:(*Circular\\ Kernel\\ Context\\ Logger* OR *EventLog\\-* OR *SYSMON\\ TRACE* OR *SysmonDnsEtwSession*))"
+}

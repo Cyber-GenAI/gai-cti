@@ -1,0 +1,52 @@
+{
+  "id": "4eca72ab-fb1b-4dbc-82c0-c4f55ed32c5e",
+  "name": "Dump Ntds.dit To Suspicious Location",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential abuse of ntdsutil to dump ntds.dit database to a suspicious location",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate backup operation/creating shadow copies"
+  ],
+  "from": "now-360s",
+  "rule_id": "6781f6d1-d7ca-49e9-977a-7e3d309231b1",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/mgreen27/status/1558223256704122882",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj574207(v=ws.11)"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND ((winlog.provider_name:ESENT AND event.code:325 AND winlog.event_data.Data:*ntds.dit*) AND (winlog.event_data.Data:(*\\:\\\\ntds.dit* OR *\\\\Appdata\\\\* OR *\\\\Desktop\\\\* OR *\\\\Downloads\\\\* OR *\\\\Perflogs\\\\* OR *\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\*)))"
+}

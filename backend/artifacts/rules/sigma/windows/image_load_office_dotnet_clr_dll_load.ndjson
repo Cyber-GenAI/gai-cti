@@ -1,0 +1,69 @@
+{
+  "id": "ba89095b-7d1b-4fb8-96ca-eed32b7c0198",
+  "name": "CLR DLL Loaded Via Office Applications",
+  "tags": [
+    "attack.execution",
+    "attack.t1204.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects CLR DLL being loaded by an Office Product",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8debbe0d-12f1-4a2c-b054-fdbda692843a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/threatpunter/detecting-adversary-tradecraft-with-image-load-event-logging-and-eql-8de93338c16"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\excel.exe OR *\\\\mspub.exe OR *\\\\outlook.exe OR *\\\\onenote.exe OR *\\\\onenoteim.exe OR *\\\\powerpnt.exe OR *\\\\winword.exe)) AND file.path:*\\\\clr.dll*"
+}

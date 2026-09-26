@@ -1,0 +1,71 @@
+{
+  "id": "c4036eb7-af48-4e32-8441-05584ccb8aff",
+  "name": "Linux Network Service Scanning Tools Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1046",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of network scanning and reconnaisance tools. These tools can be used for the enumeration of local or remote network services for example.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "e547afe8-0ad5-4066-b871-6a2d4a0c017b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1046",
+          "name": "Network Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1046/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1046/T1046.md",
+    "https://github.com/projectdiscovery/naabu",
+    "https://github.com/Tib3rius/AutoRecon"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((Image:(*\\/nc OR *\\/ncat OR *\\/netcat OR *\\/socat)) AND (NOT (CommandLine:(*\\ \\-\\-listen\\ * OR *\\ \\-l\\ *)))) OR (Image:(*\\/autorecon OR *\\/hping OR *\\/hping2 OR *\\/hping3 OR *\\/naabu OR *\\/nmap OR *\\/nping OR *\\/telnet OR *\\/zenmap))"
+}

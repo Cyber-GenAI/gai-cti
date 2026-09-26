@@ -1,0 +1,54 @@
+{
+  "id": "4391281e-d0e9-404b-b64e-57f5c12aba9c",
+  "name": "Shell Process Spawned by Java.EXE",
+  "tags": [
+    "attack.initial-access",
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects shell spawned from Java host process, which could be a sign of exploitation (e.g. log4j exploitation)",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate calls to system binaries",
+    "Company specific internal usage"
+  ],
+  "from": "now-360s",
+  "rule_id": "d8fbee16-9ab5-4d2f-ab87-b73d1542232f",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20231230220738/https://www.lunasec.io/docs/blog/log4j-zero-day/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\java.exe AND (process.executable:(*\\\\bash.exe OR *\\\\cmd.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe))) AND (NOT (process.parent.executable:*build* AND process.command_line:*build*))"
+}

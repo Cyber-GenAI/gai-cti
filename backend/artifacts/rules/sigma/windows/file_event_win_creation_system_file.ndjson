@@ -1,0 +1,70 @@
+{
+  "id": "b2da38e2-bc03-4207-8d5d-9c5448723766",
+  "name": "Files With System Process Name In Unsuspected Locations",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of an executable with a system process name in folders other than the system ones (System32, SysWOW64, etc.).\nIt is highly recommended to perform an initial baseline before using this rule in production.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "System processes copied outside their default folders for testing purposes",
+    "Third party software naming their software with the same names as the processes mentioned here"
+  ],
+  "from": "now-360s",
+  "rule_id": "d45998ba-09ce-412c-8138-aca781cce682",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\AtBroker.exe OR *\\\\audiodg.exe OR *\\\\backgroundTaskHost.exe OR *\\\\bcdedit.exe OR *\\\\bitsadmin.exe OR *\\\\cmdl32.exe OR *\\\\cmstp.exe OR *\\\\conhost.exe OR *\\\\csrss.exe OR *\\\\dasHost.exe OR *\\\\dfrgui.exe OR *\\\\dllhost.exe OR *\\\\dwm.exe OR *\\\\eventcreate.exe OR *\\\\eventvwr.exe OR *\\\\explorer.exe OR *\\\\extrac32.exe OR *\\\\fontdrvhost.exe OR *\\\\ipconfig.exe OR *\\\\iscsicli.exe OR *\\\\iscsicpl.exe OR *\\\\logman.exe OR *\\\\LogonUI.exe OR *\\\\LsaIso.exe OR *\\\\lsass.exe OR *\\\\lsm.exe OR *\\\\msiexec.exe OR *\\\\msinfo32.exe OR *\\\\mstsc.exe OR *\\\\nbtstat.exe OR *\\\\odbcconf.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regini.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\RuntimeBroker.exe OR *\\\\schtasks.exe OR *\\\\SearchFilterHost.exe OR *\\\\SearchIndexer.exe OR *\\\\SearchProtocolHost.exe OR *\\\\SecurityHealthService.exe OR *\\\\SecurityHealthSystray.exe OR *\\\\services.exe OR *\\\\ShellAppRuntime.exe OR *\\\\sihost.exe OR *\\\\smartscreen.exe OR *\\\\smss.exe OR *\\\\spoolsv.exe OR *\\\\svchost.exe OR *\\\\SystemSettingsBroker.exe OR *\\\\taskhost.exe OR *\\\\taskhostw.exe OR *\\\\Taskmgr.exe OR *\\\\TiWorker.exe OR *\\\\vssadmin.exe OR *\\\\w32tm.exe OR *\\\\WerFault.exe OR *\\\\WerFaultSecure.exe OR *\\\\wermgr.exe OR *\\\\wevtutil.exe OR *\\\\wininit.exe OR *\\\\winlogon.exe OR *\\\\winrshost.exe OR *\\\\WinRTNetMUAHostServer.exe OR *\\\\wlanext.exe OR *\\\\wlrmdr.exe OR *\\\\WmiPrvSE.exe OR *\\\\wslhost.exe OR *\\\\WSReset.exe OR *\\\\WUDFHost.exe OR *\\\\WWAHost.exe)) AND (NOT ((file.path:(*C\\:\\\\$WINDOWS.\\~BT\\\\* OR *C\\:\\\\$WinREAgent\\\\* OR *C\\:\\\\Windows\\\\SoftwareDistribution\\\\* OR *C\\:\\\\Windows\\\\System32\\\\* OR *C\\:\\\\Windows\\\\SysWOW64\\\\* OR *C\\:\\\\Windows\\\\WinSxS\\\\* OR *C\\:\\\\Windows\\\\uus\\\\*)) OR (process.executable:*C\\:\\\\Windows\\\\system32\\\\svchost.exe AND file.path:*C\\:\\\\Program\\ Files\\\\WindowsApps\\\\*) OR process.executable:*C\\:\\\\Windows\\\\System32\\\\wuauclt.exe OR file.path:*C\\:\\\\Windows\\\\explorer.exe OR (process.executable:*C\\:\\\\WINDOWS\\\\system32\\\\msiexec.exe AND (file.path:(*C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe OR *C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\pwsh.exe))) OR (file.path:*C\\:\\\\Windows\\\\System32\\\\SecurityHealth\\\\* AND file.path:*\\\\SecurityHealthSystray.exe AND process.executable:*\\\\SecurityHealthSetup.exe)))"
+}

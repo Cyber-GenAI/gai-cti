@@ -1,0 +1,92 @@
+{
+  "id": "29a15cf4-1bc8-42ef-a96d-6bbe2083f326",
+  "name": "Potential Ransomware or Unauthorized MBR Tampering Via Bcdedit.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070",
+    "attack.persistence",
+    "attack.t1542.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential malicious and unauthorized usage of bcdedit.exe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [],
+  "from": "now-360s",
+  "rule_id": "fb5865a3-0749-4597-b794-ef39d953d2ee",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1542",
+          "name": "Pre-OS Boot",
+          "reference": "https://attack.mitre.org/techniques/T1542/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1542",
+          "name": "Pre-OS Boot",
+          "reference": "https://attack.mitre.org/techniques/T1542/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/bcdedit--set",
+    "https://twitter.com/malwrhunterteam/status/1372536434125512712/photo/2"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\bcdedit.exe OR process.pe.original_file_name:bcdedit.exe) AND (process.command_line:(*delete* OR *deletevalue* OR *import* OR *safeboot* OR *network*))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "877e37e9-54f2-48f4-b518-90473399568a",
+  "name": "Potential Regsvr32 Commandline Flag Anomaly",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a potential command line flag anomaly related to \"regsvr32\" in which the \"/i\" flag is used without the \"/n\" which should be uncommon.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator typo might cause some false positives"
+  ],
+  "from": "now-360s",
+  "rule_id": "f68469c3-6d97-469b-920b-106593920bcc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/sbousseaden/status/1282441816986484737?s=12"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\regsvr32.exe AND process.command_line:(*\\ \\-i\\:* OR *\\ \\/i\\:* OR *\\ \u2013i\\:* OR *\\ \u2014i\\:* OR *\\ \u2015i\\:*)) AND (NOT process.command_line:(*\\ \\-n\\ * OR *\\ \\/n\\ * OR *\\ \u2013n\\ * OR *\\ \u2014n\\ * OR *\\ \u2015n\\ *))"
+}

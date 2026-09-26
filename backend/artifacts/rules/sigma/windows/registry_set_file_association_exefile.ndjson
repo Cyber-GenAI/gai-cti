@@ -1,0 +1,51 @@
+{
+  "id": "211a2c62-030f-4e95-bd66-42665b8d70ad",
+  "name": "New File Association Using Exefile",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the abuse of the exefile handler in new file association. Used for bypass of security products.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "542d4923-f06e-4c9a-8739-9d6903b18be0",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/mrd0x/status/1461041276514623491"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*Classes\\\\.* AND winlog.event_data.Details:exefile"
+}

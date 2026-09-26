@@ -1,0 +1,52 @@
+{
+  "id": "e4c086ce-bf22-41ce-b41d-622ba8cf813a",
+  "name": "Uncommon File Creation By Mysql Daemon Process",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of files with scripting or executable extensions by Mysql daemon.\nWhich could be an indicator of \"User Defined Functions\" abuse to download malware.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "bd94dc38-6f50-4871-b530-08b90e6720a1",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://asec.ahnlab.com/en/58878/",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/honeypot-recon-mysql-malware-infection-via-user-defined-functions-udf/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\mysqld.exe OR *\\\\mysqld\\-nt.exe)) AND (file.path:(*.bat OR *.dat OR *.dll OR *.exe OR *.ps1 OR *.psm1 OR *.vbe OR *.vbs))"
+}

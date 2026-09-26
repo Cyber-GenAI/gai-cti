@@ -1,0 +1,70 @@
+{
+  "id": "6d7886ef-8d55-4d38-a7fd-3276a01349dd",
+  "name": "C# IL Code Compilation Via Ilasm.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1127",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of \"Ilasm.EXE\" in order to compile C# intermediate (IL) code to EXE or DLL.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0f3c4a17-ab97-4dec-9de9-23a1dbb4c3e9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1127",
+          "name": "Trusted Developer Utilities Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1127/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Ilasm/",
+    "https://www.echotrail.io/insights/search/ilasm.exe"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\ilasm.exe OR process.pe.original_file_name:ilasm.exe) AND (process.command_line:(*\\ \\/dll* OR *\\ \\/exe*))"
+}

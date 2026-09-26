@@ -1,0 +1,52 @@
+{
+  "id": "f2d8e5d8-5d38-4b30-9fc9-d576fc99b9b4",
+  "name": "Persistence Via Disk Cleanup Handler - Autorun",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker modifies values of the Disk Cleanup Handler in the registry to achieve persistence via autorun.\nThe disk cleanup manager is part of the operating system.\nIt displays the dialog box [\u2026] The user has the option of enabling or disabling individual handlers by selecting or clearing their check box in the disk cleanup manager's UI.\nAlthough Windows comes with a number of disk cleanup handlers, they aren't designed to handle files produced by other applications.\nInstead, the disk cleanup manager is designed to be flexible and extensible by enabling any developer to implement and register their own disk cleanup handler.\nAny developer can extend the available disk cleanup services by implementing and registering a disk cleanup handler.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "278040e0-91ac-4881-a99a-fb49fe1c4d55",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/diskcleanuphandler.html",
+    "https://www.hexacorn.com/blog/2018/09/02/beyond-good-ol-run-key-part-86/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\VolumeCaches\\\\* AND ((registry.path:*\\\\Autorun* AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\)) OR ((registry.path:(*\\\\CleanupString* OR *\\\\PreCleanupString*)) AND (winlog.event_data.Details:(*cmd* OR *powershell* OR *rundll32* OR *mshta* OR *cscript* OR *wscript* OR *wsl* OR *\\\\Users\\\\Public\\\\* OR *\\\\Windows\\\\TEMP\\\\* OR *\\\\Microsoft\\\\Windows\\\\Start\\ Menu\\\\Programs\\\\Startup\\\\*))))"
+}

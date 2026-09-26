@@ -1,0 +1,72 @@
+{
+  "id": "2d4e8af5-aa57-4d75-b1e8-989533b23836",
+  "name": "CodePage Modification Via MODE.COM To Russian Language",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a CodePage modification using the \"mode.com\" utility to Russian language.\nThis behavior has been used by threat actors behind Dharma ransomware.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Russian speaking people changing the CodePage"
+  ],
+  "from": "now-360s",
+  "rule_id": "71d61bef-18fe-481a-996c-0a0d48666bd1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/mode",
+    "https://strontic.github.io/xcyclopedia/library/mode.com-59D1ED51ACB8C3D50F1306FD75F20E99.html",
+    "https://www.virustotal.com/gui/file/5e75ef02517afd6e8ba6462b19217dc4a5a574abb33d10eb0f2bab49d8d48c22/behavior"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\mode.com OR process.pe.original_file_name:MODE.COM) AND ((process.command_line:*\\ con\\ * AND process.command_line:*\\ cp\\ * AND process.command_line:*\\ select\\=*) AND (process.command_line:(*\\=1251 OR *\\=866)))"
+}

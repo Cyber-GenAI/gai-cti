@@ -1,0 +1,71 @@
+{
+  "id": "42c0ea59-8d06-4c71-9311-fc81b7475ee0",
+  "name": "Flush Iptables Ufw Chain",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect use of iptables to flush all firewall rules, tables and chains and allow all network traffic",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Network administrators"
+  ],
+  "from": "now-360s",
+  "rule_id": "e659e565-d7aa-4d69-9df4-15a3c32473da",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blogs.blackberry.com/",
+    "https://www.cyberciti.biz/tips/linux-iptables-how-to-flush-all-rules.html",
+    "https://twitter.com/Joseliyo_Jstnk/status/1620131033474822144"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/iptables OR *\\/xtables\\-legacy\\-multi OR *\\/iptables\\-legacy\\-multi OR *\\/ip6tables OR *\\/ip6tables\\-legacy\\-multi)) AND (CommandLine:(*\\-F* OR *\\-Z* OR *\\-X*)) AND (CommandLine:(*ufw\\-logging\\-deny* OR *ufw\\-logging\\-allow* OR *ufw6\\-logging\\-deny* OR *ufw6\\-logging\\-allow*))"
+}

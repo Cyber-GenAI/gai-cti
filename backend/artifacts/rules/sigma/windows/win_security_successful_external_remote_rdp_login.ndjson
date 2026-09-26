@@ -1,0 +1,95 @@
+{
+  "id": "64c1c88b-266e-4d1f-a7b9-98453d0bdd4e",
+  "name": "External Remote RDP Logon from Public IP",
+  "tags": [
+    "attack.initial-access",
+    "attack.credential-access",
+    "attack.t1133",
+    "attack.t1078",
+    "attack.t1110",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects successful logon from public IP address via RDP. This can indicate a publicly-exposed RDP port.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate or intentional inbound connections from public IP addresses on the RDP port."
+  ],
+  "from": "now-360s",
+  "rule_id": "060b6477-2e72-460b-89b8-0160d41a6891",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1133",
+          "name": "External Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1133/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "reference": "https://attack.mitre.org/techniques/T1078/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "reference": "https://attack.mitre.org/techniques/T1110/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.inversecos.com/2020/04/successful-4624-anonymous-logons-to.html",
+    "https://twitter.com/Purp1eW0lf/status/1616144561965002752"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4624 AND winlog.event_data.LogonType:10) AND (NOT ((source.ip:\\:\\:1\\/128 OR source.ip:10.0.0.0\\/8 OR source.ip:127.0.0.0\\/8 OR source.ip:172.16.0.0\\/12 OR source.ip:192.168.0.0\\/16 OR source.ip:169.254.0.0\\/16 OR source.ip:fc00\\:\\:\\/7 OR source.ip:fe80\\:\\:\\/10) OR source.ip:\\-)))"
+}

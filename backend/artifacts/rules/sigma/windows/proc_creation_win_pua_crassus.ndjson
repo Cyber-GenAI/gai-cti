@@ -1,0 +1,69 @@
+{
+  "id": "edb6a592-d688-400a-9db9-0ebd57512f55",
+  "name": "PUA - Crassus Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1590.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Crassus, a Windows privilege escalation discovery tool, based on PE metadata characteristics.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "c5eb5eaf-da6e-4697-8265-f6d85e618418",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0043",
+        "name": "Reconnaissance",
+        "reference": "https://attack.mitre.org/tactics/TA0043/"
+      },
+      "technique": [
+        {
+          "id": "T1590",
+          "name": "Gather Victim Network Information",
+          "reference": "https://attack.mitre.org/techniques/T1590/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/vu-ls/Crassus"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\Crassus.exe OR process.pe.original_file_name:Crassus.exe OR process.pe.description:*Crassus*"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "1e97efd8-e30f-435b-baee-78337eddbfd7",
+  "name": "Scripting/CommandLine Process Spawned Regsvr32",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects various command line and scripting engines/processes such as \"PowerShell\", \"Wscript\", \"Cmd\", etc. spawning a \"regsvr32\" instance.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate \".bat\", \".hta\", \".ps1\" or \".vbs\" scripts leverage legitimately often. Apply additional filter and exclusions as necessary",
+    "Some legitimate Windows services"
+  ],
+  "from": "now-360s",
+  "rule_id": "1853a506-3321-40d2-9caf-54e00a4aafb0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20171001085340/https://subt0x10.blogspot.com/2017/04/bypass-application-whitelisting-script.html",
+    "https://app.any.run/tasks/34221348-072d-4b70-93f3-aa71f6ebecad/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\powershell_ise.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wscript.exe)) AND process.executable:*\\\\regsvr32.exe) AND (NOT (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\cmd.exe AND process.command_line:*\\ \\/s\\ C\\:\\\\Windows\\\\System32\\\\RpcProxy\\\\RpcProxy.dll))"
+}

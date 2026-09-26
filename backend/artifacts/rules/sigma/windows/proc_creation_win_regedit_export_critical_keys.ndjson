@@ -1,0 +1,71 @@
+{
+  "id": "7f0c7b31-3a49-4e56-b0b0-98c2d21bb0ec",
+  "name": "Exports Critical Registry Keys To a File",
+  "tags": [
+    "attack.exfiltration",
+    "attack.discovery",
+    "attack.t1012",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the export of a crital Registry key to a file.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Dumping hives for legitimate purpouse i.e. backup or forensic investigation"
+  ],
+  "from": "now-360s",
+  "rule_id": "7d236054-a949-442e-8fb3-44d92c3e77b1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1012",
+          "name": "Query Registry",
+          "reference": "https://attack.mitre.org/techniques/T1012/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Regedit/",
+    "https://gist.github.com/api0cradle/cdd2d0d0ec9abb686f0e89306e277b8f"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\regedit.exe OR process.pe.original_file_name:REGEDIT.EXE) AND process.command_line:(*\\ \\-E\\ * OR *\\ \\/E\\ * OR *\\ \u2013E\\ * OR *\\ \u2014E\\ * OR *\\ \u2015E\\ *) AND (process.command_line:(*hklm* OR *hkey_local_machine*)) AND (process.command_line:(*\\\\system OR *\\\\sam OR *\\\\security))"
+}

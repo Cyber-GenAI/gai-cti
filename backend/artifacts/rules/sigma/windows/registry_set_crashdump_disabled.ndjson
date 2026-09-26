@@ -1,0 +1,76 @@
+{
+  "id": "41c3980b-4294-444b-815d-02a53b04ec4e",
+  "name": "CrashControl CrashDump Disabled",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects disabling the CrashDump per registry (as used by HermeticWiper)",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate disabling of crashdumps"
+  ],
+  "from": "now-360s",
+  "rule_id": "82fad272-d472-4a79-a948-da6025a1b3d5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.sentinelone.com/labs/hermetic-wiper-ukraine-under-attack/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*SYSTEM\\\\CurrentControlSet\\\\Control\\\\CrashControl* AND winlog.event_data.Details:DWORD\\ \\(0x00000000\\)"
+}

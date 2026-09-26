@@ -1,0 +1,71 @@
+{
+  "id": "a0cc085a-2c64-4714-a291-fad907a34d52",
+  "name": "Unix Shell Configuration Modification",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect unix shell configuration modification. Adversaries may establish persistence through executing malicious commands triggered when a new shell is opened.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Admin or User activity are expected to generate some false positives"
+  ],
+  "from": "now-360s",
+  "rule_id": "df82ac76-c50d-4f6a-8982-2687c4a355c4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://objective-see.org/blog/blog_0x68.html",
+    "https://web.archive.org/web/20221204161143/https://www.glitch-cat.com/p/green-lambert-and-attack",
+    "https://www.anomali.com/blog/pulling-linux-rabbit-rabbot-malware-out-of-a-hat"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "type:PATH AND (name:(\\/etc\\/shells OR \\/etc\\/profile OR \\/etc\\/profile.d\\/* OR \\/etc\\/bash.bashrc OR \\/etc\\/bashrc OR \\/etc\\/zsh\\/zprofile OR \\/etc\\/zsh\\/zshrc OR \\/etc\\/zsh\\/zlogin OR \\/etc\\/zsh\\/zlogout OR \\/etc\\/csh.cshrc OR \\/etc\\/csh.login OR \\/root\\/.bashrc OR \\/root\\/.bash_profile OR \\/root\\/.profile OR \\/root\\/.zshrc OR \\/root\\/.zprofile OR \\/home\\/*\\/.bashrc OR \\/home\\/*\\/.zshrc OR \\/home\\/*\\/.bash_profile OR \\/home\\/*\\/.zprofile OR \\/home\\/*\\/.profile OR \\/home\\/*\\/.bash_login OR \\/home\\/*\\/.bash_logout OR \\/home\\/*\\/.zlogin OR \\/home\\/*\\/.zlogout))"
+}

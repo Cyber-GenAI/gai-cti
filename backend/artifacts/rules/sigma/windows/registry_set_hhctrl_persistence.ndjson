@@ -1,0 +1,52 @@
+{
+  "id": "1e1a5081-4717-4bc8-9e05-990a7e7e2d29",
+  "name": "Persistence Via Hhctrl.ocx",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker modifies the registry value of the \"hhctrl\" to point to a custom binary",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "5918344b-1fe7-4c3d-b77a-4d6e6b5181f4",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/hhctrl.html",
+    "https://www.hexacorn.com/blog/2018/04/23/beyond-good-ol-run-key-part-77/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\CLSID\\\\\\{52A2AAAE\\-085D\\-4187\\-97EA\\-8C30DB990436\\}\\\\InprocServer32\\\\\\(Default\\)* AND (NOT winlog.event_data.Details:C\\:\\\\Windows\\\\System32\\\\hhctrl.ocx)"
+}

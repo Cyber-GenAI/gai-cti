@@ -1,0 +1,54 @@
+{
+  "id": "91f8ee23-c056-4432-8978-40e182910f5b",
+  "name": "Shell Execution Of Process Located In Tmp Directory",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of shells from a parent process located in a temporary (/tmp) directory",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f0842ce3-43da-48de-81c5-8c2baa4230d7",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://blogs.jpcert.or.jp/en/2023/05/gobrat.html",
+    "https://jstnk9.github.io/jstnk9/research/GobRAT-Malware/",
+    "https://www.virustotal.com/gui/file/60bcd645450e4c846238cf0e7226dc40c84c96eba99f6b2cffcd0ab4a391c8b3/detection",
+    "https://www.virustotal.com/gui/file/3e44c807a25a56f4068b5b8186eee5002eed6f26d665a8b791c472ad154585d1/detection"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "ParentImage:\\/tmp\\/* AND (Image:(*\\/bash OR *\\/csh OR *\\/dash OR *\\/fish OR *\\/ksh OR *\\/sh OR *\\/zsh))"
+}

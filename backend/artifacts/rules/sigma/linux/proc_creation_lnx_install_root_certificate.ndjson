@@ -1,0 +1,69 @@
+{
+  "id": "81f14d15-2f96-4d21-85d9-0352f5503bcc",
+  "name": "Install Root Certificate",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1553.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects installation of new certificate on the system which attackers may use to avoid warnings when connecting to controlled web servers or C2s",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "fef92ed4-1e75-4d04-93d1-836ce42dd688",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1553",
+          "name": "Subvert Trust Controls",
+          "reference": "https://attack.mitre.org/techniques/T1553/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1553.004/T1553.004.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:(*\\/update\\-ca\\-certificates OR *\\/update\\-ca\\-trust)"
+}

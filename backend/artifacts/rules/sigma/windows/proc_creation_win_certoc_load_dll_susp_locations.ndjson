@@ -1,0 +1,71 @@
+{
+  "id": "1f408311-72f6-41d7-99d2-4ad582c08913",
+  "name": "Suspicious DLL Loaded via CertOC.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when a user installs certificates by using CertOC.exe to load the target DLL file.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2590bff9-e3ab-4e56-b0d1-972d7110f5e0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/sblmsrsn/status/1445758411803480072?s=20",
+    "https://github.com/elastic/protections-artifacts/commit/746086721fd385d9f5c6647cada1788db4aea95f#diff-fe98e74189873d6df72a15df2eaa0315c59ba9cdaca93ecd68afc4ea09194ef2",
+    "https://lolbas-project.github.io/lolbas/Binaries/Certoc/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\certoc.exe OR process.pe.original_file_name:CertOC.exe) AND process.command_line:(*\\ \\-LoadDLL\\ * OR *\\ \\/LoadDLL\\ * OR *\\ \u2013LoadDLL\\ * OR *\\ \u2014LoadDLL\\ * OR *\\ \u2015LoadDLL\\ *) AND (process.command_line:(*\\\\Appdata\\\\Local\\\\Temp\\\\* OR *\\\\Desktop\\\\* OR *\\\\Downloads\\\\* OR *\\\\Users\\\\Public\\\\* OR *C\\:\\\\Windows\\\\Tasks\\\\* OR *C\\:\\\\Windows\\\\Temp\\\\*))"
+}

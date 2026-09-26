@@ -1,0 +1,52 @@
+{
+  "id": "ee9086c3-efa2-47e5-aa31-1ef71045bc9c",
+  "name": "Uncommon FileSystem Load Attempt By Format.com",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of format.com with an uncommon filesystem selection that could indicate a defense evasion activity in which \"format.com\" is used to load malicious DLL files or other programs.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9edf8344-8acd-4318-9f1c-4683d9a62a60",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/0gtweet/status/1477925112561209344",
+    "https://twitter.com/wdormann/status/1478011052130459653?s=20"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\format.com AND process.command_line:*\\/fs\\:*) AND (NOT (process.command_line:(*\\/fs\\:exFAT* OR *\\/fs\\:FAT* OR *\\/fs\\:NTFS* OR *\\/fs\\:ReFS* OR *\\/fs\\:UDF*)))"
+}

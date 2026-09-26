@@ -1,0 +1,51 @@
+{
+  "id": "4da4e3d5-a3f3-46a2-8e1c-b919fcbe89fb",
+  "name": "PowerShell Core DLL Loaded Via Office Application",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell core DLL being loaded by an Office Product",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9c835234-4889-4fca-97d9-e891475ac45c",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\excel.exe OR *\\\\mspub.exe OR *\\\\outlook.exe OR *\\\\onenote.exe OR *\\\\onenoteim.exe OR *\\\\powerpnt.exe OR *\\\\winword.exe)) AND (file.path:(*\\\\System.Management.Automation.Dll* OR *\\\\System.Management.Automation.ni.Dll*))"
+}

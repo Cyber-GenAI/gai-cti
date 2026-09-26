@@ -1,0 +1,105 @@
+{
+  "id": "a7bf3683-f287-4b63-b15c-92ba24b1afe7",
+  "name": "Potential Secure Deletion with SDelete",
+  "tags": [
+    "attack.impact",
+    "attack.defense-evasion",
+    "attack.t1070.004",
+    "attack.t1027.005",
+    "attack.t1485",
+    "attack.t1553.002",
+    "attack.s0195",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects files that have extensions commonly seen while SDelete is used to wipe files.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of SDelete",
+    "Files that are interacted with that have these extensions legitimately"
+  ],
+  "from": "now-360s",
+  "rule_id": "ade86515-a14f-4ae5-b009-53fadf1faf07",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1485",
+          "name": "Data Destruction",
+          "reference": "https://attack.mitre.org/techniques/T1485/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1553",
+          "name": "Subvert Trust Controls",
+          "reference": "https://attack.mitre.org/techniques/T1553/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://jpcertcc.github.io/ToolAnalysisResultSheet/details/sdelete.htm",
+    "https://www.jpcert.or.jp/english/pub/sr/ir_research.html",
+    "https://learn.microsoft.com/en-gb/sysinternals/downloads/sdelete"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:(4656 OR 4663 OR 4658)) AND (winlog.event_data.ObjectName:(*.AAA OR *.ZZZ)))"
+}

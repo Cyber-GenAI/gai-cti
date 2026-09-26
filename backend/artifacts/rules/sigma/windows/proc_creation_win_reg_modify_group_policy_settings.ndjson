@@ -1,0 +1,86 @@
+{
+  "id": "1c47fe59-018d-439a-80fc-6703d283cdbb",
+  "name": "Modify Group Policy Settings",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1484.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect malicious GPO modifications can be used to implement many other malicious behaviors.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "cb047c4d-b39d-43ae-b229-099bcb6cb98a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1484",
+          "name": "Domain or Tenant Policy Modification",
+          "reference": "https://attack.mitre.org/techniques/T1484/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1484",
+          "name": "Domain or Tenant Policy Modification",
+          "reference": "https://attack.mitre.org/techniques/T1484/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/40b77d63808dd4f4eafb83949805636735a1fd15/atomics/T1484.001/T1484.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\reg.exe OR process.pe.original_file_name:reg.exe) AND process.command_line:*\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\System* AND (process.command_line:(*GroupPolicyRefreshTimeDC* OR *GroupPolicyRefreshTimeOffsetDC* OR *GroupPolicyRefreshTime* OR *GroupPolicyRefreshTimeOffset* OR *EnableSmartScreen* OR *ShellSmartScreenLevel*))"
+}

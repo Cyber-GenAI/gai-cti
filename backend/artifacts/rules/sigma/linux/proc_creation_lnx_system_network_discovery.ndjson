@@ -1,0 +1,69 @@
+{
+  "id": "720319e4-fe89-4659-b7d8-51c153e600ea",
+  "name": "System Network Discovery - Linux",
+  "tags": [
+    "attack.discovery",
+    "attack.t1016",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects enumeration of local network configuration",
+  "risk_score": 20,
+  "severity": "informational",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "3b40b318-22b2-4754-9468-7c5187f7e743",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1016",
+          "name": "System Network Configuration Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1016/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1016/T1016.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/firewall\\-cmd OR *\\/ufw OR *\\/iptables OR *\\/netstat OR *\\/ss OR *\\/ip OR *\\/ifconfig OR *\\/systemd\\-resolve OR *\\/route)) OR CommandLine:*\\/etc\\/resolv.conf*"
+}

@@ -1,0 +1,78 @@
+{
+  "id": "e53437a6-c484-4c33-b3c8-94503565cff4",
+  "name": "Reg Add Suspicious Paths",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an adversary uses the reg.exe utility to add or modify new keys or subkeys",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare legitimate add to registry via cli (to these locations)"
+  ],
+  "from": "now-360s",
+  "rule_id": "afdfe82d-3557-4fee-b2bc-4c1ae2204900",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/40b77d63808dd4f4eafb83949805636735a1fd15/atomics/T1112/T1112.md",
+    "https://github.com/redcanaryco/atomic-red-team/blob/40b77d63808dd4f4eafb83949805636735a1fd15/atomics/T1562.001/T1562.001.md",
+    "https://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\reg.exe OR process.pe.original_file_name:reg.exe) AND (process.command_line:(*\\\\AppDataLow\\\\Software\\\\Microsoft\\\\* OR *\\\\Policies\\\\Microsoft\\\\Windows\\\\OOBE* OR *\\\\Policies\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\Winlogon* OR *\\\\SOFTWARE\\\\Microsoft\\\\Windows\\ NT\\\\Currentversion\\\\Winlogon* OR *\\\\CurrentControlSet\\\\Control\\\\SecurityProviders\\\\WDigest* OR *\\\\Microsoft\\\\Windows\\ Defender\\\\*))"
+}

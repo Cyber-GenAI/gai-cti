@@ -1,0 +1,52 @@
+{
+  "id": "70f0af34-8037-4cb8-9e17-5994ebb38791",
+  "name": "Office Application Initiated Network Connection Over Uncommon Ports",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.command-and-control",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an office suit application (Word, Excel, PowerPoint, Outlook) communicating to target systems over uncommon ports.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other ports can be used, apply additional filters accordingly"
+  ],
+  "from": "now-360s",
+  "rule_id": "90baff19-84cd-44ae-aee4-545b9fa4762b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://blogs.blackberry.com/en/2023/07/romcom-targets-ukraine-nato-membership-talks-at-nato-summit"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(network.direction:true AND (process.executable:(*\\\\excel.exe OR *\\\\outlook.exe OR *\\\\powerpnt.exe OR *\\\\winword.exe OR *\\\\wordview.exe))) AND (NOT ((destination.port:(53 OR 80 OR 139 OR 443 OR 445)) OR (process.executable:*\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\* AND process.executable:*\\\\OUTLOOK.EXE AND (destination.port:(143 OR 465 OR 587 OR 993 OR 995)))))"
+}

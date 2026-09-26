@@ -1,0 +1,51 @@
+{
+  "id": "3f48ebf7-8f69-44d4-aef1-9a25d7c5f51c",
+  "name": "Local File Read Using Curl.EXE",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"curl.exe\" with the \"file://\" protocol handler in order to read local files.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "22371e81-231b-4e43-9d37-ea30318a1dc5",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://curl.se/docs/manpage.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\curl.exe OR process.pe.original_file_name:curl.exe) AND process.command_line:*file\\:\\/\\/\\/*"
+}

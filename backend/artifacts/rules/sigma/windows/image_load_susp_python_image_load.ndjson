@@ -1,0 +1,71 @@
+{
+  "id": "b4e34553-ba89-45cc-b6aa-3527918a6d96",
+  "name": "Python Image Load By Non-Python Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1027.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the image load of \"Python Core\" by a non-Python process. This might be indicative of a Python script bundled with Py2Exe.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate Py2Exe Binaries",
+    "Known false positive caused with Python Anaconda"
+  ],
+  "from": "now-360s",
+  "rule_id": "ec35720e-efc1-47f0-ab14-1a77f342e7ed",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.py2exe.org/",
+    "https://unit42.paloaltonetworks.com/unit-42-technical-analysis-seaduke/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.pe.description:Python\\ Core AND (NOT (process.executable:*Python* OR (process.executable:(C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\ProgramData\\\\Anaconda3\\\\*)))) AND _exists_:process.executable"
+}

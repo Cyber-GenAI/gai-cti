@@ -1,0 +1,70 @@
+{
+  "id": "b1ae4903-32c4-48da-a2f4-4390c4c884d8",
+  "name": "ADS Zone.Identifier Deleted By Uncommon Application",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the deletion of the \"Zone.Identifier\" ADS by an uncommon process. Attackers can leverage this in order to bypass security restrictions that make use of the ADS such as Microsoft Office apps.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other third party applications not listed."
+  ],
+  "from": "now-360s",
+  "rule_id": "d5baddd7-5ef5-43aa-9a44-9fa9e808f95f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://securityliterate.com/how-malware-abuses-the-zone-identifier-to-circumvent-detection-and-analysis/",
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\:Zone.Identifier AND (NOT (process.executable:(C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\pwsh.exe OR C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe OR C\\:\\\\Windows\\\\explorer.exe OR C\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\explorer.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe))) AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR C\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe)) OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Mozilla\\ Firefox\\\\firefox.exe OR C\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe))))"
+}

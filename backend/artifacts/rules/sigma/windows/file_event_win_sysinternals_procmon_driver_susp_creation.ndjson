@@ -1,0 +1,70 @@
+{
+  "id": "42932b10-1279-45e3-96db-b76e0dfbaeeb",
+  "name": "Process Monitor Driver Creation By Non-Sysinternals Binary",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1068",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of the Process Monitor driver by processes other than Process Monitor (procmon) itself.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives may occur with legitimate renamed process monitor binaries"
+  ],
+  "from": "now-360s",
+  "rule_id": "486171b7-99ae-4d33-87e5-5fe9893da919",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\\\procmon* AND file.path:*.sys) AND (NOT (process.executable:(*\\\\procmon.exe OR *\\\\procmon64.exe)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "0855f984-5488-4f26-a298-50edf586e33e",
+  "name": "PUA - Fast Reverse Proxy (FRP) Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1090",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of Fast Reverse Proxy. frp is a fast reverse proxy to help you expose a local server behind a NAT or firewall to the Internet.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "14c35def-00b0-414b-858d-d853896b601d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://asec.ahnlab.com/en/38156/",
+    "https://github.com/fatedier/frp"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\frpc.exe OR *\\\\frps.exe)) OR process.command_line:*\\\\frpc.ini* OR (winlog.event_data.Hashes:(*MD5\\=7D9C233B8C9E3F0EA290D2B84593C842* OR *SHA1\\=06DDC9280E1F1810677935A2477012960905942F* OR *SHA256\\=57B0936B8D336D8E981C169466A15A5FD21A7D5A2C7DAF62D5E142EE860E387C*))"
+}

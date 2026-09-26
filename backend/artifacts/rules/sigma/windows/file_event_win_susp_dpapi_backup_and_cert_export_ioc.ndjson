@@ -1,0 +1,76 @@
+{
+  "id": "123a56f5-87c8-4bfd-9095-a1b025c9544a",
+  "name": "DPAPI Backup Keys And Certificate Export Activity IOC",
+  "tags": [
+    "attack.t1555",
+    "attack.t1552.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects file names with specific patterns seen generated and used by tools such as Mimikatz and DSInternals related to exported or stolen DPAPI backup keys and certificates.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "d0de0c6d-1292-49f7-bacc-63bfe326b2f4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1555",
+          "name": "Credentials from Password Stores",
+          "reference": "https://attack.mitre.org/techniques/T1555/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.dsinternals.com/en/dpapi-backup-key-theft-auditing/",
+    "https://github.com/MichaelGrafnetter/DSInternals/blob/39ee8a69bbdc1cfd12c9afdd7513b4788c4895d4/Src/DSInternals.Common/Data/DPAPI/DPAPIBackupKey.cs#L28-L32"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*ntds_capi_* OR *ntds_legacy_* OR *ntds_unknown_*)) AND (file.path:(*.cer OR *.key OR *.pfx OR *.pvk))"
+}

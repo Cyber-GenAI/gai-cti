@@ -1,0 +1,72 @@
+{
+  "id": "2894253c-29fb-4261-8268-d4999ec3f9df",
+  "name": "Process Initiated Network  Connection To Ngrok Domain",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1567.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an executable initiating a network connection to \"ngrok\" domains.\nAttackers were seen using this \"ngrok\" in order to store their second stage payloads and malware.\nWhile communication with such domains can be legitimate, often times is a sign of either data exfiltration by malicious actors or additional download.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the ngrok service."
+  ],
+  "from": "now-360s",
+  "rule_id": "347be6fd-44c9-400b-9dd9-cee8727c7dba",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1567",
+          "name": "Exfiltration Over Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1567/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://ngrok.com/",
+    "https://ngrok.com/blog-post/new-ngrok-domains",
+    "https://www.virustotal.com/gui/file/cca0c1182ac114b44dc52dd2058fcd38611c20bb6b5ad84710681d38212f835a/",
+    "https://www.rnbo.gov.ua/files/2023_YEAR/CYBERCENTER/november/APT29%20attacks%20Embassies%20using%20CVE-2023-38831%20-%20report%20en.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "network.direction:true AND (destination.domain:(*.ngrok\\-free.app OR *.ngrok\\-free.dev OR *.ngrok.app OR *.ngrok.dev OR *.ngrok.io))"
+}

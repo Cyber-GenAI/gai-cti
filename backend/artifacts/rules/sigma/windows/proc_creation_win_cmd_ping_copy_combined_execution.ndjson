@@ -1,0 +1,69 @@
+{
+  "id": "ec7aadbb-bb88-4975-8af6-d0319842d7d1",
+  "name": "Potentially Suspicious Ping/Copy Command Combination",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uncommon and potentially suspicious one-liner command containing both \"ping\" and \"copy\" at the same time, which is usually used by malware.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c919149b-8e5e-41b1-ba90-753aea63f461",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\cmd.exe OR process.pe.original_file_name:Cmd.Exe) AND (process.command_line:*ping* AND process.command_line:*copy\\ *) AND process.command_line:(*\\ \\-n\\ * OR *\\ \\/n\\ * OR *\\ \u2013n\\ * OR *\\ \u2014n\\ * OR *\\ \u2015n\\ *) AND process.command_line:(*\\ \\-y\\ * OR *\\ \\/y\\ * OR *\\ \u2013y\\ * OR *\\ \u2014y\\ * OR *\\ \u2015y\\ *)"
+}

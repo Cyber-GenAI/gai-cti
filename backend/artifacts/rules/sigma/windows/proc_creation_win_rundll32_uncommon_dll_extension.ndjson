@@ -1,0 +1,69 @@
+{
+  "id": "46e82e3b-4358-4440-b071-18bd1c6a36e1",
+  "name": "Rundll32 Execution With Uncommon DLL Extension",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of rundll32 with a command line that doesn't contain a common extension",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "aab44a11-d97f-437c-b388-92a1c8f7a2f0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/mrd0x/status/1481630810495139841?s=12"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE) AND (NOT ((NOT _exists_:process.command_line) OR process.command_line:\"\" OR ((process.command_line:(*.cpl\\ * OR *.cpl,* OR *.cpl\\\"* OR *.cpl'* OR *.dll\\ * OR *.dll,* OR *.dll\\\"* OR *.dll'* OR *.inf\\ * OR *.inf,* OR *.inf\\\"* OR *.inf'*)) OR (process.command_line:(*.cpl OR *.dll OR *.inf))) OR process.command_line:*\\ \\-localserver\\ * OR (process.parent.executable:*\\\\msiexec.exe AND (process.command_line:*\\:\\\\Windows\\\\Installer\\\\* AND process.command_line:*.tmp* AND process.command_line:*zzzzInvokeManagedCustomActionOutOfProc*)))) AND (NOT (process.parent.command_line:*\\:\\\\Users\\\\* AND process.parent.command_line:*\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\\\{* AND process.parent.command_line:*\\\\EDGEMITMP_* AND process.parent.command_line:*.tmp\\\\setup.exe* AND process.parent.command_line:*\\-\\-install\\-archive\\=* AND process.parent.command_line:*\\-\\-previous\\-version\\=* AND process.parent.command_line:*\\-\\-msedgewebview\\ \\-\\-verbose\\-logging\\ \\-\\-do\\-not\\-launch\\-msedge\\ \\-\\-user\\-level*))"
+}

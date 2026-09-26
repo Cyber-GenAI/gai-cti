@@ -1,0 +1,72 @@
+{
+  "id": "44f96310-807f-4d5e-b031-5a43eb096b93",
+  "name": "New Application in AppCompat",
+  "tags": [
+    "attack.execution",
+    "attack.t1204.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "A General detection for a new application in AppCompat. This indicates an application executing for the first time on an endpoint.",
+  "risk_score": 20,
+  "severity": "informational",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "This rule is to explore new applications on an endpoint. False positives depends on the organization.",
+    "Newly setup system.",
+    "Legitimate installation of new application."
+  ],
+  "from": "now-360s",
+  "rule_id": "e3c0cb8e-7444-45d7-9c79-0c4bdfd83ffd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/OTRF/detection-hackathon-apt29/issues/1",
+    "https://github.com/OTRF/ThreatHunter-Playbook/blob/2d4257f630f4c9770f78d0c1df059f891ffc3fec/docs/evals/apt29/detections/1.A.1_DFD6A782-9BDB-4550-AB6B-525E825B095E.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\AppCompatFlags\\\\Compatibility\\ Assistant\\\\Store\\\\*"
+}

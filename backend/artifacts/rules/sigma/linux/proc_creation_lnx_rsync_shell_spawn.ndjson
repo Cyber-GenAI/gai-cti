@@ -1,0 +1,77 @@
+{
+  "id": "102f870e-a01e-4c77-a24a-067f9a81a799",
+  "name": "Suspicious Invocation of Shell via Rsync",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "attack.t1203",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a shell as sub process of \"rsync\" without the expected command line flag \"-e\" being used, which could be an indication of exploitation as described in CVE-2024-12084. This behavior is commonly associated with attempts to execute arbitrary commands or escalate privileges, potentially leading to unauthorized access or further exploitation.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b4dd6934-58a5-434b-9f92-19541065e9be",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1203",
+          "name": "Exploitation for Client Execution",
+          "reference": "https://attack.mitre.org/techniques/T1203/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://sysdig.com/blog/detecting-and-mitigating-cve-2024-12084-rsync-remote-code-execution/",
+    "https://gist.github.com/Neo23x0/a20436375a1e26524931dd8ea1a3af10"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((ParentImage:(*\\/rsync OR *\\/rsyncd)) AND (Image:(*\\/ash OR *\\/bash OR *\\/csh OR *\\/dash OR *\\/ksh OR *\\/sh OR *\\/tcsh OR *\\/zsh))) AND (NOT CommandLine:*\\ \\-e\\ *)"
+}

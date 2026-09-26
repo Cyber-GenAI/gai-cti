@@ -1,0 +1,70 @@
+{
+  "id": "6034a70c-8956-4cbb-a805-ed0a946cfcae",
+  "name": "HackTool - Hydra Password Bruteforce Execution",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1110",
+    "attack.t1110.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command line parameters used by Hydra password guessing hack tool",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Software that uses the caret encased keywords PASS and USER in its command line"
+  ],
+  "from": "now-360s",
+  "rule_id": "b58da1bd-10e5-49c6-9ab4-c8e32a9e476d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "reference": "https://attack.mitre.org/techniques/T1110/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/vanhauser-thc/thc-hydra"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*\\-u\\ * AND process.command_line:*\\-p\\ *) AND (process.command_line:(*\\^USER\\^* OR *\\^PASS\\^*))"
+}

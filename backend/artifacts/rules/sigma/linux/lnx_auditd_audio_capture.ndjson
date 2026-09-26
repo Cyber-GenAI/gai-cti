@@ -1,0 +1,72 @@
+{
+  "id": "a23c99bb-802a-4016-813e-cdacf624baf1",
+  "name": "Audio Capture",
+  "tags": [
+    "attack.collection",
+    "attack.t1123",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects attempts to record audio using the arecord and ecasound utilities.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "68ccb151-403f-4672-bed7-fe04844450b2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1123",
+          "name": "Audio Capture",
+          "reference": "https://attack.mitre.org/techniques/T1123/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://linux.die.net/man/1/arecord",
+    "https://linuxconfig.org/how-to-test-microphone-with-audio-linux-sound-architecture-alsa",
+    "https://manpages.debian.org/unstable/ecasound/ecasound.1.en.html",
+    "https://ecasound.seul.org/ecasound/Documentation/examples.html#fconversions"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(type:EXECVE AND a0:arecord AND a1:\\-vv AND a2:\\-fdat) OR (type:SYSCALL AND exe:*\\/ecasound AND syscall:319)"
+}

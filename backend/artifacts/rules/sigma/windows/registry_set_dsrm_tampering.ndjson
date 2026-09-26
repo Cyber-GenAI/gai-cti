@@ -1,0 +1,71 @@
+{
+  "id": "63c13baa-ba78-4a04-9e9e-1ba94f0a32c8",
+  "name": "Directory Service Restore Mode(DSRM) Registry Value Tampering",
+  "tags": [
+    "attack.persistence",
+    "attack.t1556",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to \"DsrmAdminLogonBehavior\" registry value.\nDuring a Domain Controller (DC) promotion, administrators create a Directory Services Restore Mode (DSRM) local administrator account with a password that rarely changes. The DSRM account is an \u201cAdministrator\u201d account that logs in with the DSRM mode when the server is booting up to restore AD backups or recover the server from a failure.\nAttackers could abuse DSRM account to maintain their persistence and access to the organization's Active Directory.\nIf the \"DsrmAdminLogonBehavior\" value is set to \"0\", the administrator account can only be used if the DC starts in DSRM.\nIf the \"DsrmAdminLogonBehavior\" value is set to \"1\", the administrator account can only be used if the local AD DS service is stopped.\nIf the \"DsrmAdminLogonBehavior\" value is set to \"2\", the administrator account can always be used.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4499c638-8a6f-45bf-a4c8-404bdf6a5d56",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1556",
+          "name": "Modify Authentication Process",
+          "reference": "https://attack.mitre.org/techniques/T1556/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://adsecurity.org/?p=1785",
+    "https://www.sentinelone.com/blog/detecting-dsrm-account-misconfigurations/",
+    "https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/dsrm-credentials"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Control\\\\Lsa\\\\DsrmAdminLogonBehavior AND (NOT winlog.event_data.Details:DWORD\\ \\(0x00000000\\))"
+}

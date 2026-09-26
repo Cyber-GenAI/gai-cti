@@ -1,0 +1,74 @@
+{
+  "id": "3f7ee851-231d-4e35-8b69-55374b1a48be",
+  "name": "LSASS Dump Keyword In CommandLine",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the presence of the keywords \"lsass\" and \".dmp\" in the commandline, which could indicate a potential attempt to dump or create a dump of the lsass process.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "ee29005e-1a03-4043-853c-99e0b5f1f1b9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Hackndo/lsassy",
+    "https://medium.com/@markmotig/some-ways-to-dump-lsass-exe-c4a75fdc49bf",
+    "https://github.com/elastic/detection-rules/blob/c76a39796972ecde44cb1da6df47f1b6562c9770/rules/windows/credential_access_lsass_memdump_file_created.toml",
+    "https://www.whiteoaksecurity.com/blog/attacks-defenses-dumping-lsass-no-mimikatz/",
+    "https://github.com/helpsystems/nanodump",
+    "https://github.com/CCob/MirrorDump"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*lsass.dmp* OR *lsass.zip* OR *lsass.rar* OR *Andrew.dmp* OR *Coredump.dmp* OR *NotLSASS.zip* OR *lsass_2* OR *lsassdump* OR *lsassdmp*)) OR (process.command_line:*lsass* AND process.command_line:*.dmp*) OR (process.command_line:*SQLDmpr* AND process.command_line:*.mdmp*) OR (process.command_line:*nanodump* AND process.command_line:*.dmp*)"
+}

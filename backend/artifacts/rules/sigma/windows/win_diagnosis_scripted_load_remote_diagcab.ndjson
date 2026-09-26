@@ -1,0 +1,52 @@
+{
+  "id": "bfda287e-faa0-4ddd-abe7-f895a5a2a94d",
+  "name": "Loading Diagcab Package From Remote Path",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects loading of diagcab packages from a remote path, as seen in DogWalk vulnerability",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate package hosted on a known and authorized remote location"
+  ],
+  "from": "now-360s",
+  "rule_id": "a5a6edbf-0dc9-4931-93b3-38f6c112b29d",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/nas_bench/status/1539679555908141061",
+    "https://twitter.com/j00sean/status/1537750439701225472"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Diagnosis\\-Scripted\\/Operational AND (event.code:101 AND winlog.event_data.PackagePath:*\\\\\\\\*)"
+}

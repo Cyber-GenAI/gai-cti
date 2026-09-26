@@ -1,0 +1,52 @@
+{
+  "id": "4a810928-3f47-4896-a041-865b4be77ae4",
+  "name": "Potential Persistence Via CHM Helper DLL",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker modifies the registry key \"HtmlHelp Author\" to achieve persistence",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "46c8caea-6f66-4047-8372-3459610fa392",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/htmlhelpauthor.html",
+    "https://www.hexacorn.com/blog/2018/04/22/beyond-good-ol-run-key-part-76/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:(*\\\\Software\\\\Microsoft\\\\HtmlHelp\\ Author\\\\Location* OR *\\\\Software\\\\WOW6432Node\\\\Microsoft\\\\HtmlHelp\\ Author\\\\Location*)"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "48f5bfcb-5594-4e34-9d88-54229560b590",
+  "name": "Suspicious Process Masquerading As SvcHost.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious process that is masquerading as the legitimate \"svchost.exe\" by naming its binary \"svchost.exe\" and executing from an uncommon location.\nAdversaries often disguise their malicious binaries by naming them after legitimate system processes like \"svchost.exe\" to evade detection.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "613fe55c-8737-4139-bc71-ab360229bb5e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://tria.ge/240731-jh4crsycnb/behavioral2",
+    "https://redcanary.com/blog/threat-detection/process-masquerading/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\svchost.exe AND (NOT ((process.executable:(C\\:\\\\Windows\\\\System32\\\\svchost.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\svchost.exe)) OR process.pe.original_file_name:svchost.exe))"
+}

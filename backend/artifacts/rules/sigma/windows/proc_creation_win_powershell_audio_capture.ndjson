@@ -1,0 +1,71 @@
+{
+  "id": "00d8fb4a-5a6b-4cc2-b5ca-906f061ee0ca",
+  "name": "Audio Capture via PowerShell",
+  "tags": [
+    "attack.collection",
+    "attack.t1123",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects audio capture via PowerShell Cmdlet.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate audio capture by legitimate user."
+  ],
+  "from": "now-360s",
+  "rule_id": "a2ab1fda-20bd-4d51-9020-4b0eef3fe42d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1123",
+          "name": "Audio Capture",
+          "reference": "https://attack.mitre.org/techniques/T1123/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1123/T1123.md",
+    "https://eqllib.readthedocs.io/en/latest/analytics/ab7a6ef4-0983-4275-a4f1-5c6bd3c31c23.html",
+    "https://github.com/frgnca/AudioDeviceCmdlets"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:(*WindowsAudioDevice\\-Powershell\\-Cmdlet* OR *Toggle\\-AudioDevice* OR *Get\\-AudioDevice\\ * OR *Set\\-AudioDevice\\ * OR *Write\\-AudioDevice\\ *)"
+}

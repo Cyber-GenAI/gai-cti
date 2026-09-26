@@ -1,0 +1,88 @@
+{
+  "id": "726ca849-a833-4664-a86e-50e24e49ad88",
+  "name": "CreateDump Process Dump",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "attack.t1003.001",
+    "attack.credential-access",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uses of the createdump.exe LOLOBIN utility to dump process memory",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Command lines that use the same flags"
+  ],
+  "from": "now-360s",
+  "rule_id": "6d70be1d-1e87-4afe-bd4f-a12240d97e94",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.crowdstrike.com/blog/overwatch-exposes-aquatic-panda-in-possession-of-log-4-shell-exploit-tools/",
+    "https://twitter.com/bopin2020/status/1366400799199272960"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\createdump.exe OR process.pe.original_file_name:FX_VER_INTERNALNAME_STR) AND (process.command_line:(*\\ \\-u\\ * OR *\\ \\-\\-full\\ * OR *\\ \\-f\\ * OR *\\ \\-\\-name\\ * OR *.dmp\\ *))"
+}

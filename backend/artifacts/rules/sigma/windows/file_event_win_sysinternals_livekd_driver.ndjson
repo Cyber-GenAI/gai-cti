@@ -1,0 +1,52 @@
+{
+  "id": "fe727988-8427-4d2e-8361-13b7ef9b1673",
+  "name": "LiveKD Driver Creation",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of the LiveKD driver, which is used for live kernel debugging",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of LiveKD for debugging purposes will also trigger this"
+  ],
+  "from": "now-360s",
+  "rule_id": "bc55ed0f-e7a6-41fd-8372-9275463ec0d3",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:C\\:\\\\Windows\\\\System32\\\\drivers\\\\LiveKdD.SYS AND (process.executable:(*\\\\livekd.exe OR *\\\\livek64.exe))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "680fcd1c-bcdf-4542-b255-7be957024b7f",
+  "name": "HackTool - SharpLdapWhoami Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1033",
+    "car.2016-03-001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects SharpLdapWhoami, a whoami alternative that queries the LDAP service on a domain controller",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Programs that use the same command line flags"
+  ],
+  "from": "now-360s",
+  "rule_id": "be98309c-941c-48e7-b165-3938a5d758a2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/bugch3ck/SharpLdapWhoami"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\SharpLdapWhoami.exe OR (process.pe.original_file_name:*SharpLdapWhoami* OR process.pe.product:SharpLdapWhoami) OR (process.command_line:(*\\ \\/method\\:ntlm OR *\\ \\/method\\:kerb OR *\\ \\/method\\:nego OR *\\ \\/m\\:nego OR *\\ \\/m\\:ntlm OR *\\ \\/m\\:kerb))"
+}

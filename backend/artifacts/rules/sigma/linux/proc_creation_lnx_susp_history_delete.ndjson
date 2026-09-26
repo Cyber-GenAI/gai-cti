@@ -1,0 +1,70 @@
+{
+  "id": "2da0a118-012c-4f5d-84f2-fd191e121363",
+  "name": "History File Deletion",
+  "tags": [
+    "attack.impact",
+    "attack.t1565.001",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects events in which a history file gets deleted, e.g. the ~/bash_history to remove traces of malicious activity",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "939dcf42-a5c1-4181-b340-0425c72d7864",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1565",
+          "name": "Data Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1565/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/sleventyeleven/linuxprivchecker/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1552.003/T1552.003.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/rm OR *\\/unlink OR *\\/shred)) AND ((CommandLine:(*\\/.bash_history* OR *\\/.zsh_history*)) OR (CommandLine:(*_history OR *.history OR *zhistory)))"
+}

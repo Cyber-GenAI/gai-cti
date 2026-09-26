@@ -1,0 +1,71 @@
+{
+  "id": "d55d1c0e-ad31-45a3-8017-560e93b892ab",
+  "name": "Operator Bloopers Cobalt Strike Modules",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Cobalt Strike module/commands accidentally entered in CMD shell",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4f04e91b-4eeb-4b15-b851-fe505fa9a5a5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/cobalt-4-5-user-guide.pdf",
+    "https://thedfirreport.com/2021/10/04/bazarloader-and-the-conti-leaks/",
+    "https://thedfirreport.com/2022/06/16/sans-ransomware-summit-2022-can-you-detect-this/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:Cmd.Exe OR process.executable:*\\\\cmd.exe) AND (process.command_line:(*Invoke\\-UserHunter* OR *Invoke\\-ShareFinder* OR *Invoke\\-Kerberoast* OR *Invoke\\-SMBAutoBrute* OR *Invoke\\-Nightmare* OR *zerologon* OR *av_query*))"
+}

@@ -1,0 +1,54 @@
+{
+  "id": "9f08604b-628e-4009-ab2f-cdb1c3783a1a",
+  "name": "Locked Workstation",
+  "tags": [
+    "attack.impact",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects locked workstation session events that occur automatically after a standard period of inactivity.",
+  "risk_score": 20,
+  "severity": "informational",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely"
+  ],
+  "from": "now-360s",
+  "rule_id": "63f04558-d333-414d-95d6-85529884e2ca",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.cisecurity.org/controls/cis-controls-list/",
+    "https://www.pcisecuritystandards.org/documents/PCI_DSS_v3-2-1.pdf",
+    "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.04162018.pdf",
+    "https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventID=4800"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND event.code:4800"
+}

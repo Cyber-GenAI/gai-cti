@@ -1,0 +1,76 @@
+{
+  "id": "7c27b556-2831-4472-9877-cd023eb3890f",
+  "name": "ETW Logging Disabled For rpcrt4.dll",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "attack.t1562",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to the \"ExtErrorInformation\" key in order to disable ETW logging for rpcrt4.dll",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "21ed8cf0-0311-431e-92ab-0b312e7d5d1b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "http://redplait.blogspot.com/2020/07/whats-wrong-with-etw.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Microsoft\\\\Windows\\ NT\\\\Rpc\\\\ExtErrorInformation AND (winlog.event_data.Details:(DWORD\\ \\(0x00000000\\) OR DWORD\\ \\(0x00000002\\)))"
+}

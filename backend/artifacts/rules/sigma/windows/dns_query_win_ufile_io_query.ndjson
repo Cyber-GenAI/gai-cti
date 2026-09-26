@@ -1,0 +1,69 @@
+{
+  "id": "d3cbcad4-fa62-45ec-b58a-fb1f2e84df00",
+  "name": "DNS Query To Ufile.io",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1567.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DNS queries to \"ufile.io\", which was seen abused by malware and threat actors as a method for data exfiltration",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "DNS queries for \"ufile\" are not malicious by nature necessarily. Investigate the source to determine the necessary actions to take"
+  ],
+  "from": "now-360s",
+  "rule_id": "12e42a60-4060-4ae6-bcb3-c857c2bb6bb2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1567",
+          "name": "Exfiltration Over Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1567/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/12/13/diavol-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "dns.question.name:*ufile.io*"
+}

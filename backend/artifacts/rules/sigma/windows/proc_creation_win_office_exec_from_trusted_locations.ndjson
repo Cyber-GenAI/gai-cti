@@ -1,0 +1,72 @@
+{
+  "id": "c13979c9-91c3-463c-84ac-8d4b4bd6db06",
+  "name": "Potentially Suspicious Office Document Executed From Trusted Location",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of an Office application that points to a document that is located in a trusted location. Attackers often used this to avoid macro security and execute their malicious code.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f35f00df-c41b-419f-8dc2-868b1db3a658",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://twitter.com/Max_Mal_/status/1633863678909874176",
+    "https://techcommunity.microsoft.com/t5/microsoft-365-blog/new-security-hardening-policies-for-trusted-documents/ba-p/3023465",
+    "https://twitter.com/_JohnHammond/status/1588155401752788994"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\explorer.exe OR *\\\\dopus.exe)) AND ((process.executable:(*\\\\EXCEL.EXE OR *\\\\POWERPNT.EXE OR *\\\\WINWORD.exe)) OR (process.pe.original_file_name:(Excel.exe OR POWERPNT.EXE OR WinWord.exe))) AND (process.command_line:(*\\\\AppData\\\\Roaming\\\\Microsoft\\\\Templates* OR *\\\\AppData\\\\Roaming\\\\Microsoft\\\\Word\\\\Startup\\\\* OR *\\\\Microsoft\\ Office\\\\root\\\\Templates\\\\* OR *\\\\Microsoft\\ Office\\\\Templates\\\\*))) AND (NOT (process.command_line:(*.dotx OR *.xltx OR *.potx)))"
+}

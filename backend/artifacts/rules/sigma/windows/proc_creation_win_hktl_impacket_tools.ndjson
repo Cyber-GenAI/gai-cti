@@ -1,0 +1,85 @@
+{
+  "id": "badd7324-0171-489f-88f7-ca9c4f5f0cfc",
+  "name": "HackTool - Impacket Tools Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1557.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of different compiled Windows binaries of the impacket toolset (based on names or part of their names - could lead to false positives)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the impacket tools"
+  ],
+  "from": "now-360s",
+  "rule_id": "f2a7ae13-353c-4daa-986b-738fc4075c83",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1557",
+          "name": "Adversary-in-the-Middle",
+          "reference": "https://attack.mitre.org/techniques/T1557/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1557",
+          "name": "Adversary-in-the-Middle",
+          "reference": "https://attack.mitre.org/techniques/T1557/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/ropnop/impacket_static_binaries/releases/tag/0.9.21-dev-binaries"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\goldenPac* OR *\\\\karmaSMB* OR *\\\\kintercept* OR *\\\\ntlmrelayx* OR *\\\\rpcdump* OR *\\\\samrdump* OR *\\\\secretsdump* OR *\\\\smbexec* OR *\\\\smbrelayx* OR *\\\\wmiexec* OR *\\\\wmipersist*)) OR (process.executable:(*\\\\atexec_windows.exe OR *\\\\dcomexec_windows.exe OR *\\\\dpapi_windows.exe OR *\\\\findDelegation_windows.exe OR *\\\\GetADUsers_windows.exe OR *\\\\GetNPUsers_windows.exe OR *\\\\getPac_windows.exe OR *\\\\getST_windows.exe OR *\\\\getTGT_windows.exe OR *\\\\GetUserSPNs_windows.exe OR *\\\\ifmap_windows.exe OR *\\\\mimikatz_windows.exe OR *\\\\netview_windows.exe OR *\\\\nmapAnswerMachine_windows.exe OR *\\\\opdump_windows.exe OR *\\\\psexec_windows.exe OR *\\\\rdp_check_windows.exe OR *\\\\sambaPipe_windows.exe OR *\\\\smbclient_windows.exe OR *\\\\smbserver_windows.exe OR *\\\\sniff_windows.exe OR *\\\\sniffer_windows.exe OR *\\\\split_windows.exe OR *\\\\ticketer_windows.exe))"
+}

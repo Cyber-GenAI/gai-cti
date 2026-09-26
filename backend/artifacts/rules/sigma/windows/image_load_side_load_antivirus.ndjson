@@ -1,0 +1,105 @@
+{
+  "id": "b8196698-4801-4b19-8345-c23e51cad656",
+  "name": "Potential Antivirus Software DLL Sideloading",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL sideloading of DLLs that are part of antivirus software suchas McAfee, Symantec...etc",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Applications that load the same dlls mentioned in the detection section. Investigate them and filter them out if a lot FPs are caused.",
+    "Dell SARemediation plugin folder (C:\\Program Files\\Dell\\SARemediation\\plugin\\log.dll) is known to contain the 'log.dll' file.",
+    "The Canon MyPrinter folder 'C:\\Program Files\\Canon\\MyPrinter\\' is known to contain the 'log.dll' file"
+  ],
+  "from": "now-360s",
+  "rule_id": "3d94e425-bc36-44d2-a9e0-eafdf811ffa0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://hijacklibs.net/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\\\log.dll AND (NOT ((file.path:(C\\:\\\\Program\\ Files\\\\Bitdefender\\ Antivirus\\ Free\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Bitdefender\\ Antivirus\\ Free\\\\*)) OR (process.executable:C\\:\\\\Program\\ Files\\\\Dell\\\\SARemediation\\\\audit\\\\TelemetryUtility.exe AND (file.path:(C\\:\\\\Program\\ Files\\\\Dell\\\\SARemediation\\\\plugin\\\\log.dll OR C\\:\\\\Program\\ Files\\\\Dell\\\\SARemediation\\\\audit\\\\log.dll))) OR file.path:C\\:\\\\Program\\ Files\\\\Canon\\\\MyPrinter\\\\*))) OR (file.path:*\\\\qrt.dll AND (NOT (file.path:(C\\:\\\\Program\\ Files\\\\F\\-Secure\\\\Anti\\-Virus\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\F\\-Secure\\\\Anti\\-Virus\\\\*)))) OR ((file.path:(*\\\\ashldres.dll OR *\\\\lockdown.dll OR *\\\\vsodscpl.dll)) AND (NOT (file.path:(C\\:\\\\Program\\ Files\\\\McAfee\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\McAfee\\\\*)))) OR (file.path:*\\\\vftrace.dll AND (NOT (file.path:(C\\:\\\\Program\\ Files\\\\CyberArk\\\\Endpoint\\ Privilege\\ Manager\\\\Agent\\\\x32\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\CyberArk\\\\Endpoint\\ Privilege\\ Manager\\\\Agent\\\\x32\\\\*)))) OR (file.path:*\\\\wsc.dll AND (NOT (file.path:(C\\:\\\\program\\ Files\\\\AVAST\\ Software\\\\Avast\\\\* OR C\\:\\\\program\\ Files\\ \\(x86\\)\\\\AVAST\\ Software\\\\Avast\\\\*)))) OR (file.path:*\\\\tmdbglog.dll AND (NOT (file.path:(C\\:\\\\program\\ Files\\\\Trend\\ Micro\\\\Titanium\\\\* OR C\\:\\\\program\\ Files\\ \\(x86\\)\\\\Trend\\ Micro\\\\Titanium\\\\*)))) OR (file.path:*\\\\DLPPREM32.dll AND (NOT (file.path:(C\\:\\\\program\\ Files\\\\ESET* OR C\\:\\\\program\\ Files\\ \\(x86\\)\\\\ESET*))))"
+}

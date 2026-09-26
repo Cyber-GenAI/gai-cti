@@ -1,0 +1,70 @@
+{
+  "id": "8f21cb14-9ca6-4115-bb98-4ab399ba1d71",
+  "name": "PUA - DIT Snapshot Viewer",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of Ditsnap tool, an inspection tool for Active Directory database, ntds.dit.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate admin usage"
+  ],
+  "from": "now-360s",
+  "rule_id": "b4a3c1d6-0010-45a7-b9c2-1c62c82afcb5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2020/06/21/snatch-ransomware/",
+    "https://web.archive.org/web/20201124182207/https://github.com/yosqueoy/ditsnap"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\ditsnap.exe OR process.command_line:*ditsnap.exe*"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "b227d094-0ea2-49c2-ae97-c4b96cea2e2d",
+  "name": "Shell Execution via Rsync - Linux",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the \"rsync\" utility to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or to break out from restricted environments.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate cases in which \"rsync\" is used to execute a shell"
+  ],
+  "from": "now-360s",
+  "rule_id": "38d53ac4-cdb5-44cf-9ea3-d2150f4fda18",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/rsync/#shell"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((Image:(*\\/rsync OR *\\/rsyncd)) AND CommandLine:*\\ \\-e\\ *) AND (CommandLine:(*\\/ash\\ * OR *\\/bash\\ * OR *\\/dash\\ * OR *\\/csh\\ * OR *\\/sh\\ * OR *\\/zsh\\ * OR *\\/tcsh\\ * OR *\\/ksh\\ * OR *'ash\\ * OR *'bash\\ * OR *'dash\\ * OR *'csh\\ * OR *'sh\\ * OR *'zsh\\ * OR *'tcsh\\ * OR *'ksh\\ *))"
+}

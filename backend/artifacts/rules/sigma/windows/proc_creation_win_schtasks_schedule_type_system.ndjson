@@ -1,0 +1,70 @@
+{
+  "id": "c54745d2-d635-4ef4-b410-c54b3fdae49a",
+  "name": "Suspicious Schtasks Schedule Type With High Privileges",
+  "tags": [
+    "attack.execution",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects scheduled task creations or modification to be run with high privileges on a suspicious schedule type",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some installers were seen using this method of creation unfortunately. Filter them in your environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "453d6c3d-7591-4bbe-a852-6605fa96c071",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-change",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-create"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\schtasks.exe OR process.pe.original_file_name:schtasks.exe) AND (process.command_line:(*\\ ONLOGON\\ * OR *\\ ONSTART\\ * OR *\\ ONCE\\ * OR *\\ ONIDLE\\ *)) AND (process.command_line:(*NT\\ AUT* OR *\\ SYSTEM* OR *HIGHEST*))"
+}

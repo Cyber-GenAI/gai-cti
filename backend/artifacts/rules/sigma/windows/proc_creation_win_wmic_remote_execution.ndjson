@@ -1,0 +1,70 @@
+{
+  "id": "f87d2487-a279-4a87-91c6-15547590e876",
+  "name": "WMIC Remote Command Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1047",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of WMIC to query information on a remote system",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3c75a9c1-212d-40b1-8025-1e328329fb26",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1047",
+          "name": "Windows Management Instrumentation",
+          "reference": "https://attack.mitre.org/techniques/T1047/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://securelist.com/moonbounce-the-dark-side-of-uefi-firmware/105468/",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wmic"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\WMIC.exe OR process.pe.original_file_name:wmic.exe) AND process.command_line:*\\/node\\:*) AND (NOT (process.command_line:(*\\/node\\:127.0.0.1\\ * OR *\\/node\\:localhost\\ *)))"
+}

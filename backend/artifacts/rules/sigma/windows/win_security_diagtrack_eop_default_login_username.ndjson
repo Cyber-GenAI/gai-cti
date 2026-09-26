@@ -1,0 +1,51 @@
+{
+  "id": "d38dd43e-7b83-44f9-976a-43c6caeaca28",
+  "name": "DiagTrackEoP Default Login Username",
+  "tags": [
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the default \"UserName\" used by the DiagTrackEoP POC",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "5c0cb304-8edb-4208-837c-70ff61f6c81e",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/Wh04m1001/DiagTrackEoP/blob/3a2fc99c9700623eb7dc7d4b5f314fd9ce5ef51f/main.cpp#L46"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4624 AND winlog.event_data.LogonType:9 AND winlog.event_data.TargetOutboundUserName:thisisnotvaliduser)"
+}

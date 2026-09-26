@@ -1,0 +1,52 @@
+{
+  "id": "5dc5a1e8-bec2-400c-a23f-a7a4e396b1ce",
+  "name": "Potential ShellDispatch.DLL Functionality Abuse",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential \"ShellDispatch.dll\" functionality abuse to execute arbitrary binaries via \"ShellExecute\"",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "18c8e309-55a5-4bb9-abdd-2556377c5620",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2023/06/07/this-lolbin-doesnt-exist/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE) AND process.command_line:*RunDll_ShellExecuteW*"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "d9094475-9e4e-41cd-a5ba-82ef304cc0fc",
+  "name": "MSSQL SPProcoption Set",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when the a stored procedure is set or cleared for automatic execution in MSSQL. A stored procedure that is set to automatic execution runs every time an instance of SQL Server is started",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the feature by administrators (rare)"
+  ],
+  "from": "now-360s",
+  "rule_id": "0ad5eb29-4c99-4afa-9668-06540de80492",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/",
+    "https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-procoption-transact-sql?view=sql-server-ver16"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (winlog.provider_name:*MSSQL* AND event.code:33205 AND (winlog.event_data.Data:*object_name\\:sp_procoption* AND winlog.event_data.Data:*statement\\:EXEC*))"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "858e76de-9d6c-4011-9be4-415efde7baf6",
+  "name": "MSSQL XPCmdshell Suspicious Execution",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when the MSSQL \"xp_cmdshell\" stored procedure is used to execute commands",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "259f6a58-79e9-4fd6-8453-2710b06806fa",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/",
+    "https://thedfirreport.com/2022/07/11/select-xmrig-from-sqlserver/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (winlog.provider_name:*MSSQL* AND event.code:33205 AND (winlog.event_data.Data:*object_name\\:xp_cmdshell* AND winlog.event_data.Data:*statement\\:EXEC*))"
+}

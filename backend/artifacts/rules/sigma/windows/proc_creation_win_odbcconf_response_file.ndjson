@@ -1,0 +1,72 @@
+{
+  "id": "8ea881b9-d597-47a5-a711-c939d0883839",
+  "name": "Response File Execution Via Odbcconf.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"odbcconf\" with the \"-f\" flag in order to load a response file which might contain a malicious action.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "The rule is looking for any usage of response file, which might generate false positive when this function is used legitimately. Investigate the contents of the \".rsp\" file to determine if it is malicious and apply additional filters if necessary."
+  ],
+  "from": "now-360s",
+  "rule_id": "0372c201-e476-48b4-af67-88206824cbe5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sql/odbc/odbcconf-exe?view=sql-server-ver16",
+    "https://lolbas-project.github.io/lolbas/Binaries/Odbcconf/",
+    "https://www.cybereason.com/blog/threat-analysis-report-bumblebee-loader-the-high-road-to-enterprise-domain-control",
+    "https://www.hexacorn.com/blog/2020/08/23/odbcconf-lolbin-trifecta/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\odbcconf.exe OR process.pe.original_file_name:odbcconf.exe) AND process.command_line:(*\\ \\-f\\ * OR *\\ \\/f\\ * OR *\\ \u2013f\\ * OR *\\ \u2014f\\ * OR *\\ \u2015f\\ *) AND process.command_line:*.rsp*"
+}

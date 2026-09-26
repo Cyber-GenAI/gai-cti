@@ -1,0 +1,70 @@
+{
+  "id": "138ec5d1-d119-488a-b88d-e1bcb341ddca",
+  "name": "Suspicious PowerShell Download and Execute Pattern",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious PowerShell download patterns that are often used in malicious scripts, stagers or downloaders (make sure that your backend applies the strings case-insensitive)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Software installers that pull packages from remote systems and execute them"
+  ],
+  "from": "now-360s",
+  "rule_id": "b8573a98-3cde-4ca6-8a7f-6052ba33ab23",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://gist.github.com/jivoi/c354eaaf3019352ce32522f916c03d70",
+    "https://www.trendmicro.com/en_us/research/22/j/lv-ransomware-exploits-proxyshell-in-attack.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:(*IEX\\ \\(\\(New\\-Object\\ Net.WebClient\\).DownloadString* OR *IEX\\ \\(New\\-Object\\ Net.WebClient\\).DownloadString* OR *IEX\\(\\(New\\-Object\\ Net.WebClient\\).DownloadString* OR *IEX\\(New\\-Object\\ Net.WebClient\\).DownloadString* OR *\\ \\-command\\ \\(New\\-Object\\ System.Net.WebClient\\).DownloadFile\\(* OR *\\ \\-c\\ \\(New\\-Object\\ System.Net.WebClient\\).DownloadFile\\(*)"
+}

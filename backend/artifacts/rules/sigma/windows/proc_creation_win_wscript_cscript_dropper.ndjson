@@ -1,0 +1,71 @@
+{
+  "id": "2f742e9d-7b24-4001-bcba-b499629204ad",
+  "name": "Potential Dropper Script Execution Via WScript/CScript",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.005",
+    "attack.t1059.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects wscript/cscript executions of scripts located in user directories",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some installers might generate a similar behavior. An initial baseline is required"
+  ],
+  "from": "now-360s",
+  "rule_id": "16481b11-3116-4f38-af0b-48a306b0d1c6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2023/10/30/netsupport-intrusion-results-in-domain-compromise/",
+    "https://redcanary.com/blog/gootloader/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\wscript.exe OR *\\\\cscript.exe)) AND (process.command_line:(*\\:\\\\Temp\\\\* OR *\\:\\\\Tmp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\*)) AND (process.command_line:(*.js* OR *.jse* OR *.vba* OR *.vbe* OR *.vbs* OR *.wsf*))"
+}

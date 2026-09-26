@@ -1,0 +1,69 @@
+{
+  "id": "40cbf202-37d0-4c0e-8d90-a46cf3510981",
+  "name": "Add Port Monitor Persistence in Registry",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may use port monitors to run an attacker supplied DLL during system boot for persistence or privilege escalation.\nA port monitor can be set through the AddMonitor API call to set a DLL to be loaded at startup.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "06d057ca-1b29-413a-9e3d-5007a7705cdf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1547.010/T1547.010.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Control\\\\Print\\\\Monitors\\\\* AND winlog.event_data.Details:*.dll) AND (NOT ((process.executable:C\\:\\\\Windows\\\\System32\\\\spoolsv.exe AND registry.path:*\\\\Control\\\\Print\\\\Monitors\\\\CutePDF\\ Writer\\ Monitor\\ v4.0\\\\Driver* AND winlog.event_data.Details:cpwmon64_v40.dll AND (user.name:(*AUTHORI* OR *AUTORI*))) OR registry.path:*\\\\Control\\\\Print\\\\Monitors\\\\MONVNC\\\\Driver* OR (registry.path:*Control\\\\Print\\\\Environments\\\\* AND registry.path:*\\\\Drivers\\\\* AND registry.path:*\\\\VNC\\ Printer*)))"
+}

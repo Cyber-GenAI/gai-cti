@@ -1,0 +1,87 @@
+{
+  "id": "f3249328-c361-4b80-95d8-6b77e6a664c6",
+  "name": "Service Installation in Suspicious Folder",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "car.2013-09-005",
+    "attack.t1543.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects service installation in suspicious folder appdata",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4c58398c-9f1d-4d14-8314-3ad7e73712b3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045 AND (winlog.event_data.ImagePath:(*\\\\AppData\\\\* OR *\\\\\\\\127.0.0.1* OR *\\\\\\\\localhost*))) AND (NOT (winlog.event_data.ServiceName:Zoom\\ Sharing\\ Service AND winlog.event_data.ImagePath:*\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Zoom\\\\Support\\\\CptService.exe*)))"
+}

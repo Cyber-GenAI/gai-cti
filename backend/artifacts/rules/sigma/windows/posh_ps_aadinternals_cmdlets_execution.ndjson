@@ -1,0 +1,56 @@
+{
+  "id": "b31f51af-9bde-4982-977a-aa24a0fafc6e",
+  "name": "AADInternals PowerShell Cmdlets Execution - PsScript",
+  "tags": [
+    "attack.execution",
+    "attack.reconnaissance",
+    "attack.discovery",
+    "attack.credential-access",
+    "attack.impact",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects ADDInternals Cmdlet execution. A tool for administering Azure AD and Office 365. Which can be abused by threat actors to attack Azure AD or Office 365.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the library for administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "83bd694e-b8d4-4d49-b8b8-ec118549a5b0",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://o365blog.com/aadinternals/",
+    "https://github.com/Gerenios/AADInternals"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*Add\\-AADInt* OR *ConvertTo\\-AADInt* OR *Disable\\-AADInt* OR *Enable\\-AADInt* OR *Export\\-AADInt* OR *Find\\-AADInt* OR *Get\\-AADInt* OR *Grant\\-AADInt* OR *Initialize\\-AADInt* OR *Install\\-AADInt* OR *Invoke\\-AADInt* OR *Join\\-AADInt* OR *New\\-AADInt* OR *Open\\-AADInt* OR *Read\\-AADInt* OR *Register\\-AADInt* OR *Remove\\-AADInt* OR *Reset\\-AADInt* OR *Resolve\\-AADInt* OR *Restore\\-AADInt* OR *Save\\-AADInt* OR *Search\\-AADInt* OR *Send\\-AADInt* OR *Set\\-AADInt* OR *Start\\-AADInt* OR *Unprotect\\-AADInt* OR *Update\\-AADInt*)"
+}

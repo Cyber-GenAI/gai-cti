@@ -1,0 +1,88 @@
+{
+  "id": "64617e55-ac9d-4e47-9ffc-efc974788e3d",
+  "name": "Suspicious Scheduled Task Creation via Masqueraded XML File",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "attack.t1036.005",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a scheduled task using the \"-XML\" flag with a file without the '.xml' extension. This behavior could be indicative of potential defense evasion attempt during persistence",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6da2c8d5-91cd-4f70-8892-bbf64c15ac10",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/taskschd/daily-trigger-example--xml-",
+    "https://github.com/elastic/protections-artifacts/blob/084067123d3328a823b1c3fdde305b694275c794/behavior/rules/persistence_suspicious_scheduled_task_creation_via_masqueraded_xml_file.toml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\schtasks.exe OR process.pe.original_file_name:schtasks.exe) AND (process.command_line:(*\\/create* OR *\\-create*)) AND (process.command_line:(*\\/xml* OR *\\-xml*))) AND (NOT (process.command_line:*.xml* OR (winlog.event_data.IntegrityLevel:(System OR S\\-1\\-16\\-16384)) OR (process.parent.executable:*\\\\rundll32.exe AND (process.parent.command_line:*\\:\\\\WINDOWS\\\\Installer\\\\MSI* AND process.parent.command_line:*.tmp,zzzzInvokeManagedCustomActionOutOfProc*)))) AND (NOT (process.parent.executable:(*\\:\\\\ProgramData\\\\OEM\\\\UpgradeTool\\\\CareCenter_*\\\\BUnzip\\\\Setup_msi.exe OR *\\:\\\\Program\\ Files\\\\Axis\\ Communications\\\\AXIS\\ Camera\\ Station\\\\SetupActions.exe OR *\\:\\\\Program\\ Files\\\\Axis\\ Communications\\\\AXIS\\ Device\\ Manager\\\\AdmSetupActions.exe OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Zemana\\\\AntiMalware\\\\AntiMalware.exe OR *\\:\\\\Program\\ Files\\\\Dell\\\\SupportAssist\\\\pcdrcui.exe)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "856b87a5-2195-4a18-b435-86a9b7c3e4b1",
+  "name": "Suspicious Process Parents",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious parent processes that should not have any children or should only have a single possible child program",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "448d34f1-0bc9-420e-ab85-7245922508fb",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/x86matthew/status/1505476263464607744?s=12",
+    "https://svch0st.medium.com/stats-from-hunting-cobalt-strike-beacons-c17e56255f9b"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:(*\\\\minesweeper.exe OR *\\\\winver.exe OR *\\\\bitsadmin.exe)) OR ((process.parent.executable:(*\\\\csrss.exe OR *\\\\certutil.exe OR *\\\\eventvwr.exe OR *\\\\calc.exe OR *\\\\notepad.exe)) AND (NOT ((process.executable:(*\\\\WerFault.exe OR *\\\\wermgr.exe OR *\\\\conhost.exe OR *\\\\mmc.exe OR *\\\\win32calc.exe OR *\\\\notepad.exe)) OR (NOT _exists_:process.executable))))"
+}

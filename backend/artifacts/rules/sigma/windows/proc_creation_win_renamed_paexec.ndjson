@@ -1,0 +1,72 @@
+{
+  "id": "659af0f5-7fd9-4604-8ebb-64bf318ed8ba",
+  "name": "Renamed PAExec Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of renamed version of PAExec. Often used by attackers",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Weird admins that rename their tools",
+    "Software companies that bundle PAExec with their software and rename it, so that it is less embarrassing",
+    "When executed with the \"-s\" flag. PAExec will copy itself to the \"C:\\Windows\\\" directory with a different name. Usually like this \"PAExec-[XXXXX]-[ComputerName]\""
+  ],
+  "from": "now-360s",
+  "rule_id": "41ffa0b1-2f3b-4f26-a44d-cce8141ae49d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.poweradmin.com/paexec/",
+    "https://summit.fireeye.com/content/dam/fireeye-www/summit/cds-2018/presentations/cds18-technical-s05-att&cking-fin7.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.description:PAExec\\ Application OR process.pe.original_file_name:PAExec.exe OR process.pe.product:*PAExec* OR (winlog.event_data.Hashes:(*IMPHASH\\=11D40A7B7876288F919AB819CC2D9802* OR *IMPHASH\\=6444f8a34e99b8f7d9647de66aabe516* OR *IMPHASH\\=dfd6aa3f7b2b1035b76b718f1ddc689f* OR *IMPHASH\\=1a6cca4d5460b1710a12dea39e4a592c*))) AND (NOT (process.executable:(*\\\\paexec.exe OR C\\:\\\\Windows\\\\PAExec\\-*)))"
+}

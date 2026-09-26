@@ -1,0 +1,70 @@
+{
+  "id": "9717d60f-ff6c-45d4-a88d-f568dfad2a6e",
+  "name": "System File Execution Location Anomaly",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a Windows system binary that is usually located in the system folder from an uncommon location.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a1c18bc0-59ec-4412-ab85-8648b0e401f0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/GelosSnake/status/934900723426439170",
+    "https://asec.ahnlab.com/en/39828/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\atbroker.exe OR *\\\\audiodg.exe OR *\\\\bcdedit.exe OR *\\\\bitsadmin.exe OR *\\\\certreq.exe OR *\\\\certutil.exe OR *\\\\cmstp.exe OR *\\\\conhost.exe OR *\\\\consent.exe OR *\\\\cscript.exe OR *\\\\csrss.exe OR *\\\\dashost.exe OR *\\\\defrag.exe OR *\\\\dfrgui.exe OR *\\\\dism.exe OR *\\\\dllhost.exe OR *\\\\dllhst3g.exe OR *\\\\dwm.exe OR *\\\\eventvwr.exe OR *\\\\logonui.exe OR *\\\\LsaIso.exe OR *\\\\lsass.exe OR *\\\\lsm.exe OR *\\\\msiexec.exe OR *\\\\ntoskrnl.exe OR *\\\\powershell_ise.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\runonce.exe OR *\\\\RuntimeBroker.exe OR *\\\\schtasks.exe OR *\\\\services.exe OR *\\\\sihost.exe OR *\\\\smartscreen.exe OR *\\\\smss.exe OR *\\\\spoolsv.exe OR *\\\\svchost.exe OR *\\\\taskhost.exe OR *\\\\Taskmgr.exe OR *\\\\userinit.exe OR *\\\\wininit.exe OR *\\\\winlogon.exe OR *\\\\winver.exe OR *\\\\wlanext.exe OR *\\\\wscript.exe OR *\\\\wsl.exe OR *\\\\wsmprovhost.exe)) AND (NOT ((process.executable:(C\\:\\\\$WINDOWS.\\~BT\\\\* OR C\\:\\\\$WinREAgent\\\\* OR C\\:\\\\Windows\\\\SoftwareDistribution\\\\* OR C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Windows\\\\SystemTemp\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\* OR C\\:\\\\Windows\\\\uus\\\\* OR C\\:\\\\Windows\\\\WinSxS\\\\*)) OR (process.executable:(C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe OR C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\pwsh.exe)) OR (process.executable:C\\:\\\\Program\\ Files\\\\WindowsApps\\\\MicrosoftCorporationII.WindowsSubsystemForLinux* AND process.executable:*\\\\wsl.exe))) AND (NOT process.executable:*\\\\SystemRoot\\\\System32\\\\*)"
+}

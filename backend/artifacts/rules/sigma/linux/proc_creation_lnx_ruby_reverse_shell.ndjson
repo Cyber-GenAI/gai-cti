@@ -1,0 +1,52 @@
+{
+  "id": "47955cf6-7b1a-40cf-8075-1fa1b96ad6cc",
+  "name": "Potential Ruby Reverse Shell",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of ruby with the \"-e\" flag and calls to \"socket\" related functions. This could be an indication of a potential attempt to setup a reverse shell",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "5b929692-a97f-4164-8f71-a101308ed459",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet",
+    "https://www.revshells.com/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*ruby* AND (CommandLine:*\\ \\-e* AND CommandLine:*rsocket* AND CommandLine:*TCPSocket*) AND (CommandLine:(*\\ ash* OR *\\ bash* OR *\\ bsh* OR *\\ csh* OR *\\ ksh* OR *\\ pdksh* OR *\\ sh* OR *\\ tcsh*))"
+}

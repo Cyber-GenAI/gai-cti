@@ -1,0 +1,70 @@
+{
+  "id": "fa5a5c4a-2c6d-47ab-8dc7-c96b463e651c",
+  "name": "Azure AD Health Monitoring Agent Registry Keys Access",
+  "tags": [
+    "attack.discovery",
+    "attack.t1012",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "This detection uses Windows security events to detect suspicious access attempts to the registry key of Azure AD Health monitoring agent.\nThis detection requires an access control entry (ACE) on the system access control list (SACL) of the following securable object HKLM\\SOFTWARE\\Microsoft\\Microsoft Online\\Reporting\\MonitoringAgent.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "eeb005cc-a0a5-46bf-ae4f-7bbd85c17bda",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1012",
+          "name": "Query Registry",
+          "reference": "https://attack.mitre.org/techniques/T1012/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://o365blog.com/post/hybridhealthagent/",
+    "https://github.com/OTRF/Set-AuditRule/blob/c3dec5443414231714d850565d364ca73475ade5/rules/registry/aad_connect_health_monitoring_agent.yml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (((event.code:(4656 OR 4663)) AND winlog.event_data.ObjectType:Key AND winlog.event_data.ObjectName:\\\\REGISTRY\\\\MACHINE\\\\SOFTWARE\\\\Microsoft\\\\Microsoft\\ Online\\\\Reporting\\\\MonitoringAgent) AND (NOT (process.executable:(*Microsoft.Identity.Health.Adfs.DiagnosticsAgent.exe* OR *Microsoft.Identity.Health.Adfs.InsightsService.exe* OR *Microsoft.Identity.Health.Adfs.MonitoringAgent.Startup.exe* OR *Microsoft.Identity.Health.Adfs.PshSurrogate.exe* OR *Microsoft.Identity.Health.Common.Clients.ResourceMonitor.exe*))))"
+}

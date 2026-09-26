@@ -1,0 +1,51 @@
+{
+  "id": "ae21ac86-fea3-428c-a6d9-fab4ec34c49f",
+  "name": "PowerShell Script Execution Policy Enabled",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the enabling of the PowerShell script execution policy. Once enabled, this policy allows scripts to be executed.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely"
+  ],
+  "from": "now-360s",
+  "rule_id": "e3acbf76-deec-4f98-af7e-f03a4c44783c",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.PowerShell::EnableScripts"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Policies\\\\Microsoft\\\\Windows\\\\PowerShell\\\\EnableScripts AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\)"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "2996e0f7-8fb1-4c92-9fd4-96301bbf1015",
+  "name": "DLL Loaded via CertOC.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when a user installs certificates by using CertOC.exe to loads the target DLL file.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c3f9d97a-955a-42fe-88cc-da976e621f97",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/sblmsrsn/status/1445758411803480072?s=20",
+    "https://github.com/elastic/protections-artifacts/commit/746086721fd385d9f5c6647cada1788db4aea95f#diff-fe98e74189873d6df72a15df2eaa0315c59ba9cdaca93ecd68afc4ea09194ef2",
+    "https://lolbas-project.github.io/lolbas/Binaries/Certoc/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\certoc.exe OR process.pe.original_file_name:CertOC.exe) AND process.command_line:(*\\ \\-LoadDLL\\ * OR *\\ \\/LoadDLL\\ * OR *\\ \u2013LoadDLL\\ * OR *\\ \u2014LoadDLL\\ * OR *\\ \u2015LoadDLL\\ *)"
+}

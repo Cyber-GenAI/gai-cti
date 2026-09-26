@@ -1,0 +1,69 @@
+{
+  "id": "185ed4c7-d0de-48bc-83f7-ae387b16e19b",
+  "name": "PUA- IOX Tunneling Tool Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1090",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of IOX - a tool for port forwarding and intranet proxy purposes",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "ed51ff93-38f2-4ea5-9381-fd886e789006",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/EddieIvan01/iox"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\iox.exe OR (process.command_line:(*.exe\\ fwd\\ \\-l\\ * OR *.exe\\ fwd\\ \\-r\\ * OR *.exe\\ proxy\\ \\-l\\ * OR *.exe\\ proxy\\ \\-r\\ *)) OR (winlog.event_data.Hashes:(*MD5\\=9DB2D314DD3F704A02051EF5EA210993* OR *SHA1\\=039130337E28A6623ECF9A0A3DA7D92C5964D8DD* OR *SHA256\\=C6CF82919B809967D9D90EA73772A8AA1C1EB3BC59252D977500F64F1A0D6731*))"
+}

@@ -1,0 +1,55 @@
+{
+  "id": "5e13905a-f282-459a-a03e-495682634176",
+  "name": "Potential Active Directory Enumeration Using AD Module - ProcCreation",
+  "tags": [
+    "attack.reconnaissance",
+    "attack.discovery",
+    "attack.impact",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the \"Import-Module\" cmdlet to load the \"Microsoft.ActiveDirectory.Management.dl\" DLL. Which is often used by attackers to perform AD enumeration.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the library for administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "edaad7ec-3cd8-485d-9bac-569a9271cc64",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/samratashok/ADModule",
+    "https://twitter.com/cyb3rops/status/1617108657166061568?s=20",
+    "https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/active-directory-enumeration-with-ad-module-without-rsat-or-admin-privileges"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND (process.command_line:(*Import\\-Module\\ * OR *ipmo\\ *)) AND process.command_line:*Microsoft.ActiveDirectory.Management.dll*"
+}

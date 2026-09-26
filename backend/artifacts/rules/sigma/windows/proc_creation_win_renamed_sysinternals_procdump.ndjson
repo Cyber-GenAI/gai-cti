@@ -1,0 +1,70 @@
+{
+  "id": "fee5a57a-7d46-4727-8595-29bbae18b78c",
+  "name": "Renamed ProcDump Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a renamed ProcDump executable.\nThis often done by attackers or malware in order to evade defensive mechanisms.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Procdump illegally bundled with legitimate software.",
+    "Administrators who rename binaries (should be investigated)."
+  ],
+  "from": "now-360s",
+  "rule_id": "6e554f13-f798-473d-85e8-09469e4f73c3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/procdump"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:procdump OR ((process.command_line:(*\\ \\-ma\\ * OR *\\ \\/ma\\ * OR *\\ \u2013ma\\ * OR *\\ \u2014ma\\ * OR *\\ \u2015ma\\ *) OR process.command_line:(*\\ \\-mp\\ * OR *\\ \\/mp\\ * OR *\\ \u2013mp\\ * OR *\\ \u2014mp\\ * OR *\\ \u2015mp\\ *)) AND process.command_line:(*\\ \\-accepteula* OR *\\ \\/accepteula* OR *\\ \u2013accepteula* OR *\\ \u2014accepteula* OR *\\ \u2015accepteula*))) AND (NOT (process.executable:(*\\\\procdump.exe OR *\\\\procdump64.exe)))"
+}

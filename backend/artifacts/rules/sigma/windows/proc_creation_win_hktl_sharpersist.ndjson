@@ -1,0 +1,70 @@
+{
+  "id": "d673c5ab-aeb8-4923-b256-b0f626ff3f35",
+  "name": "HackTool - SharPersist Execution",
+  "tags": [
+    "attack.persistence",
+    "attack.t1053",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the hacktool SharPersist - used to deploy various different kinds of persistence mechanisms",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b26cb38c-f0d0-43a1-865c-8843e5f55899",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.mandiant.com/resources/blog/sharpersist-windows-persistence-toolkit",
+    "https://github.com/mandiant/SharPersist"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\SharPersist.exe OR process.pe.product:SharPersist) OR (process.command_line:(*\\ \\-t\\ schtask\\ \\-c\\ * OR *\\ \\-t\\ startupfolder\\ \\-c\\ *)) OR (process.command_line:*\\ \\-t\\ reg\\ \\-c\\ * AND process.command_line:*\\ \\-m\\ add*) OR (process.command_line:*\\ \\-t\\ service\\ \\-c\\ * AND process.command_line:*\\ \\-m\\ add*) OR (process.command_line:*\\ \\-t\\ schtask\\ \\-c\\ * AND process.command_line:*\\ \\-m\\ add*)"
+}

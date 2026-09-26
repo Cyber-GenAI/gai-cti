@@ -1,0 +1,72 @@
+{
+  "id": "801bcbc0-597c-4039-a33f-d3a3f6eae0ae",
+  "name": "Clearing Windows Console History",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070",
+    "attack.t1070.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Identifies when a user attempts to clear console history. An adversary may clear the command history of a compromised account to conceal the actions undertaken during an intrusion.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8e0bd561-3512-4d63-9bb9-84cf30b8b3ba",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://stefanos.cloud/blog/kb/how-to-clear-the-powershell-command-history/",
+    "https://www.shellhacks.com/clear-history-powershell/",
+    "https://community.sophos.com/sophos-labs/b/blog/posts/powershell-command-history-forensics"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Clear\\-History* OR ((powershell.file.script_block_text:(*Remove\\-Item* OR *rm*)) AND (powershell.file.script_block_text:(*ConsoleHost_history.txt* OR *\\(Get\\-PSReadlineOption\\).HistorySavePath*)))"
+}

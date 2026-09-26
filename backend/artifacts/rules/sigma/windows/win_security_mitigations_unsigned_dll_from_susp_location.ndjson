@@ -1,0 +1,69 @@
+{
+  "id": "4de199a8-152c-4c43-9951-e8c3838b7752",
+  "name": "Unsigned Binary Loaded From Suspicious Location",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Code Integrity (CI) engine blocking processes from loading unsigned DLLs residing in suspicious locations",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7e543dc8-c221-4eda-8991-94790fbbb2aa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/nasbench/EVTX-ETW-Resources/blob/45fd5be71a51aa518b1b36d4e1f36af498084e27/ETWEventsList/CSV/Windows11/21H2/W11_21H2_Pro_20220719_22000.795/Providers/Microsoft-Windows-Security-Mitigations.csv"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.channel:(Microsoft\\-Windows\\-Security\\-Mitigations\\/Kernel\\ Mode OR Microsoft\\-Windows\\-Security\\-Mitigations\\/User\\ Mode)) AND ((event.code:(11 OR 12)) AND (winlog.event_data.ImageName:(*\\\\Users\\\\Public\\\\* OR *\\\\PerfLogs\\\\* OR *\\\\Desktop\\\\* OR *\\\\Downloads\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *C\\:\\\\Windows\\\\TEMP\\\\*)))"
+}

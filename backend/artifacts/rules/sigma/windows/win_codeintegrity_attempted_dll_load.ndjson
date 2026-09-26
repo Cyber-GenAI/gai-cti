@@ -1,0 +1,54 @@
+{
+  "id": "952f1dce-f7c7-4223-b756-0a64ed0ae5e9",
+  "name": "CodeIntegrity - Unmet Signing Level Requirements By File Under Validation",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects attempted file load events that did not meet the signing level requirements. It often means the file's signature is revoked or a signature with the Lifetime Signing EKU has expired.\nThis event is best correlated with EID 3089 to determine the error of the validation.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Antivirus and other third party products are known to trigger this rule quite a lot. Initial filters and tuning is required before using this rule."
+  ],
+  "from": "now-360s",
+  "rule_id": "3a80b5ba-398a-495a-b7aa-530c7c9d082b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/SBousseaden/status/1483810148602814466",
+    "https://github.com/MicrosoftDocs/windows-itpro-docs/blob/40fe118976734578f83e5e839b9c63ae7a4af82d/windows/security/threat-protection/windows-defender-application-control/event-id-explanations.md#windows-codeintegrity-operational-log",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/operations/event-tag-explanations",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/operations/event-id-explanations"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-CodeIntegrity\\/Operational AND ((event.code:(3033 OR 3034)) AND (NOT (winlog.event_data.FileNameBuffer:*\\\\Windows\\\\assembly\\\\GAC\\\\* AND winlog.event_data.ProcessNameBuffer:*\\\\mscorsvw.exe AND winlog.event_data.ProcessNameBuffer:*\\\\Windows\\\\Microsoft.NET\\\\* AND winlog.event_data.RequestedPolicy:8)) AND (NOT ((winlog.event_data.FileNameBuffer:*\\\\Program\\ Files\\\\DTrace\\\\dtrace.dll AND winlog.event_data.ProcessNameBuffer:*\\\\Windows\\\\System32\\\\svchost.exe AND winlog.event_data.RequestedPolicy:12) OR (winlog.event_data.FileNameBuffer:*\\\\Windows\\\\System32\\\\DriverStore\\\\FileRepository\\\\* AND winlog.event_data.FileNameBuffer:*\\\\igd10iumd64.dll AND winlog.event_data.RequestedPolicy:7) OR (winlog.event_data.FileNameBuffer:*\\\\Windows\\\\System32\\\\nvspcap64.dll AND (winlog.event_data.ProcessNameBuffer:(*\\\\AppData\\\\Local\\\\Keybase\\\\Gui\\\\Keybase.exe OR *\\\\Microsoft\\\\Teams\\\\stage\\\\Teams.exe)) AND winlog.event_data.RequestedPolicy:8) OR (winlog.event_data.FileNameBuffer:*\\\\Program\\ Files\\\\Bonjour\\\\mdnsNSP.dll AND (winlog.event_data.ProcessNameBuffer:(*\\\\Windows\\\\System32\\\\svchost.exe OR *\\\\Windows\\\\System32\\\\SIHClient.exe)) AND (winlog.event_data.RequestedPolicy:(8 OR 12))) OR (winlog.event_data.FileNameBuffer:*\\\\Microsoft\\ Office\\\\root\\\\vfs\\\\ProgramFilesCommonX64\\\\Microsoft\\ Shared\\\\OFFICE* AND winlog.event_data.FileNameBuffer:*\\\\MSOXMLMF.DLL AND winlog.event_data.RequestedPolicy:7) OR (winlog.event_data.FileNameBuffer:*\\\\Windows\\\\System32\\\\nvspcap64.dll AND winlog.event_data.ProcessNameBuffer:*\\\\AppData\\\\Local\\\\slack\\\\app\\-* AND winlog.event_data.ProcessNameBuffer:*\\\\slack.exe AND winlog.event_data.RequestedPolicy:8) OR ((winlog.event_data.FileNameBuffer:(*\\\\Mozilla\\ Firefox\\\\mozavcodec.dll OR *\\\\Mozilla\\ Firefox\\\\mozavutil.dll)) AND winlog.event_data.ProcessNameBuffer:*\\\\Mozilla\\ Firefox\\\\firefox.exe AND winlog.event_data.RequestedPolicy:8) OR ((winlog.event_data.FileNameBuffer:(*\\\\Program\\ Files\\\\Avast\\ Software\\\\Avast\\\\aswAMSI.dll OR *\\\\Program\\ Files\\ \\(x86\\)\\\\Avast\\ Software\\\\Avast\\\\aswAMSI.dll)) AND (winlog.event_data.RequestedPolicy:(8 OR 12))) OR (winlog.event_data.FileNameBuffer:*\\\\Program\\ Files\\\\Google\\\\Drive\\ File\\ Stream\\\\* AND winlog.event_data.FileNameBuffer:*\\\\crashpad_handler.exe AND winlog.event_data.ProcessNameBuffer:*\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe AND winlog.event_data.RequestedPolicy:8) OR (winlog.event_data.FileNameBuffer:*\\\\Trend\\ Micro\\\\Client\\ Server\\ Security\\ Agent\\\\perficrcperfmonmgr.dll AND winlog.event_data.RequestedPolicy:8) OR winlog.event_data.FileNameBuffer:*\\\\Program\\ Files\\\\National\\ Instruments\\\\Shared\\\\mDNS\\ Responder\\\\nimdnsNSP.dll\\  OR (winlog.event_data.FileNameBuffer:(*\\\\Program\\ Files\\\\McAfee\\\\Endpoint\\ Security\\\\Threat\\ Prevention\\\\MfeAmsiProvider.dll OR *\\\\Program\\ Files\\\\McAfee\\\\MfeAV\\\\AMSIExt.dll)) OR winlog.event_data.FileNameBuffer:*\\\\Program\\ Files\\\\ESET\\\\ESET\\ Security\\\\eamsi.dll OR winlog.event_data.FileNameBuffer:*\\\\Program\\ Files\\\\comodo\\\\comodo\\ internet\\ security\\\\amsiprovider_x64.dll OR (winlog.event_data.FileNameBuffer:*\\\\Program\\ Files\\\\SentinelOne\\\\Sentinel\\ Agent* OR winlog.event_data.ProcessNameBuffer:*\\\\Program\\ Files\\\\SentinelOne\\\\Sentinel\\ Agent*) OR winlog.event_data.FileNameBuffer:*\\\\National\\ Instruments\\\\Shared\\\\mDNS\\ Responder\\\\* OR ((winlog.event_data.ProcessNameBuffer:*\\\\Kaspersky\\ Lab\\\\* AND winlog.event_data.ProcessNameBuffer:*\\\\avp.exe*) OR (winlog.event_data.FileNameBuffer:*\\\\Kaspersky\\ Lab\\\\* AND winlog.event_data.FileNameBuffer:*\\\\antimalware_provider.dll*)))))"
+}

@@ -1,0 +1,103 @@
+{
+  "id": "6504ffdb-f5bd-493d-b463-399e1f208021",
+  "name": "Third Party Software DLL Sideloading",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DLL sideloading of DLLs that are part of third party software (zoom, discord....etc)",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "ec23e941-714b-4dc3-895e-d605d828fd59",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://hijacklibs.net/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\\\commfunc.dll AND (NOT (file.path:*\\\\AppData\\\\local\\\\Google\\\\Chrome\\\\Application\\\\* OR (file.path:(C\\:\\\\Program\\ Files\\\\Lenovo\\\\Communications\\ Utility\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Lenovo\\\\Communications\\ Utility\\\\*))))) OR (file.path:*\\\\tosbtkbd.dll AND (NOT (file.path:(C\\:\\\\Program\\ Files\\\\Toshiba\\\\Bluetooth\\ Toshiba\\ Stack\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Toshiba\\\\Bluetooth\\ Toshiba\\ Stack\\\\*))))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "fe497fe2-143b-476f-b19c-7ffedace663a",
+  "name": "Remote Code Execute via Winrm.vbs",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1216",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an attempt to execute code or create service on remote host via winrm.vbs.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "999efa36-e1ad-475d-8675-ab145b9b8d4e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1216",
+          "name": "System Script Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1216/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/bohops/status/994405551751815170",
+    "https://redcanary.com/blog/lateral-movement-winrm-wmi/",
+    "https://lolbas-project.github.io/lolbas/Scripts/Winrm/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\cscript.exe OR process.pe.original_file_name:cscript.exe) AND (process.command_line:*winrm* AND process.command_line:*invoke\\ Create\\ wmicimv2\\/Win32_* AND process.command_line:*\\-r\\:http*)"
+}

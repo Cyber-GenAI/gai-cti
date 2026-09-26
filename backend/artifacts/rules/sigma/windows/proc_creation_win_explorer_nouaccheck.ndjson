@@ -1,0 +1,70 @@
+{
+  "id": "8d46ecf4-afd6-418a-bdf2-d574576afca5",
+  "name": "Explorer NOUACCHECK Flag",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1548.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious starts of explorer.exe that use the /NOUACCHECK flag that allows to run all sub processes of that newly started explorer.exe without any UAC checks",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Domain Controller User Logon",
+    "Unknown how many legitimate software products use that method"
+  ],
+  "from": "now-360s",
+  "rule_id": "7b91861d-1e74-4bfd-857e-af5ca2845d31",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/ORCA6665/status/1496478087244095491"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\explorer.exe AND process.command_line:*\\/NOUACCHECK*) AND (NOT (process.parent.command_line:C\\:\\\\Windows\\\\system32\\\\svchost.exe\\ \\-k\\ netsvcs\\ \\-p\\ \\-s\\ Schedule OR process.parent.executable:C\\:\\\\Windows\\\\System32\\\\svchost.exe))"
+}

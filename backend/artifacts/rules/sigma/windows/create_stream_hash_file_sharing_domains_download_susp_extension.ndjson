@@ -1,0 +1,73 @@
+{
+  "id": "931398c0-b3d1-40ef-ad4c-4eece657d58c",
+  "name": "Suspicious File Download From File Sharing Websites -  File Stream",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.s0139",
+    "attack.t1564.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the download of suspicious file type from a well-known file and paste sharing domain",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives might occur with binaries download via Github"
+  ],
+  "from": "now-360s",
+  "rule_id": "a3a5337b-435f-45c0-b4f0-705c9657871f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventid=90015",
+    "https://www.cisa.gov/uscert/ncas/alerts/aa22-321a",
+    "https://fabian-voith.de/2020/06/25/sysmon-v11-1-reads-alternate-data-streams/",
+    "https://www.microsoft.com/en-us/security/blog/2024/01/17/new-ttps-observed-in-mint-sandstorm-campaign-targeting-high-profile-individuals-at-universities-and-research-orgs/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.Contents:(*.githubusercontent.com* OR *anonfiles.com* OR *cdn.discordapp.com* OR *ddns.net* OR *dl.dropboxusercontent.com* OR *ghostbin.co* OR *glitch.me* OR *gofile.io* OR *hastebin.com* OR *mediafire.com* OR *mega.nz* OR *onrender.com* OR *pages.dev* OR *paste.ee* OR *pastebin.com* OR *pastebin.pl* OR *pastetext.net* OR *pixeldrain.com* OR *privatlab.com* OR *privatlab.net* OR *send.exploit.in* OR *sendspace.com* OR *storage.googleapis.com* OR *storjshare.io* OR *supabase.co* OR *temp.sh* OR *transfer.sh* OR *trycloudflare.com* OR *ufile.io* OR *w3spaces.com* OR *workers.dev*)) AND (file.path:(*.cpl\\:Zone* OR *.dll\\:Zone* OR *.exe\\:Zone* OR *.hta\\:Zone* OR *.lnk\\:Zone* OR *.one\\:Zone* OR *.vbe\\:Zone* OR *.vbs\\:Zone* OR *.xll\\:Zone*))"
+}

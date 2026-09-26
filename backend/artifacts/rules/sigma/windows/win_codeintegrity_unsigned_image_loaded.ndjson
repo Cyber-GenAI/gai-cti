@@ -1,0 +1,53 @@
+{
+  "id": "10e0472d-88e5-45ac-b12f-1c60d4ae4e7f",
+  "name": "CodeIntegrity - Unsigned Image Loaded",
+  "tags": [
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects loaded unsigned image on the system",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "b5b7839c-45e4-4e39-8585-de9eeecbec66",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/operations/event-id-explanations",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/operations/event-tag-explanations",
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-CodeIntegrity\\/Operational AND event.code:3037"
+}

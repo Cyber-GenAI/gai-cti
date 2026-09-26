@@ -1,0 +1,51 @@
+{
+  "id": "5946e103-b157-420b-ab1f-0d7d2d3acc0f",
+  "name": "Potentially Suspicious DMP/HDMP File Creation",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a file with the \".dmp\"/\".hdmp\" extension by a shell or scripting application such as \"cmd\", \"powershell\", etc. Often created by software during a crash. Memory dumps can sometimes contain sensitive information such as credentials. It's best to determine the source of the crash.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some administrative PowerShell or VB scripts might have the ability to collect dumps and move them to other folders which might trigger a false positive."
+  ],
+  "from": "now-360s",
+  "rule_id": "b5d82e3e-22df-439b-9bd3-d465abecfb52",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wscript.exe)) AND (file.path:(*.dmp OR *.dump OR *.hdmp))"
+}

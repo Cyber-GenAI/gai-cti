@@ -1,0 +1,52 @@
+{
+  "id": "b35e97bf-aa74-4465-be61-c573aa840d5f",
+  "name": "Certificate Use With No Strong Mapping",
+  "tags": [
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a user certificate that was valid but could not be mapped to a user in a strong way (such as via explicit mapping, key trust mapping, or a SID)\nThis could be a sign of exploitation of the elevation of privilege vulnerabilities (CVE-2022-34691, CVE-2022-26931, CVE-2022-26923) that can occur when the KDC allows certificate spoofing by not requiring a strong mapping.\nEvents where the AccountName and CN of the Subject do not match, or where the CN ends in a dollar sign indicating a machine, may indicate certificate spoofing.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "If prevalent in the environment, filter on events where the AccountName and CN of the Subject do not reference the same user",
+    "If prevalent in the environment, filter on CNs that end in a dollar sign indicating it is a machine name"
+  ],
+  "from": "now-360s",
+  "rule_id": "14ceeac5-e32c-4627-8d6a-37edbb07e011",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://support.microsoft.com/en-us/topic/kb5014754-certificate-based-authentication-changes-on-windows-domain-controllers-ad2c23b0-15d8-4340-a468-4d4f3b188f16"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND (winlog.provider_name:Kerberos\\-Key\\-Distribution\\-Center AND (event.code:(39 OR 41)))"
+}

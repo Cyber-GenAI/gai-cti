@@ -1,0 +1,71 @@
+{
+  "id": "e228942c-9da6-4a68-a388-a5b17613a163",
+  "name": "Potential Arbitrary Command Execution Using Msdt.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects processes leveraging the \"ms-msdt\" handler or the \"msdt.exe\" binary to execute arbitrary commands as seen in the follina (CVE-2022-30190) vulnerability",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4e25e070-2e71-41b7-be3f-41750c75d551",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/nao_sec/status/1530196847679401984",
+    "https://app.any.run/tasks/713f05d2-fe78-4b9d-a744-f7c133e3fafb/",
+    "https://twitter.com/_JohnHammond/status/1531672601067675648"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\msdt.exe OR process.pe.original_file_name:msdt.exe) AND (process.command_line:*IT_BrowseForFile\\=* OR (process.command_line:*\\ PCWDiagnostic* AND process.command_line:(*\\ \\-af\\ * OR *\\ \\/af\\ * OR *\\ \u2013af\\ * OR *\\ \u2014af\\ * OR *\\ \u2015af\\ *)))"
+}

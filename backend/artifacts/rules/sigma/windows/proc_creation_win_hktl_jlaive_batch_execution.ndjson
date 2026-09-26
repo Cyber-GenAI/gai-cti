@@ -1,0 +1,70 @@
+{
+  "id": "61de3680-4fea-4c10-a4d3-15b9faa1ea17",
+  "name": "HackTool - Jlaive In-Memory Assembly Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of Jlaive to execute assemblies in a copied PowerShell",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2ac1ad4d-1580-431a-b5a9-22ae01c1322c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://jstnk9.github.io/jstnk9/research/Jlaive-Antivirus-Evasion-Tool",
+    "https://web.archive.org/web/20220514073704/https://github.com/ch2sh/Jlaive"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\cmd.exe AND process.parent.command_line:*.bat) AND ((process.executable:*\\\\xcopy.exe AND (process.command_line:*powershell.exe* AND process.command_line:*.bat.exe*)) OR (process.executable:*\\\\xcopy.exe AND (process.command_line:*pwsh.exe* AND process.command_line:*.bat.exe*)) OR (process.executable:*\\\\attrib.exe AND (process.command_line:*\\+s* AND process.command_line:*\\+h* AND process.command_line:*.bat.exe*)))"
+}

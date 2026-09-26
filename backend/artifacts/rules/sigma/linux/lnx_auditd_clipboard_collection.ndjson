@@ -1,0 +1,70 @@
+{
+  "id": "11e2e9c6-11f4-422e-bd32-6e9bbccb9ae3",
+  "name": "Clipboard Collection with Xclip Tool - Auditd",
+  "tags": [
+    "attack.collection",
+    "attack.t1115",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects attempts to collect data stored in the clipboard from users with the usage of xclip tool.\nXclip has to be installed.\nHighly recommended using rule on servers, due to high usage of clipboard utilities on user workstations.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of xclip tools"
+  ],
+  "from": "now-360s",
+  "rule_id": "e2ff9d0c-548d-46c1-8b8d-14fb7d85b31a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1115",
+          "name": "Clipboard Data",
+          "reference": "https://attack.mitre.org/techniques/T1115/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://linux.die.net/man/1/xclip",
+    "https://www.cyberciti.biz/faq/xclip-linux-insert-files-command-output-intoclipboard/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "type:EXECVE AND a0:xclip AND (a1:(\\-selection OR \\-sel)) AND (a2:(clipboard OR clip)) AND a3:\\-o"
+}

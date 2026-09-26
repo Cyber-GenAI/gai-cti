@@ -1,0 +1,69 @@
+{
+  "id": "b3a83ce4-b716-45cf-b04a-9c281834b0a6",
+  "name": "Suspicious FromBase64String Usage On Gzip Archive - Process Creation",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1132.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects attempts of decoding a base64 Gzip archive via PowerShell. This technique is often used as a method to load malicious content into memory afterward.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative script"
+  ],
+  "from": "now-360s",
+  "rule_id": "00357e52-773e-4754-b7d4-dcd568f6ae6e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1132",
+          "name": "Data Encoding",
+          "reference": "https://attack.mitre.org/techniques/T1132/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-powershell-abuse?slide=43"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*FromBase64String* AND process.command_line:*MemoryStream* AND process.command_line:*H4sI*"
+}

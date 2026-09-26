@@ -1,0 +1,51 @@
+{
+  "id": "ce44a528-4c27-4552-ad10-ee45a40ca0c7",
+  "name": "Suspicious RunAs-Like Flag Combination",
+  "tags": [
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious command line flags that let the user set a target user and command as e.g. seen in PsExec-like tools",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "23206792-993e-410b-8ca4-af2aea572ef0",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.trendmicro.com/en_us/research/22/k/hack-the-real-box-apt41-new-subgroup-earth-longzhi.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\ \\-u\\ system\\ * OR *\\ \\-\\-user\\ system\\ * OR *\\ \\-u\\ NT* OR *\\ \\-u\\ \\\"NT* OR *\\ \\-u\\ 'NT* OR *\\ \\-\\-system\\ * OR *\\ \\-u\\ administrator\\ *)) AND (process.command_line:(*\\ \\-c\\ cmd* OR *\\ \\-c\\ \\\"cmd* OR *\\ \\-c\\ powershell* OR *\\ \\-c\\ \\\"powershell* OR *\\ \\-\\-command\\ cmd* OR *\\ \\-\\-command\\ powershell* OR *\\ \\-c\\ whoami* OR *\\ \\-c\\ wscript* OR *\\ \\-c\\ cscript*))"
+}

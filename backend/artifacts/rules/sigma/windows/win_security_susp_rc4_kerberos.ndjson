@@ -1,0 +1,71 @@
+{
+  "id": "c03ff571-3708-4fd1-b99d-0ed5efba3a6c",
+  "name": "Suspicious Kerberos RC4 Ticket Encryption",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1558.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects service ticket requests using RC4 encryption type",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Service accounts used on legacy systems (e.g. NetApp)",
+    "Windows Domains with DFL 2003 and legacy systems"
+  ],
+  "from": "now-360s",
+  "rule_id": "d611da45-cdaa-44d6-8f8b-e05778887868",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1558",
+          "name": "Steal or Forge Kerberos Tickets",
+          "reference": "https://attack.mitre.org/techniques/T1558/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://adsecurity.org/?p=3458",
+    "https://www.trimarcsecurity.com/single-post/TrimarcResearch/Detecting-Kerberoasting-Activity"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4769 AND winlog.event_data.TicketOptions:0x40810000 AND winlog.event_data.TicketEncryptionType:0x17) AND (NOT service.name:*$))"
+}

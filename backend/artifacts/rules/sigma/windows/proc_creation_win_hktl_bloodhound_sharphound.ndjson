@@ -1,0 +1,104 @@
+{
+  "id": "902b6dd4-056e-4d65-8333-21577909dff1",
+  "name": "HackTool - Bloodhound/Sharphound Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087.001",
+    "attack.t1087.002",
+    "attack.t1482",
+    "attack.t1069.001",
+    "attack.t1069.002",
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command line parameters used by Bloodhound and Sharphound hack tools",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other programs that use these command line option and accepts an 'All' parameter"
+  ],
+  "from": "now-360s",
+  "rule_id": "0c40a7d3-fd42-44dc-81ad-187b8abe55ab",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1069",
+          "name": "Permission Groups Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1069/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1482",
+          "name": "Domain Trust Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1482/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/BloodHoundAD/BloodHound",
+    "https://github.com/BloodHoundAD/SharpHound"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.product:*SharpHound* OR process.pe.description:*SharpHound* OR (process.pe.company:(*SpecterOps* OR *evil\\ corp*)) OR (process.executable:(*\\\\Bloodhound.exe* OR *\\\\SharpHound.exe*))) OR (process.command_line:(*\\ \\-CollectionMethod\\ All\\ * OR *\\ \\-\\-CollectionMethods\\ Session\\ * OR *\\ \\-\\-Loop\\ \\-\\-Loopduration\\ * OR *\\ \\-\\-PortScanTimeout\\ * OR *.exe\\ \\-c\\ All\\ \\-d\\ * OR *Invoke\\-Bloodhound* OR *Get\\-BloodHoundData*)) OR (process.command_line:*\\ \\-JsonFolder\\ * AND process.command_line:*\\ \\-ZipFileName\\ *) OR (process.command_line:*\\ DCOnly\\ * AND process.command_line:*\\ \\-\\-NoSaveCache\\ *)"
+}

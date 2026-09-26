@@ -1,0 +1,69 @@
+{
+  "id": "e98aed20-628a-44fe-9c65-fd897a4588b6",
+  "name": "Conhost Spawned By Uncommon Parent Process",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when the Console Window Host (conhost.exe) process is spawned by an uncommon parent process, which could be indicative of potential code injection activity.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a952d7c5-4193-4c4e-8a28-c4eb554ebe64",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/guide/en/security/current/conhost-spawned-by-suspicious-parent-process.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\conhost.exe AND (process.parent.executable:(*\\\\explorer.exe OR *\\\\lsass.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\services.exe OR *\\\\smss.exe OR *\\\\spoolsv.exe OR *\\\\svchost.exe OR *\\\\userinit.exe OR *\\\\wininit.exe OR *\\\\winlogon.exe))) AND (NOT (process.parent.command_line:(*\\-k\\ apphost\\ \\-s\\ AppHostSvc* OR *\\-k\\ imgsvc* OR *\\-k\\ localService\\ \\-p\\ \\-s\\ RemoteRegistry* OR *\\-k\\ LocalSystemNetworkRestricted\\ \\-p\\ \\-s\\ NgcSvc* OR *\\-k\\ NetSvcs\\ \\-p\\ \\-s\\ NcaSvc* OR *\\-k\\ netsvcs\\ \\-p\\ \\-s\\ NetSetupSvc* OR *\\-k\\ netsvcs\\ \\-p\\ \\-s\\ wlidsvc* OR *\\-k\\ NetworkService\\ \\-p\\ \\-s\\ DoSvc* OR *\\-k\\ wsappx\\ \\-p\\ \\-s\\ AppXSvc* OR *\\-k\\ wsappx\\ \\-p\\ \\-s\\ ClipSVC* OR *\\-k\\ wusvcs\\ \\-p\\ \\-s\\ WaaSMedicSvc*))) AND (NOT (process.parent.command_line:(*C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Dropbox\\\\Client\\\\* OR *C\\:\\\\Program\\ Files\\\\Dropbox\\\\Client\\\\*)))"
+}

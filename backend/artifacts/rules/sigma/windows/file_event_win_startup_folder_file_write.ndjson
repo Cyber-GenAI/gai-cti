@@ -1,0 +1,70 @@
+{
+  "id": "ae635533-00db-4794-881a-d3f9aa5d4b7c",
+  "name": "Startup Folder File Write",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "A General detection for files being created in the Windows startup directory. This could be an indicator of persistence.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "FP could be caused by legitimate application writing shortcuts for example. This folder should always be inspected to make sure that all the files in there are legitimate"
+  ],
+  "from": "now-360s",
+  "rule_id": "844de956-8ea7-46ef-bc51-6e071cc48eff",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/OTRF/detection-hackathon-apt29/issues/12",
+    "https://github.com/OTRF/ThreatHunter-Playbook/blob/2d4257f630f4c9770f78d0c1df059f891ffc3fec/docs/evals/apt29/detections/5.B.1_611FCA99-97D0-4873-9E51-1C1BA2DBB40D.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\Microsoft\\\\Windows\\\\Start\\ Menu\\\\Programs\\\\StartUp* AND (NOT (process.executable:C\\:\\\\Windows\\\\System32\\\\wuauclt.exe OR file.path:C\\:\\\\$WINDOWS.\\~BT\\\\NewOS\\\\*))"
+}

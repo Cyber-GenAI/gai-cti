@@ -1,0 +1,54 @@
+{
+  "id": "85a785c0-e30c-4d72-aab3-6997eae8d2ed",
+  "name": "HackTool - LocalPotato Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "cve.2023-21746",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the LocalPotato POC based on basic PE metadata information and default CLI examples",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "a47e4674-2ed2-43bd-ab3d-717ea50e09e8",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.localpotato.com/localpotato_html/LocalPotato.html",
+    "https://github.com/decoder-it/LocalPotato"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\LocalPotato.exe OR (process.command_line:*.exe\\ \\-i\\ C\\:\\\\* AND process.command_line:*\\-o\\ Windows\\\\*) OR (winlog.event_data.Hashes:(*IMPHASH\\=E1742EE971D6549E8D4D81115F88F1FC* OR *IMPHASH\\=DD82066EFBA94D7556EF582F247C8BB5*))"
+}

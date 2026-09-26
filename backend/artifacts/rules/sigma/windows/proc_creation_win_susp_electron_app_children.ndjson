@@ -1,0 +1,57 @@
+{
+  "id": "e5a47a0b-73d4-452d-9464-1769ecbd0646",
+  "name": "Suspicious Electron Application Child Processes",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious child processes of electron apps (teams, discord, slack, etc.). This could be a potential sign of \".asar\" file tampering (See reference section for more information) or binary execution proxy through specific CLI arguments (see related rule)\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3d47d634-6613-4a8f-ba9a-7df16888ed27",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://taggart-tech.com/quasar-electron/",
+    "https://github.com/mttaggart/quasar",
+    "https://positive.security/blog/ms-officecmd-rce",
+    "https://lolbas-project.github.io/lolbas/Binaries/Msedge/",
+    "https://lolbas-project.github.io/lolbas/Binaries/Teams/",
+    "https://lolbas-project.github.io/lolbas/Binaries/msedgewebview2/",
+    "https://medium.com/@MalFuzzer/one-electron-to-rule-them-all-dc2e9b263daf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:(*\\\\chrome.exe OR *\\\\discord.exe OR *\\\\GitHubDesktop.exe OR *\\\\keybase.exe OR *\\\\msedge.exe OR *\\\\msedgewebview2.exe OR *\\\\msteams.exe OR *\\\\slack.exe OR *\\\\teams.exe)) AND ((process.executable:(*\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\whoami.exe OR *\\\\wscript.exe)) OR (process.executable:(*\\:\\\\ProgramData\\\\* OR *\\:\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\* OR *\\\\Windows\\\\Temp\\\\*))) AND (NOT (process.parent.executable:*\\\\Discord.exe AND process.executable:*\\\\cmd.exe AND process.command_line:*\\\\NVSMI\\\\nvidia\\-smi.exe*))"
+}

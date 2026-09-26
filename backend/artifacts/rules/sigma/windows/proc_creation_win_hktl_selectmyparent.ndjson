@@ -1,0 +1,72 @@
+{
+  "id": "395f6649-2f86-409c-a217-c4f042670197",
+  "name": "HackTool - PPID Spoofing SelectMyParent Tool Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1134.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of parent process ID spoofing tools like Didier Stevens tool SelectMyParent",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "d6a44ee7-4d49-43c9-83d0-ec9a7297d7c2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://pentestlab.blog/2020/02/24/parent-pid-spoofing/",
+    "https://www.picussecurity.com/resource/blog/how-to-detect-parent-pid-ppid-spoofing-attacks",
+    "https://www.ired.team/offensive-security/defense-evasion/parent-process-id-ppid-spoofing",
+    "https://www.virustotal.com/gui/search/filename%253A*spoof*%2520filename%253A*ppid*/files"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\SelectMyParent.exe OR (process.command_line:(*PPID\\-spoof* OR *ppid_spoof* OR *spoof\\-ppid* OR *spoof_ppid* OR *ppidspoof* OR *spoofppid* OR *spoofedppid* OR *\\ \\-spawnto\\ *)) OR (process.pe.original_file_name:(*PPID\\-spoof* OR *ppid_spoof* OR *spoof\\-ppid* OR *spoof_ppid* OR *ppidspoof* OR *spoofppid* OR *spoofedppid*)) OR process.pe.description:SelectMyParent OR (winlog.event_data.Hashes:(*IMPHASH\\=04D974875BD225F00902B4CAD9AF3FBC* OR *IMPHASH\\=A782AF154C9E743DDF3F3EB2B8F3D16E* OR *IMPHASH\\=89059503D7FBF470E68F7E63313DA3AD* OR *IMPHASH\\=CA28337632625C8281AB8A130B3D6BAD*))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "e17e0328-fda5-4366-a51a-6bd10d0a112f",
+  "name": "Firewall Rule Deleted Via Netsh.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the removal of a port or application rule in the Windows Firewall configuration using netsh",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activity",
+    "Software installations and removal"
+  ],
+  "from": "now-360s",
+  "rule_id": "f09f93b1-6b72-43d8-831f-6aa052ebe9f3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/8bbd5b4c-b82d-4e6d-a3ea-d454594a37cc/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\netsh.exe OR process.pe.original_file_name:netsh.exe) AND (process.command_line:*firewall* AND process.command_line:*delete\\ *)) AND (NOT (process.parent.executable:*\\\\Dropbox.exe AND process.command_line:*name\\=Dropbox*))"
+}

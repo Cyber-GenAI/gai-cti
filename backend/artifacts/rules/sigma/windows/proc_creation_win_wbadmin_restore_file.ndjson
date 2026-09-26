@@ -1,0 +1,70 @@
+{
+  "id": "8e6f6232-2509-47c8-ae69-6f62dcfd0b28",
+  "name": "File Recovery From Backup Via Wbadmin.EXE",
+  "tags": [
+    "attack.impact",
+    "attack.t1490",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the recovery of files from backups via \"wbadmin.exe\".\nAttackers can restore sensitive files such as NTDS.DIT or Registry Hives from backups in order to potentially extract credentials.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "ed46e5a2-b7c9-44ed-83be-8a1423596b5d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1490",
+          "name": "Inhibit System Recovery",
+          "reference": "https://attack.mitre.org/techniques/T1490/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wbadmin-start-recovery",
+    "https://lolbas-project.github.io/lolbas/Binaries/Wbadmin/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\wbadmin.exe OR process.pe.original_file_name:WBADMIN.EXE) AND (process.command_line:*\\ recovery* AND process.command_line:*recoveryTarget* AND process.command_line:*itemtype\\:File*)"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "795fda4b-d4cc-4cd5-af84-4bac528662ec",
+  "name": "Non-privileged Usage of Reg or Powershell",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Search for usage of reg or Powershell by non-privileged users to modify service configuration in registry",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3562346d-2b13-44e4-ab79-fa9c0511e7cf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://image.slidesharecdn.com/kheirkhabarovoffzonefinal-181117201458/95/hunting-for-privilege-escalation-in-windows-environment-20-638.jpg"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:*reg\\ * AND process.command_line:*add*) OR (process.command_line:(*powershell* OR *set\\-itemproperty* OR *\\ sp\\ * OR *new\\-itemproperty*))) AND ((winlog.event_data.IntegrityLevel:(Medium OR S\\-1\\-16\\-8192)) AND (process.command_line:*ControlSet* AND process.command_line:*Services*) AND (process.command_line:(*ImagePath* OR *FailureCommand* OR *ServiceDLL*)))"
+}

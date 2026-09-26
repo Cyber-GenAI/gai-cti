@@ -1,0 +1,53 @@
+{
+  "id": "b8553b2c-cab2-4d99-816f-560b1c0ed4d3",
+  "name": "Obfuscated IP Download Activity",
+  "tags": [
+    "attack.discovery",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects use of an encoded/obfuscated version of an IP address (hex, octal...) in an URL combined with a download command",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8e1627f9-689d-484d-a43a-9170d60c0cf9",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://h.43z.one/ipconverter/",
+    "https://twitter.com/Yasser_Elsnbary/status/1553804135354564608",
+    "https://twitter.com/fr0s7_/status/1712780207105404948"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*Invoke\\-WebRequest* OR *iwr\\ * OR *wget\\ * OR *curl\\ * OR *DownloadFile* OR *DownloadString*)) AND ((process.command_line:(*\\ 0x* OR *\\/\\/0x* OR *.0x* OR *.00x*)) OR (process.command_line:*http\\:\\/\\/%* AND process.command_line:*%2e*) OR (process.command_line:/https?:\\/\\/[0-9]{1,3}\\.[0-9]{1,3}\\.0[0-9]{3,4}/ OR process.command_line:/https?:\\/\\/[0-9]{1,3}\\.0[0-9]{3,7}/ OR process.command_line:/https?:\\/\\/0[0-9]{3,11}/ OR process.command_line:/https?:\\/\\/(0[0-9]{1,11}\\.){3}0[0-9]{1,11}/ OR process.command_line:/https?:\\/\\/0[0-9]{1,11}/ OR process.command_line:/ [0-7]{7,13}/)) AND (NOT process.command_line:/https?:\\/\\/((25[0-5]|(2[0-4]|1\\d|[1-9])?\\d)(\\.|\\b)){4}/)"
+}

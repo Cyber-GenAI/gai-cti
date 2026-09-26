@@ -1,0 +1,91 @@
+{
+  "id": "8b459780-be7b-4a08-8cde-54f05f36e3bb",
+  "name": "RDP over Reverse SSH Tunnel WFP",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.command-and-control",
+    "attack.lateral-movement",
+    "attack.t1090.001",
+    "attack.t1090.002",
+    "attack.t1021.001",
+    "car.2013-07-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects svchost hosting RDP termsvcs communicating with the loopback address",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Programs that connect locally to the RDP port"
+  ],
+  "from": "now-360s",
+  "rule_id": "fa259707-4cbe-4108-b1cf-74ee3480bcf8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/SBousseaden/status/1096148422984384514",
+    "https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES/blob/44fbe85f72ee91582876b49678f9a26292a155fb/Command%20and%20Control/DE_RDP_Tunnel_5156.evtx"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:5156 AND ((source.port:3389 AND (destination.ip:(127.* OR \\:\\:1))) OR (destination.port:3389 AND (source.ip:(127.* OR \\:\\:1)))) AND (NOT (winlog.event_data.FilterOrigin:AppContainer\\ Loopback OR (process.executable:(*\\\\thor.exe OR *\\\\thor64.exe)))))"
+}

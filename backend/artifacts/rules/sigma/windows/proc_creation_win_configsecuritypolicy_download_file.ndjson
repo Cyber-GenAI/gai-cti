@@ -1,0 +1,69 @@
+{
+  "id": "7a101c43-4009-4e0f-93b4-e348db4782f6",
+  "name": "Arbitrary File Download Via ConfigSecurityPolicy.EXE",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1567",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"ConfigSecurityPolicy.EXE\", a binary part of Windows Defender used to manage settings in Windows Defender.\nUsers can configure different pilot collections for each of the co-management workloads.\nIt can be abused by attackers in order to upload or download files.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "00b4af60-0014-473a-b8a8-b1820260c304",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1567",
+          "name": "Exfiltration Over Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1567/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/ConfigSecurityPolicy/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*ConfigSecurityPolicy.exe* OR process.executable:*\\\\ConfigSecurityPolicy.exe OR process.pe.original_file_name:ConfigSecurityPolicy.exe) AND (process.command_line:(*ftp\\:\\/\\/* OR *http\\:\\/\\/* OR *https\\:\\/\\/*))"
+}

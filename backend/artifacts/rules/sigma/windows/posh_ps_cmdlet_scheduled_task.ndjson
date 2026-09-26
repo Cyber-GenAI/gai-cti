@@ -1,0 +1,70 @@
+{
+  "id": "c1bf2ecb-0210-42e4-b33f-922e01a23c1f",
+  "name": "Powershell Create Scheduled Task",
+  "tags": [
+    "attack.persistence",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may abuse the Windows Task Scheduler to perform task scheduling for initial or recurring execution of malicious code",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "940b7cbe-f05e-4084-99cd-32f9587aa21e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1053.005/T1053.005.md#atomic-test-4---powershell-cmdlet-scheduled-task",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1053.005/T1053.005.md#atomic-test-6---wmi-invoke-cimmethod-scheduled-task"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*New\\-ScheduledTaskAction* OR *New\\-ScheduledTaskTrigger* OR *New\\-ScheduledTaskPrincipal* OR *New\\-ScheduledTaskSettingsSet* OR *New\\-ScheduledTask* OR *Register\\-ScheduledTask*)) OR (powershell.file.script_block_text:*Invoke\\-CimMethod* AND powershell.file.script_block_text:*\\-ClassName* AND powershell.file.script_block_text:*PS_ScheduledTask* AND powershell.file.script_block_text:*\\-NameSpace* AND powershell.file.script_block_text:*Root\\\\Microsoft\\\\Windows\\\\TaskScheduler*)"
+}

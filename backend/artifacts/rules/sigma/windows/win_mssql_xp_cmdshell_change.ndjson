@@ -1,0 +1,53 @@
+{
+  "id": "3ea9d038-44ef-487b-b32d-c975528eb1f3",
+  "name": "MSSQL XPCmdshell Option Change",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when the MSSQL \"xp_cmdshell\" stored procedure setting is changed.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate enable/disable of the setting",
+    "Note that since the event contain the change for both values. This means that this will trigger on both enable and disable"
+  ],
+  "from": "now-360s",
+  "rule_id": "e3ab0235-6301-4c65-963a-22c0b6f0aad4",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/",
+    "https://thedfirreport.com/2022/07/11/select-xmrig-from-sqlserver/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (winlog.provider_name:*MSSQL* AND event.code:15457 AND winlog.event_data.Data:*xp_cmdshell*)"
+}

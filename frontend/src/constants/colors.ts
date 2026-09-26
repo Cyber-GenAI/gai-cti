@@ -1,0 +1,1 @@
+export const badge_colors = ['#0fa3b1', '#b5e2fa', '#eddea4', '#f7a072' , "#F0F0F0","#E0E0E0","#D9EAD3","#CFE2F3","#F9CB9C","#F6B93B","#D1C4E9","#B2EBF2","#FFCCBC","#FFEB3B","#B2DFDB","#FFABAB","#FFE0B2","#C8E6C9","#FFCC80",]

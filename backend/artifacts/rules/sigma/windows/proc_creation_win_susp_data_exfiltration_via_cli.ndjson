@@ -1,0 +1,69 @@
+{
+  "id": "f6d416a0-bb49-4cbe-bb76-837124c82b4e",
+  "name": "Potential Data Exfiltration Activity Via CommandLine Tools",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of various CLI utilities exfiltrating data via web requests",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "8981ac6d-5e26-4eab-b35c-923b4202fff0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.sentinelone.com/blog/living-off-windows-defender-lockbit-ransomware-sideloads-cobalt-strike-through-microsoft-security-tool/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\cmd.exe)) AND (process.command_line:(*Invoke\\-WebRequest* OR *iwr\\ * OR *wget\\ * OR *curl\\ *)) AND (process.command_line:*\\ \\-ur* AND process.command_line:*\\ \\-me* AND process.command_line:*\\ \\-b* AND process.command_line:*\\ POST\\ *)) OR ((process.executable:*\\\\curl.exe AND process.command_line:*\\-\\-ur*) AND (process.command_line:(*\\ \\-d\\ * OR *\\ \\-\\-data\\ *))) OR (process.executable:*\\\\wget.exe AND (process.command_line:(*\\-\\-post\\-data* OR *\\-\\-post\\-file*)))) AND ((process.command_line:(*Get\\-Content* OR *GetBytes* OR *hostname* OR *ifconfig* OR *ipconfig* OR *net\\ view* OR *netstat* OR *nltest* OR *qprocess* OR *sc\\ query* OR *systeminfo* OR *tasklist* OR *ToBase64String* OR *whoami*)) OR (process.command_line:*type\\ * AND process.command_line:*\\ \\>\\ * AND process.command_line:*\\ C\\:\\\\*))"
+}

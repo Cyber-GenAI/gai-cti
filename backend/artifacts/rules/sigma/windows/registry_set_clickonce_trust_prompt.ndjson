@@ -1,0 +1,70 @@
+{
+  "id": "ad427f72-8811-4e63-bdb6-a531809a750c",
+  "name": "ClickOnce Trust Prompt Tampering",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to the ClickOnce trust prompt registry key in order to enable an installation from different locations such as the Internet.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate internal requirements."
+  ],
+  "from": "now-360s",
+  "rule_id": "a1e010b5-918e-4734-9732-5e8f4a82d9f9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://posts.specterops.io/less-smartscreen-more-caffeine-ab-using-clickonce-for-trusted-code-execution-1446ea8051c5",
+    "https://learn.microsoft.com/en-us/visualstudio/deployment/how-to-configure-the-clickonce-trust-prompt-behavior"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\MICROSOFT\\\\.NETFramework\\\\Security\\\\TrustManager\\\\PromptingLevel\\\\* AND (registry.path:(*\\\\Internet OR *\\\\LocalIntranet OR *\\\\MyComputer OR *\\\\TrustedSites OR *\\\\UntrustedSites)) AND winlog.event_data.Details:Enabled"
+}

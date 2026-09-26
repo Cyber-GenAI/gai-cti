@@ -1,0 +1,71 @@
+{
+  "id": "9e8bf75a-5a47-44ea-9613-7da11963ff84",
+  "name": "Use Short Name Path in Command Line",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect use of the Windows 8.3 short name. Which could be used as a method to avoid command-line detection",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Applications could use this notation occasionally which might generate some false positives. In that case investigate the parent and child process."
+  ],
+  "from": "now-360s",
+  "rule_id": "b0432dd2-a3b6-48fd-b2de-ff5f59e8ad1e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.acunetix.com/blog/articles/windows-short-8-3-filenames-web-security-problem/",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc959352(v=technet.10)",
+    "https://twitter.com/frack113/status/1555830623633375232"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\~1\\\\* OR *\\~2\\\\*)) AND (NOT ((process.parent.executable:(C\\:\\\\Windows\\\\System32\\\\Dism.exe OR C\\:\\\\Windows\\\\System32\\\\cleanmgr.exe OR C\\:\\\\Program\\ Files\\\\GPSoftware\\\\Directory\\ Opus\\\\dopus.exe)) OR (process.parent.executable:(*\\\\WebEx\\\\WebexHost.exe OR *\\\\thor\\\\thor64.exe OR *\\\\veam.backup.shell.exe OR *\\\\winget.exe OR *\\\\Everything\\\\Everything.exe)) OR process.parent.executable:*\\\\AppData\\\\Local\\\\Temp\\\\WinGet\\\\* OR (process.command_line:(*\\\\appdata\\\\local\\\\webex\\\\webex64\\\\meetings\\\\wbxreport.exe* OR *C\\:\\\\Program\\ Files\\\\Git\\\\post\\-install.bat* OR *C\\:\\\\Program\\ Files\\\\Git\\\\cmd\\\\scalar.exe*))))"
+}

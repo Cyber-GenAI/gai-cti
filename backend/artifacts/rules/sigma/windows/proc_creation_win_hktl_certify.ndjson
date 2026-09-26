@@ -1,0 +1,70 @@
+{
+  "id": "cc345d22-675c-40e9-ab3e-8991c74a6c50",
+  "name": "HackTool - Certify Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.credential-access",
+    "attack.t1649",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Certify a tool for Active Directory certificate abuse based on PE metadata characteristics and common command line arguments.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "092ad6b0-5c21-4585-ae28-4ecb3c0ad6b4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1649",
+          "name": "Steal or Forge Authentication Certificates",
+          "reference": "https://attack.mitre.org/techniques/T1649/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/GhostPack/Certify"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\Certify.exe OR process.pe.original_file_name:Certify.exe OR process.pe.description:*Certify*) OR ((process.command_line:(*.exe\\ cas\\ * OR *.exe\\ find\\ * OR *.exe\\ pkiobjects\\ * OR *.exe\\ request\\ * OR *.exe\\ download\\ *)) AND (process.command_line:(*\\ \\/vulnerable* OR *\\ \\/template\\:* OR *\\ \\/altname\\:* OR *\\ \\/domain\\:* OR *\\ \\/path\\:* OR *\\ \\/ca\\:*)))"
+}

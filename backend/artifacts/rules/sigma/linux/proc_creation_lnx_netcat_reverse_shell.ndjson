@@ -1,0 +1,73 @@
+{
+  "id": "58332756-9c9c-4cf4-a1ef-fa09d93dd17f",
+  "name": "Potential Netcat Reverse Shell Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of netcat with the \"-e\" flag followed by common shells. This could be a sign of a potential reverse shell setup.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "80e4691a-400a-4997-b7bb-44c5d4ef20bd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet",
+    "https://www.revshells.com/",
+    "https://www.hackingtutorials.org/networking/hacking-netcat-part-2-bind-reverse-shells/",
+    "https://www.infosecademy.com/netcat-reverse-shells/",
+    "https://man7.org/linux/man-pages/man1/ncat.1.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/nc OR *\\/ncat)) AND (CommandLine:(*\\ \\-c\\ * OR *\\ \\-e\\ *)) AND (CommandLine:(*\\ ash* OR *\\ bash* OR *\\ bsh* OR *\\ csh* OR *\\ ksh* OR *\\ pdksh* OR *\\ sh* OR *\\ tcsh* OR *\\/bin\\/ash* OR *\\/bin\\/bash* OR *\\/bin\\/bsh* OR *\\/bin\\/csh* OR *\\/bin\\/ksh* OR *\\/bin\\/pdksh* OR *\\/bin\\/sh* OR *\\/bin\\/tcsh* OR *\\/bin\\/zsh* OR *$IFSash* OR *$IFSbash* OR *$IFSbsh* OR *$IFScsh* OR *$IFSksh* OR *$IFSpdksh* OR *$IFSsh* OR *$IFStcsh* OR *$IFSzsh*))"
+}

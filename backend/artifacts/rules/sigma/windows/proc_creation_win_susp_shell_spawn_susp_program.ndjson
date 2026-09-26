@@ -1,0 +1,89 @@
+{
+  "id": "3f8705b3-5bc7-4247-97e1-56bcc4d72c67",
+  "name": "Windows Shell/Scripting Processes Spawning Suspicious Programs",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1059.005",
+    "attack.t1059.001",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious child processes of a Windows shell and scripting processes such as wscript, rundll32, powershell, mshta...etc.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative scripts",
+    "Microsoft SCCM"
+  ],
+  "from": "now-360s",
+  "rule_id": "926204a9-088b-44a3-b1b3-a0ef51f68f2b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://mgreen27.github.io/posts/2018/04/02/DownloadCradle.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\mshta.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\rundll32.exe OR *\\\\cscript.exe OR *\\\\wscript.exe OR *\\\\wmiprvse.exe OR *\\\\regsvr32.exe)) AND (process.executable:(*\\\\schtasks.exe OR *\\\\nslookup.exe OR *\\\\certutil.exe OR *\\\\bitsadmin.exe OR *\\\\mshta.exe))) AND (NOT (process.working_directory:*\\\\ccmcache\\\\* OR (process.parent.command_line:(*\\\\Program\\ Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\setup\\-scheduledtask.ps1* OR *\\\\Program\\ Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\set\\-selfhealing.ps1* OR *\\\\Program\\ Files\\\\Amazon\\\\WorkSpacesConfig\\\\Scripts\\\\check\\-workspacehealth.ps1* OR *\\\\nessus_*)) OR process.command_line:*\\\\nessus_* OR (process.parent.executable:*\\\\mshta.exe AND process.executable:*\\\\mshta.exe AND (process.parent.command_line:*C\\:\\\\MEM_Configmgr_* AND process.parent.command_line:*\\\\splash.hta* AND process.parent.command_line:*\\{1E460BD7\\-F1C3\\-4B2E\\-88BF\\-4E770A288AF5\\}*) AND (process.command_line:*C\\:\\\\MEM_Configmgr_* AND process.command_line:*\\\\SMSSETUP\\\\BIN\\\\* AND process.command_line:*\\\\autorun.hta* AND process.command_line:*\\{1E460BD7\\-F1C3\\-4B2E\\-88BF\\-4E770A288AF5\\}*))))"
+}

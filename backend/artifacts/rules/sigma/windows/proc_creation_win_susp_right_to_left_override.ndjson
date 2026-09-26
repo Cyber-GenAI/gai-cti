@@ -1,0 +1,71 @@
+{
+  "id": "2e4e7b44-3677-4a17-83ce-c4a4d9aeeaad",
+  "name": "Potential Defense Evasion Via Right-to-Left Override",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the presence of the \"u202+E\" character, which causes a terminal, browser, or operating system to render text in a right-to-left sequence.\nThis is used as an obfuscation and masquerading techniques.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Commandlines that contains scriptures such as arabic or hebrew might make use of this character"
+  ],
+  "from": "now-360s",
+  "rule_id": "bd98536a-d331-4aca-a1a8-d1a9f2ccd044",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/right-to-left-override/",
+    "https://www.malwarebytes.com/blog/news/2014/01/the-rtlo-method",
+    "https://unicode-explorer.com/c/202E"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*\u202e*"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "f0ba03a0-c298-4779-8c0d-b823e6a7c73d",
+  "name": "ADSI-Cache File Creation By Uncommon Tool",
+  "tags": [
+    "attack.t1001.003",
+    "attack.command-and-control",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of an \"Active Directory Schema Cache File\" (.sch) file by an uncommon tool.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other legimate tools, which do ADSI (LDAP) operations, e.g. any remoting activity by MMC, Powershell, Windows etc."
+  ],
+  "from": "now-360s",
+  "rule_id": "62a13ea9-f384-4f90-8b68-d8f30365016d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1001",
+          "name": "Data Obfuscation",
+          "reference": "https://attack.mitre.org/techniques/T1001/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/@ivecodoe/detecting-ldapfragger-a-newly-released-cobalt-strike-beacon-using-ldap-for-c2-communication-c274a7f00961",
+    "https://blog.fox-it.com/2020/03/19/ldapfragger-command-and-control-over-ldap-attributes/",
+    "https://github.com/fox-it/LDAPFragger"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\\\Local\\\\Microsoft\\\\Windows\\\\SchCache\\\\* AND file.path:*.sch) AND (NOT (((process.executable:(*\\:\\\\Program\\ Files\\\\Cylance\\\\Desktop\\\\CylanceSvc.exe OR *\\:\\\\Windows\\\\CCM\\\\CcmExec.exe OR *\\:\\\\windows\\\\system32\\\\dllhost.exe OR *\\:\\\\Windows\\\\system32\\\\dsac.exe OR *\\:\\\\Windows\\\\system32\\\\efsui.exe OR *\\:\\\\windows\\\\system32\\\\mmc.exe OR *\\:\\\\windows\\\\system32\\\\svchost.exe OR *\\:\\\\Windows\\\\System32\\\\wbem\\\\WmiPrvSE.exe OR *\\:\\\\windows\\\\system32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe)) OR (process.executable:(*\\:\\\\Windows\\\\ccmsetup\\\\autoupgrade\\\\ccmsetup* OR *\\:\\\\Program\\ Files\\\\SentinelOne\\\\Sentinel\\ Agent*))) OR ((process.executable:*\\:\\\\Program\\ Files\\\\* AND process.executable:*\\\\Microsoft\\ Office*) AND process.executable:*\\\\OUTLOOK.EXE))) AND (NOT (process.executable:(*\\\\LANDesk\\\\LDCLient\\\\ldapwhoami.exe OR *\\:\\\\Program\\ Files\\\\Citrix\\\\Receiver\\ StoreFront\\\\Services\\\\DefaultDomainServices\\\\Citrix.DeliveryServices.DomainServices.ServiceHost.exe)))"
+}

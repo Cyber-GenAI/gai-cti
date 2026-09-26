@@ -1,0 +1,87 @@
+{
+  "id": "4d3f34f0-f4ca-4792-872e-30a5d5d2dcaa",
+  "name": "Suspicious Eventlog Clearing or Configuration Change Activity",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.001",
+    "attack.t1562.002",
+    "car.2016-04-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the clearing or configuration tampering of EventLog using utilities such as \"wevtutil\", \"powershell\" and \"wmic\".\nThis technique were seen used by threat actors and ransomware strains in order to evade defenses.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Admin activity",
+    "Scripts and administrative tools used in the monitored environment",
+    "Maintenance activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "2b7885a5-853e-48e8-8bfc-c3d9e85347d5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1070.001/T1070.001.md",
+    "https://eqllib.readthedocs.io/en/latest/analytics/5b223758-07d6-4100-9e11-238cfdd0fe97.html",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wevtutil",
+    "https://gist.github.com/fovtran/ac0624983c7722e80a8f5a4babb170ee",
+    "https://jdhnet.wordpress.com/2017/12/19/changing-the-location-of-the-windows-event-logs/",
+    "https://www.linkedin.com/posts/huntress-labs_when-a-sketchy-incident-hits-your-network-activity-7304940371078238208-Th_l/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAJTlRcB28IaUtg03HUU-IdliwzoAL1flGc",
+    "https://stackoverflow.com/questions/66011412/how-to-clear-a-event-log-in-powershell-7",
+    "https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.eventing.reader.eventlogsession.clearlog?view=windowsdesktop-9.0&viewFallbackFrom=dotnet-plat-ext-5.0#System_Diagnostics_Eventing_Reader_EventLogSession_ClearLog_System_String_",
+    "https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.eventlog.clear"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\wevtutil.exe OR process.pe.original_file_name:wevtutil.exe) AND (process.command_line:(*clear\\-log\\ * OR *\\ cl\\ * OR *set\\-log\\ * OR *\\ sl\\ * OR *lfn\\:*))) OR ((process.executable:(*\\\\powershell.exe OR *\\\\powershell_ise.exe OR *\\\\pwsh.exe)) AND ((process.command_line:(*Clear\\-EventLog\\ * OR *Remove\\-EventLog\\ * OR *Limit\\-EventLog\\ * OR *Clear\\-WinEvent\\ *)) OR (process.command_line:*Eventing.Reader.EventLogSession* AND process.command_line:*ClearLog*) OR (process.command_line:*Diagnostics.EventLog* AND process.command_line:*Clear*))) OR (((process.executable:(*\\\\powershell.exe OR *\\\\powershell_ise.exe OR *\\\\pwsh.exe OR *\\\\wmic.exe)) AND process.command_line:*ClearEventLog*) AND (NOT ((process.parent.executable:(C\\:\\\\Windows\\\\SysWOW64\\\\msiexec.exe OR C\\:\\\\Windows\\\\System32\\\\msiexec.exe)) AND process.command_line:*\\ sl\\ *)))"
+}

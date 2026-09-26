@@ -1,0 +1,51 @@
+{
+  "id": "e4f8f789-08cf-4c29-a21f-1c9622e9f0fd",
+  "name": "Sysmon Configuration Change",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a Sysmon configuration change, which could be the result of a legitimate reconfiguration or someone trying manipulate the configuration",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative action"
+  ],
+  "from": "now-360s",
+  "rule_id": "399965d0-e11e-44b6-a708-a5f37cb19c29",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Sysmon\\/Operational AND event.code:16"
+}

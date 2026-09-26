@@ -1,0 +1,88 @@
+{
+  "id": "4e577e09-d64c-47c6-95c4-b9316aa88364",
+  "name": "Potential PowerShell Command Line Obfuscation",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1027",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the PowerShell command lines with special characters",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Amazon SSM Document Worker",
+    "Windows Defender ATP"
+  ],
+  "from": "now-360s",
+  "rule_id": "e6274132-7f9d-4080-9cf3-7c271a73c8fe",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-powershell-abuse?slide=64"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND (process.command_line:/\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+.*\\+/ OR process.command_line:/\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{.*\\{/ OR process.command_line:/\\^.*\\^.*\\^.*\\^.*\\^/ OR process.command_line:/`.*`.*`.*`.*`/)) AND (NOT (process.parent.executable:C\\:\\\\Program\\ Files\\\\Amazon\\\\SSM\\\\ssm\\-document\\-worker.exe OR (process.command_line:(*new\\ EventSource\\(\\\"Microsoft.Windows.Sense.Client.Management\\\"* OR *public\\ static\\ extern\\ bool\\ InstallELAMCertificateInfo\\(SafeFileHandle\\ handle\\);*))))"
+}

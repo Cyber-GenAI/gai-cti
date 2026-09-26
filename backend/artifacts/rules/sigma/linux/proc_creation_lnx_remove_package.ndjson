@@ -1,0 +1,72 @@
+{
+  "id": "b1c1df16-89fe-4cc5-8c05-c20c17141ddc",
+  "name": "Linux Package Uninstall",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects linux package removal using builtin tools such as \"yum\", \"apt\", \"apt-get\" or \"dpkg\".",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator or administrator scripts might delete packages for several reasons (debugging, troubleshooting)."
+  ],
+  "from": "now-360s",
+  "rule_id": "39c28425-c443-4fa8-8714-93498e4fbc33",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://sysdig.com/blog/mitre-defense-evasion-falco",
+    "https://www.tutorialspoint.com/how-to-install-a-software-on-linux-using-yum-command",
+    "https://linuxhint.com/uninstall_yum_package/",
+    "https://linuxhint.com/uninstall-debian-packages/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:*\\/yum AND (CommandLine:(*erase* OR *remove*))) OR ((Image:(*\\/apt OR *\\/apt\\-get)) AND (CommandLine:(*remove* OR *purge*))) OR (Image:*\\/dpkg AND (CommandLine:(*\\-\\-remove\\ * OR *\\ \\-r\\ *))) OR (Image:*\\/rpm AND CommandLine:*\\ \\-e\\ *)"
+}

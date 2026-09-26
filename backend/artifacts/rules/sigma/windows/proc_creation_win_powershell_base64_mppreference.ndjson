@@ -1,0 +1,71 @@
+{
+  "id": "7044e505-9ef7-4334-91a8-770806dbfe63",
+  "name": "Powershell Base64 Encoded MpPreference Cmdlet",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects base64 encoded \"MpPreference\" PowerShell cmdlet code that tries to modifies or tamper with Windows Defender AV",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9775881b-f790-46ad-9389-a0d54d5afe19",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/defender-endpoint/configure-process-opened-file-exclusions-microsoft-defender-antivirus",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1562.001/T1562.001.md",
+    "https://twitter.com/AdamTheAnalyst/status/1483497517119590403"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*QWRkLU1wUHJlZmVyZW5jZS* OR *FkZC1NcFByZWZlcmVuY2Ug* OR *BZGQtTXBQcmVmZXJlbmNlI*) OR process.command_line:(*U2V0LU1wUHJlZmVyZW5jZS* OR *NldC1NcFByZWZlcmVuY2Ug* OR *TZXQtTXBQcmVmZXJlbmNlI*) OR process.command_line:(*YWRkLW1wcHJlZmVyZW5jZS* OR *FkZC1tcHByZWZlcmVuY2Ug* OR *hZGQtbXBwcmVmZXJlbmNlI*) OR process.command_line:(*c2V0LW1wcHJlZmVyZW5jZS* OR *NldC1tcHByZWZlcmVuY2Ug* OR *zZXQtbXBwcmVmZXJlbmNlI*)) OR (process.command_line:(*QQBkAGQALQBNAHAAUAByAGUAZgBlAHIAZQBuAGMAZQAgA* OR *EAZABkAC0ATQBwAFAAcgBlAGYAZQByAGUAbgBjAGUAIA* OR *BAGQAZAAtAE0AcABQAHIAZQBmAGUAcgBlAG4AYwBlACAA* OR *UwBlAHQALQBNAHAAUAByAGUAZgBlAHIAZQBuAGMAZQAgA* OR *MAZQB0AC0ATQBwAFAAcgBlAGYAZQByAGUAbgBjAGUAIA* OR *TAGUAdAAtAE0AcABQAHIAZQBmAGUAcgBlAG4AYwBlACAA* OR *YQBkAGQALQBtAHAAcAByAGUAZgBlAHIAZQBuAGMAZQAgA* OR *EAZABkAC0AbQBwAHAAcgBlAGYAZQByAGUAbgBjAGUAIA* OR *hAGQAZAAtAG0AcABwAHIAZQBmAGUAcgBlAG4AYwBlACAA* OR *cwBlAHQALQBtAHAAcAByAGUAZgBlAHIAZQBuAGMAZQAgA* OR *MAZQB0AC0AbQBwAHAAcgBlAGYAZQByAGUAbgBjAGUAIA* OR *zAGUAdAAtAG0AcABwAHIAZQBmAGUAcgBlAG4AYwBlACAA*))"
+}

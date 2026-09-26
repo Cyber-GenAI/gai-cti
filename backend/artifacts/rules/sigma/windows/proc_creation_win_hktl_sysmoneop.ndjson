@@ -1,0 +1,70 @@
+{
+  "id": "bed1061e-204b-4a25-b2aa-59569714359e",
+  "name": "HackTool - SysmonEOP Execution",
+  "tags": [
+    "cve.2022-41120",
+    "attack.t1068",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the PoC that can be used to exploit Sysmon CVE-2022-41120",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "db860d27-5fe1-4319-a6df-138d130157af",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Wh04m1001/SysmonEoP"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\SysmonEOP.exe OR (winlog.event_data.Hashes:(*IMPHASH\\=22F4089EB8ABA31E1BB162C6D9BF72E5* OR *IMPHASH\\=5123FA4C4384D431CD0D893EEB49BBEC*))"
+}

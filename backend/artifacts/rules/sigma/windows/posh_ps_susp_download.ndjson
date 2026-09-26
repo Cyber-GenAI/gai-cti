@@ -1,0 +1,70 @@
+{
+  "id": "5aeac2cc-780e-4007-8fe9-a131f9a271ef",
+  "name": "Suspicious PowerShell Download - Powershell Script",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious PowerShell download command",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "PowerShell scripts that download content from the Internet"
+  ],
+  "from": "now-360s",
+  "rule_id": "4f0d5825-5b03-4af6-a3b2-c46556bcb47b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/dotnet/api/system.net.webclient.downloadstring?view=net-8.0",
+    "https://learn.microsoft.com/en-us/dotnet/api/system.net.webclient.downloadfile?view=net-8.0"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*System.Net.WebClient* AND (powershell.file.script_block_text:(*.DownloadFile\\(* OR *.DownloadFileAsync\\(* OR *.DownloadString\\(* OR *.DownloadStringAsync\\(*))"
+}

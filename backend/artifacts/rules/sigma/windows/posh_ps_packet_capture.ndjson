@@ -1,0 +1,88 @@
+{
+  "id": "507ea1d4-c2db-4e44-b94a-a1fb22b48f09",
+  "name": "Potential Packet Capture Activity Via Start-NetEventSession - ScriptBlock",
+  "tags": [
+    "attack.credential-access",
+    "attack.discovery",
+    "attack.t1040",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of powershell scripts with calls to the \"Start-NetEventSession\" cmdlet. Which allows an attacker to start event and packet capture for a network event session.\nAdversaries may attempt to capture network to gather information over the course of an operation.\nData captured via this technique may include user credentials, especially those sent over an insecure, unencrypted protocol.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate network diagnostic scripts."
+  ],
+  "from": "now-360s",
+  "rule_id": "26e252e4-c036-4de5-bedd-62096ed25240",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1040",
+          "name": "Network Sniffing",
+          "reference": "https://attack.mitre.org/techniques/T1040/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1040",
+          "name": "Network Sniffing",
+          "reference": "https://attack.mitre.org/techniques/T1040/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/5f866ca4517e837c4ea576e7309d0891e78080a8/atomics/T1040/T1040.md#atomic-test-16---powershell-network-sniffing",
+    "https://github.com/0xsyr0/Awesome-Cybersecurity-Handbooks/blob/7b8935fe4c82cb64d61343de1a8b2e38dd968534/handbooks/10_post_exploitation.md",
+    "https://github.com/forgottentq/powershell/blob/9e616363d497143dc955c4fdce68e5c18d28a6cb/captureWindows-Endpoint.ps1#L13"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Start\\-NetEventSession*"
+}

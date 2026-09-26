@@ -1,0 +1,70 @@
+{
+  "id": "818ef5ad-7041-4c2c-a440-fd6a7c3e7ffb",
+  "name": "Winrar Compressing Dump Files",
+  "tags": [
+    "attack.collection",
+    "attack.t1560.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of WinRAR in order to compress a file with a \".dmp\"/\".dump\" extension, which could be a step in a process of dump file exfiltration.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of WinRAR with a command line in which \".dmp\" or \".dump\" appears accidentally",
+    "Legitimate use of WinRAR to compress WER \".dmp\" files for troubleshooting"
+  ],
+  "from": "now-360s",
+  "rule_id": "f2b68557-b9f8-43bb-b703-58bd1c9692a7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1560",
+          "name": "Archive Collected Data",
+          "reference": "https://attack.mitre.org/techniques/T1560/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.crowdstrike.com/blog/overwatch-exposes-aquatic-panda-in-possession-of-log-4-shell-exploit-tools/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\rar.exe OR *\\\\winrar.exe)) OR process.pe.description:Command\\ line\\ RAR) AND (process.command_line:(*.dmp* OR *.dump* OR *.hdmp*))"
+}

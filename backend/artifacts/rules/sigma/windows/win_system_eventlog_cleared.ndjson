@@ -1,0 +1,72 @@
+{
+  "id": "54b9cf62-5b50-44ad-9112-d6b745663d49",
+  "name": "Eventlog Cleared",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.001",
+    "car.2016-04-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "One of the Windows Eventlogs has been cleared. e.g. caused by \"wevtutil cl\" command execution",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rollout of log collection agents (the setup routine often includes a reset of the local Eventlog)",
+    "System provisioning (system reset before the golden image creation)"
+  ],
+  "from": "now-360s",
+  "rule_id": "5ad1c8fb-1104-4778-a38c-c164a071fb77",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/deviouspolack/status/832535435960209408",
+    "https://www.hybrid-analysis.com/sample/027cc450ef5f8c5f653329641ec1fed91f694e0d229928963b30f6b0d7d3a745?environmentId=100"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((event.code:104 AND winlog.provider_name:Microsoft\\-Windows\\-Eventlog) AND (NOT (winlog.channel:(Microsoft\\-Windows\\-PowerShell\\/Operational OR Microsoft\\-Windows\\-Sysmon\\/Operational OR PowerShellCore\\/Operational OR Security OR System OR Windows\\ PowerShell))))"
+}

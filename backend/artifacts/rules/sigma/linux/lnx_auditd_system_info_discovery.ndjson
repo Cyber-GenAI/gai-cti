@@ -1,0 +1,69 @@
+{
+  "id": "ac07e6a0-5493-4539-be79-bc0aaff9705f",
+  "name": "System Information Discovery - Auditd",
+  "tags": [
+    "attack.discovery",
+    "attack.t1082",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects System Information Discovery commands",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely"
+  ],
+  "from": "now-360s",
+  "rule_id": "9d609c44-edad-4d37-9399-6c74107084a0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f296668303c29d3f4c07e42bdd2b28d8dd6625f9/atomics/T1082/T1082.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(type:PATH AND (name:(\\/etc\\/lsb\\-release OR \\/etc\\/redhat\\-release OR \\/etc\\/issue))) OR (type:EXECVE AND (a0:(uname OR uptime OR lsmod OR hostname OR env))) OR (type:EXECVE AND a0:grep AND (a1:(*vbox* OR *vm* OR *xen* OR *virtio* OR *hv*))) OR (type:EXECVE AND a0:kmod AND a1:list)"
+}

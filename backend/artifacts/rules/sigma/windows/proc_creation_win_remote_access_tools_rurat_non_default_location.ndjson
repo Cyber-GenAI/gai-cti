@@ -1,0 +1,51 @@
+{
+  "id": "4015e618-a7ad-4e82-98bc-a334667c9b98",
+  "name": "Remote Access Tool - RURAT Execution From Unusual Location",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of Remote Utilities RAT (RURAT) from an unusual location (outside of 'C:\\Program Files')",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "373ebe43-9426-4a52-bb54-f5f8c1a62918",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/misbehaving-rats/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\rutserv.exe OR *\\\\rfusclient.exe)) OR process.pe.product:Remote\\ Utilities) AND (NOT (process.executable:(C\\:\\\\Program\\ Files\\\\Remote\\ Utilities* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Remote\\ Utilities*)))"
+}

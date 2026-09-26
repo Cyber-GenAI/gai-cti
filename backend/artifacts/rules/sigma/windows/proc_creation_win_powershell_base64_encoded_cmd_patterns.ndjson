@@ -1,0 +1,69 @@
+{
+  "id": "e842717f-1b82-419c-ba30-5a95f5e7d781",
+  "name": "Suspicious PowerShell Encoded Command Patterns",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell command line patterns in combincation with encoded commands that often appear in malware infection chains",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other tools that work with encoded scripts in the command line instead of script files"
+  ],
+  "from": "now-360s",
+  "rule_id": "b96d40b2-f50e-46fa-afd9-54f5216d8f1c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/b9040c63-c140-479b-ad59-f1bb56ce7a97/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.Exe OR pwsh.dll))) AND (process.command_line:(*\\ \\-e\\ * OR *\\ \\-en\\ * OR *\\ \\-enc\\ * OR *\\ \\-enco*)) AND (process.command_line:(*\\ JAB* OR *\\ SUVYI* OR *\\ SQBFAFgA* OR *\\ aWV4I* OR *\\ IAB* OR *\\ PAA* OR *\\ aQBlAHgA*))) AND (NOT (process.parent.executable:(*C\\:\\\\Packages\\\\Plugins\\\\Microsoft.GuestConfiguration.ConfigurationforWindows\\\\* OR *\\\\gc_worker.exe*)))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "14ba2bf1-cc78-4d5c-bab6-18ac19297bf8",
+  "name": "Nohup Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of nohup which could be leveraged by an attacker to keep a process running or break out from restricted environments",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrators or installed processes that leverage nohup"
+  ],
+  "from": "now-360s",
+  "rule_id": "ec39eee6-373e-4adc-b0df-87b389b9e7ae",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/nohup/",
+    "https://en.wikipedia.org/wiki/Nohup",
+    "https://www.computerhope.com/unix/unohup.htm"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/nohup"
+}

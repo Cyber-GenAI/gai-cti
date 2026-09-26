@@ -1,0 +1,72 @@
+{
+  "id": "b39b9306-f8fa-4571-91c0-9ea7033173a2",
+  "name": "Persistence Via New SIP Provider",
+  "tags": [
+    "attack.persistence",
+    "attack.defense-evasion",
+    "attack.t1553.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker register a new SIP provider for persistence and defense evasion",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate SIP being registered by the OS or different software."
+  ],
+  "from": "now-360s",
+  "rule_id": "38f4cf42-bca0-4f23-95a4-31217ce724bf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1553",
+          "name": "Subvert Trust Controls",
+          "reference": "https://attack.mitre.org/techniques/T1553/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/codesigning.html",
+    "https://github.com/gtworek/PSBits/tree/master/SIP",
+    "https://specterops.io/assets/resources/SpecterOps_Subverting_Trust_in_Windows.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((registry.path:(*\\\\SOFTWARE\\\\Microsoft\\\\Cryptography\\\\Providers\\\\* OR *\\\\SOFTWARE\\\\Microsoft\\\\Cryptography\\\\OID\\\\EncodingType* OR *\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\Cryptography\\\\Providers\\\\* OR *\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\Cryptography\\\\OID\\\\EncodingType*)) AND (registry.path:(*\\\\Dll* OR *\\\\$DLL*))) AND (NOT ((winlog.event_data.Details:(WINTRUST.DLL OR mso.dll)) OR (process.executable:C\\:\\\\Windows\\\\System32\\\\poqexec.exe AND registry.path:*\\\\CryptSIPDll* AND winlog.event_data.Details:C\\:\\\\Windows\\\\System32\\\\PsfSip.dll)))"
+}

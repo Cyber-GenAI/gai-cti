@@ -1,0 +1,72 @@
+{
+  "id": "7b14e12c-bc96-4c18-9cf8-399aa37bb726",
+  "name": "Security Service Disabled Via Reg.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"reg.exe\" to disable security services such as Windows Defender.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "01c58bc0-d7b4-4d3c-bf46-e9144ead5cb9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/JohnLaTwC/status/1415295021041979392",
+    "https://github.com/gordonbay/Windows-On-Reins/blob/e587ac7a0407847865926d575e3c46f68cf7c68d/wor.ps1",
+    "https://vms.drweb.fr/virus/?i=24144899",
+    "https://bidouillesecurity.com/disable-windows-defender-in-powershell/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*reg* AND process.command_line:*add*) AND ((process.command_line:*d\\ 4* AND process.command_line:*v\\ Start*) AND (process.command_line:(*\\\\AppIDSvc* OR *\\\\MsMpSvc* OR *\\\\NisSrv* OR *\\\\SecurityHealthService* OR *\\\\Sense* OR *\\\\UsoSvc* OR *\\\\WdBoot* OR *\\\\WdFilter* OR *\\\\WdNisDrv* OR *\\\\WdNisSvc* OR *\\\\WinDefend* OR *\\\\wscsvc* OR *\\\\wuauserv*)))"
+}

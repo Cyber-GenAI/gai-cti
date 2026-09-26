@@ -1,0 +1,69 @@
+{
+  "id": "04d82efc-de30-47bc-a999-87bf845bc697",
+  "name": "LSASS Process Reconnaissance Via Findstr.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1552.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects findstring commands that include the keyword lsass, which indicates recon actviity for the LSASS process PID",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9e6e9484-69f9-438c-9232-1178719883a4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.talosintelligence.com/2022/08/recent-cyber-attack.html?m=1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\find.exe OR *\\\\findstr.exe)) OR (process.pe.original_file_name:(FIND.EXE OR FINDSTR.EXE))) AND process.command_line:*lsass*) OR (process.command_line:(*\\ \\-i\\ \\\"lsass* OR *\\ \\/i\\ \\\"lsass* OR *\\ \u2013i\\ \\\"lsass* OR *\\ \u2014i\\ \\\"lsass* OR *\\ \u2015i\\ \\\"lsass*) OR process.command_line:(*\\ \\-i\\ lsass.exe* OR *\\ \\/i\\ lsass.exe* OR *\\ \u2013i\\ lsass.exe* OR *\\ \u2014i\\ lsass.exe* OR *\\ \u2015i\\ lsass.exe*) OR process.command_line:(*findstr\\ \\\"lsass*) OR process.command_line:(*findstr\\ lsass*) OR process.command_line:(*findstr.exe\\ \\\"lsass*) OR process.command_line:(*findstr.exe\\ lsass*))"
+}

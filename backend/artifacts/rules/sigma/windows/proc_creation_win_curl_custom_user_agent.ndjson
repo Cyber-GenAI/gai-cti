@@ -1,0 +1,52 @@
+{
+  "id": "948a085f-f629-49bd-8d7d-105f2fed385e",
+  "name": "Curl Web Request With Potential Custom User-Agent",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"curl.exe\" with a potential custom \"User-Agent\". Attackers can leverage this to download or exfiltrate data via \"curl\" to a domain that only accept specific \"User-Agent\" strings",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6233b17e-a30e-4984-a2c9-c6669047523e",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://labs.withsecure.com/publications/fin7-target-veeam-servers",
+    "https://github.com/WithSecureLabs/iocs/blob/344203de742bb7e68bd56618f66d34be95a9f9fc/FIN7VEEAM/iocs.csv"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\curl.exe OR process.pe.original_file_name:curl.exe) AND (process.command_line:/\\s-H\\s/ AND process.command_line:*User\\-Agent\\:*)"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "04b8d2ec-e1b3-4d5a-9db4-b4da554d6de2",
+  "name": "MSSQL Add Account To Sysadmin Role",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker tries to backdoor the MSSQL server by adding a backdoor account to the sysadmin fixed server role",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare legitimate administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "11c0c2e1-4539-4a69-a722-74298df9e1da",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (winlog.provider_name:*MSSQL* AND event.code:33205 AND (winlog.event_data.Data:*object_name\\:sysadmin* AND winlog.event_data.Data:*statement\\:alter\\ server\\ role\\ \\[sysadmin\\]\\ add\\ member\\ *))"
+}

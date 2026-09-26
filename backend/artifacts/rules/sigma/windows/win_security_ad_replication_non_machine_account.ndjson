@@ -1,0 +1,71 @@
+{
+  "id": "6b379a87-1346-4a85-a0d8-4a61e333fb30",
+  "name": "Active Directory Replication from Non Machine Account",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential abuse of Active Directory Replication Service (ADRS) from a non machine account to request credentials.",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1fdd9723-b4ac-4d3b-b7ad-b47ad950940d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://threathunterplaybook.com/hunts/windows/180815-ADObjectAccessReplication/notebook.html",
+    "https://threathunterplaybook.com/library/windows/active_directory_replication.html",
+    "https://threathunterplaybook.com/hunts/windows/190101-ADModDirectoryReplication/notebook.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4662 AND winlog.event_data.AccessMask:0x100 AND (winlog.event_data.Properties:(*1131f6aa\\-9c07\\-11d1\\-f79f\\-00c04fc2dcd2* OR *1131f6ad\\-9c07\\-11d1\\-f79f\\-00c04fc2dcd2* OR *89e95b76\\-444d\\-4c62\\-991a\\-0facbeda640c*))) AND (NOT (user.name:(*$ OR MSOL_*))))"
+}

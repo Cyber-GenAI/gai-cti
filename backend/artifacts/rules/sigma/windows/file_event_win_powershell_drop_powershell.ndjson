@@ -1,0 +1,51 @@
+{
+  "id": "7a8001a6-f5ce-4c55-a0bb-13c34620e723",
+  "name": "PowerShell Script Dropped Via PowerShell.EXE",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell creating a PowerShell file (.ps1). While often times this behavior is benign, sometimes it can be a sign of a dropper script trying to achieve persistence.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives will differ depending on the environment and scripts used. Apply additional filters accordingly."
+  ],
+  "from": "now-360s",
+  "rule_id": "0780f58b-8e12-40a5-8c92-dfa21d8b5d98",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.zscaler.com/blogs/security-research/onenote-growing-threat-malware-distribution"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) AND file.path:*.ps1) AND (NOT (file.path:*__PSScriptPolicyTest_* OR (file.path:C\\:\\\\Users\\\\* AND file.path:*\\\\AppData\\\\Local\\\\Temp\\\\*) OR file.path:C\\:\\\\Windows\\\\Temp\\\\*))"
+}

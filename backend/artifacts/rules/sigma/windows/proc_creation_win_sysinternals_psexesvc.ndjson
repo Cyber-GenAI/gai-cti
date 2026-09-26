@@ -1,0 +1,52 @@
+{
+  "id": "0058fce1-24ce-4ba8-91f4-b0a04087b362",
+  "name": "PsExec Service Execution",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects launch of the PSEXESVC service, which means that this system was the target of a psexec remote execution",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative tasks"
+  ],
+  "from": "now-360s",
+  "rule_id": "54a1aeca-8ddc-43d9-abe2-9b5ec6d8f921",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/psexec",
+    "https://www.youtube.com/watch?v=ro2QuZTIMBM"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:C\\:\\\\Windows\\\\PSEXESVC.exe OR process.pe.original_file_name:psexesvc.exe"
+}

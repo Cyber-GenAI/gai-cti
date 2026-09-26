@@ -1,0 +1,69 @@
+{
+  "id": "1c82d439-5449-465e-a80e-7b791ea6ee45",
+  "name": "RDP Connection Allowed Via Netsh.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the netsh command to open and allow connections to port 3389 (RDP). As seen used by Sarwent Malware",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "d4fc1066-086b-4536-a743-d5cbdb7ff726",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://labs.sentinelone.com/sarwent-malware-updates-command-detonation/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\netsh.exe OR process.pe.original_file_name:netsh.exe) AND ((process.command_line:*firewall\\ * AND process.command_line:*add\\ * AND process.command_line:*tcp\\ * AND process.command_line:*3389*) AND (process.command_line:(*portopening* OR *allow*)))"
+}

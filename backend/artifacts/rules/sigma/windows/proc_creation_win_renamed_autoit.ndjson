@@ -1,0 +1,70 @@
+{
+  "id": "3e8339f5-facd-4384-ba19-4187a61399e3",
+  "name": "Renamed AutoIt Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1027",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a renamed AutoIt2.exe or AutoIt3.exe.\nAutoIt is a scripting language and automation tool for Windows systems. While primarily used for legitimate automation tasks, it can be misused in cyber attacks.\nAttackers can leverage AutoIt to create and distribute malware, including keyloggers, spyware, and botnets. A renamed AutoIt executable is particularly suspicious.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "119c11ab-d130-4ac7-a381-003f712a5608",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/malmoeb/status/1665463817130725378?s=12&t=C0_T_re0wRP_NfKa27Xw9w",
+    "https://www.autoitscript.com/site/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:(*\\ \\/AutoIt3ExecuteScript* OR *\\ \\/ErrorStdOut*)) OR (winlog.event_data.Hashes:(*IMPHASH\\=FDC554B3A8683918D731685855683DDF* OR *IMPHASH\\=CD30A61B60B3D60CECDB034C8C83C290* OR *IMPHASH\\=F8A00C72F2D667D2EDBB234D0C0AE000*)) OR (process.pe.original_file_name:(AutoIt3.exe OR AutoIt2.exe OR AutoIt.exe))) AND (NOT (process.executable:(*\\\\AutoIt.exe OR *\\\\AutoIt2.exe OR *\\\\AutoIt3_x64.exe OR *\\\\AutoIt3.exe)))"
+}

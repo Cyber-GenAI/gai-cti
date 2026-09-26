@@ -1,0 +1,83 @@
+{
+  "id": "bee70916-e6d7-4bf5-be87-29bcd3368896",
+  "name": "Nltest.EXE Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1016",
+    "attack.t1018",
+    "attack.t1482",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects nltest commands that can be used for information discovery",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "a39bc509-9d7b-4119-bc1f-4efa85dd7c7f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1018",
+          "name": "Remote System Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1018/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1016",
+          "name": "System Network Configuration Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1016/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1482",
+          "name": "Domain Trust Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1482/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://jpcertcc.github.io/ToolAnalysisResultSheet/details/nltest.htm"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\nltest.exe OR process.pe.original_file_name:nltestrk.exe"
+}

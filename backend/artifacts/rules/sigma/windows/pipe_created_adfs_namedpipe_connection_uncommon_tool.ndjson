@@ -1,0 +1,71 @@
+{
+  "id": "aaf140a5-3d72-4215-89ab-29ff14de605c",
+  "name": "ADFS Database Named Pipe Connection By Uncommon Tool",
+  "tags": [
+    "attack.collection",
+    "attack.t1005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious local connections via a named pipe to the AD FS configuration database (Windows Internal Database).\nUsed to access information such as the AD FS configuration settings which contains sensitive information used to sign SAML tokens.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d8dbc48e-328e-4339-9362-c32890ef6d19",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1005",
+          "name": "Data from Local System",
+          "reference": "https://attack.mitre.org/techniques/T1005/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Azure/Azure-Sentinel/blob/f99542b94afe0ad2f19a82cc08262e7ac8e1428e/Detections/SecurityEvent/ADFSDBNamedPipeConnection.yaml",
+    "https://o365blog.com/post/adfs/",
+    "https://github.com/Azure/SimuLand"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.name:\\\\MICROSOFT##WID\\\\tsql\\\\query AND (NOT (process.executable:(*\\:\\\\Windows\\\\System32\\\\mmc.exe OR *\\:\\\\Windows\\\\system32\\\\svchost.exe OR *\\:\\\\Windows\\\\System32\\\\wsmprovhost.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\mmc.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\wsmprovhost.exe OR *\\:\\\\Windows\\\\WID\\\\Binn\\\\sqlwriter.exe OR *\\\\AzureADConnect.exe OR *\\\\Microsoft.Identity.Health.Adfs.PshSurrogate.exe OR *\\\\Microsoft.IdentityServer.ServiceHost.exe OR *\\\\Microsoft.Tri.Sensor.exe OR *\\\\sqlservr.exe OR *\\\\tssdis.exe)))"
+}

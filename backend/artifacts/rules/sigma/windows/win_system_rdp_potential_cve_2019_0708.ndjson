@@ -1,0 +1,71 @@
+{
+  "id": "14af2048-6bf3-4a71-8ee7-19a9d9b3554b",
+  "name": "Potential RDP Exploit CVE-2019-0708",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1210",
+    "car.2013-07-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect suspicious error on protocol RDP, potential CVE-2019-0708",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Bad connections or network interruptions"
+  ],
+  "from": "now-360s",
+  "rule_id": "6705bc05-699d-4db4-a88f-3022fff7a354",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1210",
+          "name": "Exploitation of Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1210/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20190710034152/https://github.com/zerosum0x0/CVE-2019-0708",
+    "https://github.com/Ekultek/BlueKeep"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((event.code:(56 OR 50)) AND winlog.provider_name:TermDD)"
+}

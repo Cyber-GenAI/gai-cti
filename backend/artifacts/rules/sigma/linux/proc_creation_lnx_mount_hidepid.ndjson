@@ -1,0 +1,72 @@
+{
+  "id": "f8047843-73db-4ca9-b193-797b32213ce5",
+  "name": "Mount Execution With Hidepid Parameter",
+  "tags": [
+    "attack.credential-access",
+    "attack.defense-evasion",
+    "attack.t1564",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the \"mount\" command with \"hidepid\" parameter to make invisible processes to other users from the system",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "bd29df78-7c27-47c3-94c0-1c4d3206d152",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blogs.blackberry.com/",
+    "https://www.cyberciti.biz/faq/linux-hide-processes-from-other-users/",
+    "https://twitter.com/Joseliyo_Jstnk/status/1620131033474822144"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/mount AND (CommandLine:*hidepid\\=2* AND CommandLine:*\\ \\-o\\ *)"
+}

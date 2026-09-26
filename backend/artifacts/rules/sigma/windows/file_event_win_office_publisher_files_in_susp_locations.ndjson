@@ -1,0 +1,51 @@
+{
+  "id": "f92a2161-2f09-4ba7-a6e7-612f661dcb8a",
+  "name": "Publisher Attachment File Dropped In Suspicious Location",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of files with the \".pub\" extension in suspicious or uncommon locations. This could be a sign of attackers abusing Publisher documents",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of \".pub\" files from those locations"
+  ],
+  "from": "now-360s",
+  "rule_id": "0719e429-6d99-4248-832d-12fe752e8730",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/EmericNasi/status/1623224526220804098"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\* OR *\\\\Windows\\\\Temp\\\\* OR *C\\:\\\\Temp\\\\*)) AND file.path:*.pub"
+}

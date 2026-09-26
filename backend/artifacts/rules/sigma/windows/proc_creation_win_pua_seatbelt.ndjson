@@ -1,0 +1,84 @@
+{
+  "id": "5de25541-6209-4cbc-9bf8-93d4e510bb4f",
+  "name": "PUA - Seatbelt Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1526",
+    "attack.t1087",
+    "attack.t1083",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the PUA/Recon tool Seatbelt via PE information of command line parameters",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "10fba1db-7444-4fcd-8efc-658198473c79",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1526",
+          "name": "Cloud Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1526/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/GhostPack/Seatbelt",
+    "https://www.bluetangle.dev/2022/08/fastening-seatbelt-on-threat-hunting.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\Seatbelt.exe OR process.pe.original_file_name:Seatbelt.exe OR process.pe.description:Seatbelt OR (process.command_line:(*\\ DpapiMasterKeys* OR *\\ InterestingProcesses* OR *\\ InterestingFiles* OR *\\ CertificateThumbprints* OR *\\ ChromiumBookmarks* OR *\\ ChromiumHistory* OR *\\ ChromiumPresence* OR *\\ CloudCredentials* OR *\\ CredEnum* OR *\\ CredGuard* OR *\\ FirefoxHistory* OR *\\ ProcessCreationEvents*))) OR ((process.command_line:(*\\ \\-group\\=misc* OR *\\ \\-group\\=remote* OR *\\ \\-group\\=chromium* OR *\\ \\-group\\=slack* OR *\\ \\-group\\=system* OR *\\ \\-group\\=user* OR *\\ \\-group\\=all*)) AND process.command_line:*\\ \\-outputfile\\=*)"
+}

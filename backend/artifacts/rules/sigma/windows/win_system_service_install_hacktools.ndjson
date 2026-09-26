@@ -1,0 +1,70 @@
+{
+  "id": "009e55bb-ae2a-4397-a784-0688257cac6e",
+  "name": "HackTool Service Registration or Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1569.002",
+    "attack.s0029",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects installation or execution of services",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6436ac42-0bac-4d2f-ad12-2d18664f28c9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND (event.code:(7045 OR 7036))) AND ((winlog.event_data.ServiceName:(*cachedump* OR *DumpSvc* OR *gsecdump* OR *pwdump* OR *UACBypassedService* OR *WCE\\ SERVICE* OR *WCESERVICE* OR *winexesvc*)) OR winlog.event_data.ImagePath:*bypass*))"
+}

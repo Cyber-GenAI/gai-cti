@@ -1,0 +1,51 @@
+{
+  "id": "7b01b7f1-cded-48cc-8491-a7847d04ec22",
+  "name": "PDF File Created By RegEdit.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a file with the \".pdf\" extension by the \"RegEdit.exe\" process.\nThis indicates that a user is trying to print/save a registry key as a PDF in order to potentially extract sensitive information and bypass defenses.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "a623ac1d-dc04-4b02-a6a6-453c17665d51",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://sensepost.com/blog/2024/dumping-lsa-secrets-a-story-about-task-decorrelation/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\regedit.exe AND file.path:*.pdf"
+}

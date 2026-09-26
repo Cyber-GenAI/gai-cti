@@ -1,0 +1,70 @@
+{
+  "id": "3ed87ddc-ea6a-4e8f-bd78-fa7d86ff04c2",
+  "name": "Deletion of Volume Shadow Copies via WMI with PowerShell - PS Script",
+  "tags": [
+    "attack.impact",
+    "attack.t1490",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects deletion of Windows Volume Shadow Copies with PowerShell code and Get-WMIObject. This technique is used by numerous ransomware families such as Sodinokibi/REvil",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "cf6150b0-a790-4ef6-91c3-194a1cb959ff",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1490",
+          "name": "Inhibit System Recovery",
+          "reference": "https://attack.mitre.org/techniques/T1490/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1490/T1490.md#atomic-test-5---windows---delete-volume-shadow-copies-via-wmi-with-powershell",
+    "https://www.elastic.co/guide/en/security/current/volume-shadow-copy-deletion-via-powershell.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*Get\\-WmiObject* OR *gwmi* OR *Get\\-CimInstance* OR *gcim*)) AND powershell.file.script_block_text:*Win32_ShadowCopy* AND (powershell.file.script_block_text:(*.Delete\\(\\)* OR *Remove\\-WmiObject* OR *rwmi* OR *Remove\\-CimInstance* OR *rcim*))"
+}

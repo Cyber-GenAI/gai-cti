@@ -1,0 +1,53 @@
+{
+  "id": "b61fcb8a-5848-4b26-a86d-e7567b637714",
+  "name": "Winget Admin Settings Modification",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to the AppInstaller (winget) admin settings. Such as enabling local manifest installations or disabling installer hash checks",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "The event doesn't contain information about the type of change. False positives are expected with legitimate changes"
+  ],
+  "from": "now-360s",
+  "rule_id": "1c12d50d-9f3f-4988-adc1-dfd109057fb4",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/nasbench/Misc-Research/tree/b9596e8109dcdb16ec353f316678927e507a5b8d/LOLBINs/Winget",
+    "https://github.com/microsoft/winget-cli/blob/02d2f93807c9851d73eaacb4d8811a76b64b7b01/src/AppInstallerCommonCore/Public/winget/AdminSettings.h#L13"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\winget.exe AND registry.path:\\\\REGISTRY\\\\A\\\\* AND registry.path:*\\\\LocalState\\\\admin_settings"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "8b28f4b5-faec-4bb7-8c48-4fe891a2aa2f",
+  "name": "Suspicious Certreq Command to Download",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1105",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious certreq execution taken from the LOLBAS examples, which can be abused to download (small) files",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "fbcf7531-4a6b-4988-9876-58de3115b7db",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Certreq/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\certreq.exe OR process.pe.original_file_name:CertReq.exe) AND (process.command_line:*\\ \\-Post\\ * AND process.command_line:*\\ \\-config\\ * AND process.command_line:*\\ http* AND process.command_line:*\\ C\\:\\\\windows\\\\win.ini\\ *)"
+}

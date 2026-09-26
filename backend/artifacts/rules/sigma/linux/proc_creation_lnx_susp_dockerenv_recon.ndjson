@@ -1,0 +1,71 @@
+{
+  "id": "f28af444-7654-48b2-a4eb-5b17337e9bdc",
+  "name": "Docker Container Discovery Via Dockerenv Listing",
+  "tags": [
+    "attack.discovery",
+    "attack.t1082",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects listing or file reading of \".dockerenv\" which can be a sing of potential container discovery",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate system administrator usage of these commands",
+    "Some container tools or deployments may use these techniques natively to determine how they proceed with execution, and will need to be filtered"
+  ],
+  "from": "now-360s",
+  "rule_id": "3268fe6f-4cf7-418f-9e90-d5af9b587188",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.skyplabs.net/posts/container-detection/",
+    "https://stackoverflow.com/questions/20010199/how-to-determine-if-a-process-runs-inside-lxc-docker"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/cat OR *\\/dir OR *\\/find OR *\\/ls OR *\\/stat OR *\\/test OR *grep)) AND CommandLine:*.dockerenv"
+}

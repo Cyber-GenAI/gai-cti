@@ -1,0 +1,52 @@
+{
+  "id": "0de34053-45fb-44f8-9013-6aadaca1efd1",
+  "name": "Potential Suspicious Winget Package Installation",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential suspicious winget package installation from a suspicious source.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8bf0d460-ef64-4fd3-b739-e9b189d17105",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/nasbench/Misc-Research/tree/b9596e8109dcdb16ec353f316678927e507a5b8d/LOLBINs/Winget"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.Contents:\\[ZoneTransfer\\]\\ \\ ZoneId\\=3* AND (winlog.event_data.Contents:(*\\:\\/\\/1* OR *\\:\\/\\/2* OR *\\:\\/\\/3* OR *\\:\\/\\/4* OR *\\:\\/\\/5* OR *\\:\\/\\/6* OR *\\:\\/\\/7* OR *\\:\\/\\/8* OR *\\:\\/\\/9*)) AND file.path:*\\:Zone.Identifier AND file.path:*\\\\AppData\\\\Local\\\\Temp\\\\WinGet\\\\*"
+}

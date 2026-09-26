@@ -1,0 +1,70 @@
+{
+  "id": "ad7f56fb-f62d-436a-90cc-ddcd6ae90adf",
+  "name": "Execute MSDT Via Answer File",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"msdt.exe\" using an answer file which is simulating the legitimate way of calling msdt via \"pcwrun.exe\" (For example from the compatibility tab)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Possible undocumented parents of \"msdt\" other than \"pcwrun\""
+  ],
+  "from": "now-360s",
+  "rule_id": "aa83e874-4283-4857-9245-75971fd96c15",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Msdt/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\msdt.exe AND process.command_line:*\\\\WINDOWS\\\\diagnostics\\\\index\\\\PCWDiagnostic.xml*) AND (process.command_line:(*\\ \\-af\\ * OR *\\ \\/af\\ *))) AND (NOT process.parent.executable:*\\\\pcwrun.exe)"
+}

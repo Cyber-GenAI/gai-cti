@@ -1,0 +1,70 @@
+{
+  "id": "66af8f7f-0895-4ff7-90b5-948eb030c7a4",
+  "name": "Potentially Suspicious ASP.NET Compilation Via AspNetCompiler",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1127",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"aspnet_compiler.exe\" with potentially suspicious paths for compilation.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "09f418d9-2673-4710-9ddd-ec5d3c13e33c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1127",
+          "name": "Trusted Developer Utilities Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1127/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Aspnet_Compiler/",
+    "https://ijustwannared.team/2020/08/01/the-curious-case-of-aspnet_compiler-exe/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*C\\:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\* OR *C\\:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\*)) AND process.executable:*\\\\aspnet_compiler.exe AND (process.command_line:(*\\\\Users\\\\Public\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Roaming\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks\\\\* OR *\\:\\\\Windows\\\\Tasks\\\\*))"
+}

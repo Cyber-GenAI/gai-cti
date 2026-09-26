@@ -1,0 +1,88 @@
+{
+  "id": "015d7058-2fda-4e82-9fa6-c3bb83a3530d",
+  "name": "Potential PowerShell Obfuscation Via Reversed Commands",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1027",
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the presence of reversed PowerShell commands in the CommandLine. This is often used as a method of obfuscation by attackers",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "cf4d5555-236c-48e5-883d-71e7dd99840c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://2019.offzone.moscow/ru/report/hunting-for-powershell-abuses/",
+    "https://speakerdeck.com/heirhabarov/hunting-for-powershell-abuse?slide=66"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND (process.command_line:(*hctac* OR *kaerb* OR *dnammoc* OR *ekovn* OR *eliFd* OR *rahc* OR *etirw* OR *golon* OR *tninon* OR *eddih* OR *tpircS* OR *ssecorp* OR *llehsrewop* OR *esnopser* OR *daolnwod* OR *tneilCbeW* OR *tneilc* OR *ptth* OR *elifotevas* OR *46esab* OR *htaPpmeTteG* OR *tcejbO* OR *maerts* OR *hcaerof* OR *retupmoc*))) AND (NOT (process.command_line:(*\\ \\-EncodedCommand\\ * OR *\\ \\-enc\\ *)))"
+}

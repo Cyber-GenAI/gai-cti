@@ -1,0 +1,51 @@
+{
+  "id": "7cfc554d-5e29-4f1a-bc78-b9b8659d8c29",
+  "name": "New ODBC Driver Registered",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the registration of a new ODBC driver.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely"
+  ],
+  "from": "now-360s",
+  "rule_id": "fd837aee-e9b9-45ae-be2c-8d81b5c121c4",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2020/08/23/odbcconf-lolbin-trifecta/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\SOFTWARE\\\\ODBC\\\\ODBCINST.INI\\\\* AND registry.path:*\\\\Driver) AND (NOT (registry.path:*\\\\SQL\\ Server\\\\* AND winlog.event_data.Details:%WINDIR%\\\\System32\\\\SQLSRV32.dll)) AND (NOT ((registry.path:*\\\\Microsoft\\ Access\\ * AND winlog.event_data.Details:C\\:\\\\Progra* AND winlog.event_data.Details:*\\\\ACEODBC.DLL) OR (registry.path:*\\\\Microsoft\\ Excel\\ Driver* AND winlog.event_data.Details:C\\:\\\\Progra* AND winlog.event_data.Details:*\\\\ACEODBC.DLL)))"
+}

@@ -1,0 +1,86 @@
+{
+  "id": "c61f2398-4681-427d-88bd-11b0766fd7b4",
+  "name": "Remote Access Tool Services Have Been Installed - Security",
+  "tags": [
+    "attack.persistence",
+    "attack.t1543.003",
+    "attack.t1569.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects service installation of different remote access tools software. These software are often abused by threat actors to perform",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "The rule doesn't look for anything suspicious so false positives are expected. If you use one of the tools mentioned, comment it out"
+  ],
+  "from": "now-360s",
+  "rule_id": "4e5aceb4-7d0d-4b86-9316-adb2806280ff",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/misbehaving-rats/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4697 AND (service.name:(*AmmyyAdmin* OR *AnyDesk* OR *Atera* OR *BASupportExpressSrvcUpdater* OR *BASupportExpressStandaloneService* OR *chromoting* OR *GoToAssist* OR *GoToMyPC* OR *jumpcloud* OR *LMIGuardianSvc* OR *LogMeIn* OR *monblanking* OR *Parsec* OR *RManService* OR *RPCPerformanceService* OR *RPCService* OR *SplashtopRemoteService* OR *SSUService* OR *TeamViewer* OR *TightVNC* OR *vncserver* OR *Zoho*)))"
+}

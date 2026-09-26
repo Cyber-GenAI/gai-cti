@@ -1,0 +1,71 @@
+{
+  "id": "f0e4c9d6-2fd7-475a-938a-707ef469f0b3",
+  "name": "File Creation In Suspicious Directory By Msdt.EXE",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.001",
+    "cve.2022-30190",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects msdt.exe creating files in suspicious directories which could be a sign of exploitation of either Follina or Dogwalk vulnerabilities",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6ab76751-159d-4ae1-9f33-c74dd7e45cb7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://irsl.medium.com/the-trouble-with-microsofts-troubleshooters-6e32fc80b8bd",
+    "https://msrc-blog.microsoft.com/2022/05/30/guidance-for-cve-2022-30190-microsoft-support-diagnostic-tool-vulnerability/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\msdt.exe AND (file.path:(*\\\\Desktop\\\\* OR *\\\\Start\\ Menu\\\\Programs\\\\Startup\\\\* OR *C\\:\\\\PerfLogs\\\\* OR *C\\:\\\\ProgramData\\\\* OR *C\\:\\\\Users\\\\Public\\\\*))"
+}

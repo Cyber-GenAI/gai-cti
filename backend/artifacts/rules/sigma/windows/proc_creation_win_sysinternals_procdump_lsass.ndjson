@@ -1,0 +1,89 @@
+{
+  "id": "c7867370-f6db-4c75-875d-4c3b969604f2",
+  "name": "Potential LSASS Process Dump Via Procdump",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "attack.credential-access",
+    "attack.t1003.001",
+    "car.2013-05-009",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious uses of the SysInternals Procdump utility by using a special command line parameter in combination with the lsass.exe process.\nThis way we are also able to catch cases in which the attacker has renamed the procdump executable.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely, because no one should dump an lsass process memory",
+    "Another tool that uses command line flags similar to ProcDump"
+  ],
+  "from": "now-360s",
+  "rule_id": "d6ff288c-bcf9-4fdb-afb3-b78750c6042a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/procdump"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:(*\\ \\-ma\\ * OR *\\ \\/ma\\ * OR *\\ \u2013ma\\ * OR *\\ \u2014ma\\ * OR *\\ \u2015ma\\ *) AND process.command_line:*\\ ls*"
+}

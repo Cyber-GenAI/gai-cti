@@ -1,0 +1,70 @@
+{
+  "id": "a6fc8aa5-9118-459c-b18e-b16f4a289b14",
+  "name": "Shell Invocation via Env Command - Linux",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the env command to invoke a shell. This may indicate an attempt to bypass restricted environments, escalate privileges, or execute arbitrary commands.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Github operations such as ghe-backup"
+  ],
+  "from": "now-360s",
+  "rule_id": "9849077c-1f9b-4fac-b112-199e8406e883",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/env/#shell",
+    "https://www.elastic.co/guide/en/security/current/linux-restricted-shell-breakout-via-linux-binary-s.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/env AND (CommandLine:(*\\/bin\\/bash OR *\\/bin\\/dash OR *\\/bin\\/fish OR *\\/bin\\/sh OR *\\/bin\\/zsh))"
+}

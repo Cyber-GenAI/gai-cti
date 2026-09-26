@@ -1,0 +1,69 @@
+{
+  "id": "27ef6a34-cb62-4142-a3b8-a52d122a2300",
+  "name": "NTLM Brute Force",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1110",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects common NTLM brute force device names",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Systems with names equal to the spoofed ones used by the brute force tools"
+  ],
+  "from": "now-360s",
+  "rule_id": "993fa8ca-6257-4aa6-bdc1-6115dd4e8a3a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "reference": "https://attack.mitre.org/techniques/T1110/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.varonis.com/blog/investigate-ntlm-brute-force"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-NTLM\\/Operational AND (event.code:8004 AND (source.domain:(Rdesktop OR Remmina OR Freerdp OR Windows7 OR Windows8 OR Windows2012 OR Windows2016 OR Windows2019)))"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "9c2ff021-c6c0-4f51-9e31-ef9c5ec6a6aa",
+  "name": "Suspicious PowerShell Mailbox SMTP Forward Rule",
+  "tags": [
+    "attack.exfiltration",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the powerShell Set-Mailbox Cmdlet to set-up an SMTP forwarding rule.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the cmdlet to forward emails"
+  ],
+  "from": "now-360s",
+  "rule_id": "4b6b4b8f-676e-4630-b2f6-b207abe4abe7",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://m365internals.com/2022/10/07/hunting-in-on-premises-exchange-server-logs/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Set\\-Mailbox\\ * AND powershell.file.script_block_text:*\\ \\-DeliverToMailboxAndForward\\ * AND powershell.file.script_block_text:*\\ \\-ForwardingSmtpAddress\\ *"
+}

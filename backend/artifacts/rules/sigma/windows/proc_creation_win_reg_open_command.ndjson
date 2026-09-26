@@ -1,0 +1,69 @@
+{
+  "id": "0a14de3f-1ba7-494b-8308-954371eaca39",
+  "name": "Suspicious Reg Add Open Command",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Threat actors performed dumping of SAM, SECURITY and SYSTEM registry hives using DelegateExecute key",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "44721db2-9515-4531-9b18-d1fd2c17ecc6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/12/13/diavol-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*reg* AND process.command_line:*add* AND process.command_line:*hkcu\\\\software\\\\classes\\\\ms\\-settings\\\\shell\\\\open\\\\command* AND process.command_line:*\\/ve\\ * AND process.command_line:*\\/d*) OR (process.command_line:*reg* AND process.command_line:*add* AND process.command_line:*hkcu\\\\software\\\\classes\\\\ms\\-settings\\\\shell\\\\open\\\\command* AND process.command_line:*\\/v* AND process.command_line:*DelegateExecute*) OR (process.command_line:*reg* AND process.command_line:*delete* AND process.command_line:*hkcu\\\\software\\\\classes\\\\ms\\-settings*)"
+}

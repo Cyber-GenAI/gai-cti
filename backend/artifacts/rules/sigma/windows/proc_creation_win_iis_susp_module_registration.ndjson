@@ -1,0 +1,69 @@
+{
+  "id": "bc330e9e-edfa-4623-9a57-31b947b416d8",
+  "name": "Suspicious IIS Module Registration",
+  "tags": [
+    "attack.persistence",
+    "attack.t1505.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious IIS module registration as described in Microsoft threat report on IIS backdoors",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "8b9b2ce8-8384-4d2e-9522-76a931a40ae1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/security/blog/2022/07/26/malicious-iis-extensions-quietly-open-persistent-backdoors-into-servers/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\w3wp.exe AND (process.command_line:*appcmd.exe\\ add\\ module* OR (process.command_line:*\\ system.enterpriseservices.internal.publish* AND process.executable:*\\\\powershell.exe) OR (process.command_line:*gacutil* AND process.command_line:*\\ \\/I*))"
+}

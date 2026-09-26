@@ -1,0 +1,97 @@
+{
+  "id": "7736d051-35ca-403d-a67f-c3ab0d7086c2",
+  "name": "Suspicious Download From Direct IP Via Bitsadmin",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "attack.t1197",
+    "attack.s0190",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of bitsadmin downloading a file using an URL that contains an IP",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b93c9fac-062e-49c0-9fa3-325cd33bcfab",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1197",
+          "name": "BITS Jobs",
+          "reference": "https://attack.mitre.org/techniques/T1197/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1197",
+          "name": "BITS Jobs",
+          "reference": "https://attack.mitre.org/techniques/T1197/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.netspi.com/15-ways-to-download-a-file/#bitsadmin",
+    "https://isc.sans.edu/diary/22264",
+    "https://lolbas-project.github.io/lolbas/Binaries/Bitsadmin/",
+    "https://blog.talosintelligence.com/breaking-the-silence-recent-truebot-activity/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\bitsadmin.exe OR process.pe.original_file_name:bitsadmin.exe) AND (process.command_line:(*\\ \\/transfer\\ * OR *\\ \\/create\\ * OR *\\ \\/addfile\\ *)) AND (process.command_line:(*\\:\\/\\/1* OR *\\:\\/\\/2* OR *\\:\\/\\/3* OR *\\:\\/\\/4* OR *\\:\\/\\/5* OR *\\:\\/\\/6* OR *\\:\\/\\/7* OR *\\:\\/\\/8* OR *\\:\\/\\/9*))) AND (NOT process.command_line:*\\:\\/\\/7\\-*)"
+}

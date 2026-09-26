@@ -1,0 +1,73 @@
+{
+  "id": "82212327-ffa1-47a1-80c4-48293e5a6f35",
+  "name": "Browser Started with Remote Debugging",
+  "tags": [
+    "attack.credential-access",
+    "attack.collection",
+    "attack.t1185",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects browsers starting with the remote debugging flags. Which is a technique often used to perform browser injection attacks",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d1e2afb0-c771-419a-8355-ae5e6267b9df",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1185",
+          "name": "Browser Session Hijacking",
+          "reference": "https://attack.mitre.org/techniques/T1185/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://yoroi.company/wp-content/uploads/2022/05/EternityGroup_report_compressed.pdf",
+    "https://www.mdsec.co.uk/2022/10/analysing-lastpass-part-1/",
+    "https://github.com/defaultnamehere/cookie_crimes/",
+    "https://github.com/wunderwuzzi23/firefox-cookiemonster"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*\\ \\-\\-remote\\-debugging\\-* OR (process.executable:*\\\\firefox.exe AND process.command_line:*\\ \\-start\\-debugger\\-server*)"
+}

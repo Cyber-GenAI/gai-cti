@@ -1,0 +1,71 @@
+{
+  "id": "1e712a73-41f4-4d38-a399-fd2cec71a6f7",
+  "name": "Remote Access Tool - MeshAgent Command Execution via MeshCentral",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1219",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of MeshAgent to execute commands on the target host, particularly when threat actors might abuse it to execute commands directly.\nMeshAgent can execute commands on the target host by leveraging win-console to obscure their activities and win-dispatcher to run malicious code through IPC with child processes.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives can be found in environments using MessAgent for remote management, analysis should prioritize the grandparent process, MessAgent.exe, and scrutinize the resulting child processes triggered by any suspicious interactive commands directed at the target host."
+  ],
+  "from": "now-360s",
+  "rule_id": "b8ba2382-2f5d-43e4-aeee-c001f4712105",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1219",
+          "name": "Remote Access Tools",
+          "reference": "https://attack.mitre.org/techniques/T1219/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Ylianst/MeshAgent",
+    "https://github.com/Ylianst/MeshAgent/blob/52cf129ca43d64743181fbaf940e0b4ddb542a37/modules/win-dispatcher.js#L173",
+    "https://github.com/Ylianst/MeshAgent/blob/52cf129ca43d64743181fbaf940e0b4ddb542a37/modules/win-info.js#L55"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\meshagent.exe AND (process.executable:(*\\\\cmd.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe))"
+}

@@ -1,0 +1,97 @@
+{
+  "id": "ff41a55a-1dca-4b53-aa47-b9a0da0bb1f8",
+  "name": "Suspicious WmiPrvSE Child Process",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1047",
+    "attack.t1204.002",
+    "attack.t1218.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious and uncommon child processes of WmiPrvSE",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2366dee1-e14a-4d65-add6-a48d3e0f104f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1047",
+          "name": "Windows Management Instrumentation",
+          "reference": "https://attack.mitre.org/techniques/T1047/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/03/29/sodinokibi-aka-revil-ransomware/",
+    "https://github.com/vadim-hunter/Detection-Ideas-Rules/blob/02bcbfc2bfb8b4da601bb30de0344ae453aa1afe/Threat%20Intelligence/The%20DFIR%20Report/20210329_Sodinokibi_(aka_REvil)_Ransomware.yaml",
+    "https://blog.osarmor.com/319/onenote-attachment-delivers-asyncrat-malware/",
+    "https://twitter.com/ForensicITGuy/status/1334734244120309760"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\wbem\\\\WmiPrvSE.exe AND ((process.executable:(*\\\\certutil.exe OR *\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\msiexec.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\verclsid.exe OR *\\\\wscript.exe)) OR (process.executable:*\\\\cmd.exe AND (process.command_line:(*cscript* OR *mshta* OR *powershell* OR *pwsh* OR *regsvr32* OR *rundll32* OR *wscript*)))) AND (NOT (process.executable:*\\\\WerFault.exe OR process.executable:*\\\\WmiPrvSE.exe OR (process.executable:*\\\\msiexec.exe AND process.command_line:*\\/i\\ *)))"
+}

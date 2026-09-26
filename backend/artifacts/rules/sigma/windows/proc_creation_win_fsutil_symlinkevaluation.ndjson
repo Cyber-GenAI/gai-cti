@@ -1,0 +1,70 @@
+{
+  "id": "076466a8-6cad-4351-a585-c052a75f6fa3",
+  "name": "Fsutil Behavior Set SymlinkEvaluation",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "A symbolic link is a type of file that contains a reference to another file.\nThis is probably done to make sure that the ransomware is able to follow shortcuts on the machine in order to find the original file to encrypt\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "7c685d10-8070-4331-a309-f0bb13619c54",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.cybereason.com/blog/cybereason-vs.-blackcat-ransomware",
+    "https://learn.microsoft.com/fr-fr/windows-server/administration/windows-commands/fsutil-behavior"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\fsutil.exe OR process.pe.original_file_name:fsutil.exe) AND (process.command_line:*behavior\\ * AND process.command_line:*set\\ * AND process.command_line:*SymlinkEvaluation*)"
+}

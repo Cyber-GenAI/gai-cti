@@ -1,0 +1,72 @@
+{
+  "id": "9b44f01a-6fc1-422c-b1c2-1eedf2e7319d",
+  "name": "Suspicious Cabinet File Execution Via Msdt.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of msdt.exe using the \"cab\" flag which could indicates suspicious diagcab files with embedded answer files leveraging CVE-2022-30190",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of \".diagcab\" files"
+  ],
+  "from": "now-360s",
+  "rule_id": "ab174666-6761-4331-95e1-ee95d486ac11",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/nas_bench/status/1537896324837781506",
+    "https://github.com/GossiTheDog/ThreatHunting/blob/e85884abbf05d5b41efc809ea6532b10b45bd05c/AdvancedHuntingQueries/DogWalk-DiagCab",
+    "https://github.com/elastic/protections-artifacts/commit/746086721fd385d9f5c6647cada1788db4aea95f#diff-9015912909545e72ed42cbac4d1e96295e8964579c406d23fd9c47a8091576a0",
+    "https://irsl.medium.com/the-trouble-with-microsofts-troubleshooters-6e32fc80b8bd"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\msdt.exe OR process.pe.original_file_name:msdt.exe) AND process.command_line:(*\\ \\-cab\\ * OR *\\ \\/cab\\ * OR *\\ \u2013cab\\ * OR *\\ \u2014cab\\ * OR *\\ \u2015cab\\ *)"
+}

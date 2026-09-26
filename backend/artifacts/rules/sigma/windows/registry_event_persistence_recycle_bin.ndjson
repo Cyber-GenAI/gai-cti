@@ -1,0 +1,71 @@
+{
+  "id": "84263fc5-fd50-48ff-a864-4d61eb2ee505",
+  "name": "Registry Persistence Mechanisms in Recycle Bin",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects persistence registry keys for Recycle Bin",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9e0e3fc4-3800-4470-ae1b-3434fa6f821e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/vxunderground/VXUG-Papers/blob/751edb8d50f95bd7baa730adf2c6c3bb1b034276/The%20Persistence%20Series/Persistence%20via%20Recycle%20Bin/Persistence_via_Recycle_Bin.pdf",
+    "https://persistence-info.github.io/Data/recyclebin.html",
+    "https://www.hexacorn.com/blog/2018/05/28/beyond-good-ol-run-key-part-78-2/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:RenameKey AND winlog.event_data.NewName:*\\\\CLSID\\\\\\{645FF040\\-5081\\-101B\\-9F08\\-00AA002F954E\\}\\\\shell\\\\open*) OR (winlog.event_data.EventType:SetValue AND registry.path:*\\\\CLSID\\\\\\{645FF040\\-5081\\-101B\\-9F08\\-00AA002F954E\\}\\\\shell\\\\open\\\\command\\\\\\(Default\\)*)"
+}

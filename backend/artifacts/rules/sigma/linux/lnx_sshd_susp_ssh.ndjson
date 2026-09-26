@@ -1,0 +1,70 @@
+{
+  "id": "fa5a8d80-76f8-42e9-a29b-d6badf014a17",
+  "name": "Suspicious OpenSSH Daemon Error",
+  "tags": [
+    "attack.initial-access",
+    "attack.t1190",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious SSH / SSHD error messages that indicate a fatal or suspicious error that could be caused by exploiting attempts",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "67f14cd2-36a7-44cf-9413-cde88f12122a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "reference": "https://attack.mitre.org/techniques/T1190/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/openssh/openssh-portable/blob/c483a5c0fb8e8b8915fad85c5f6113386a4341ca/ssherr.c",
+    "https://github.com/ossec/ossec-hids/blob/1ecffb1b884607cb12e619f9ab3c04f530801083/etc/rules/sshd_rules.xml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*unexpected\\ internal\\ error* OR *unknown\\ or\\ unsupported\\ key\\ type* OR *invalid\\ certificate\\ signing\\ key* OR *invalid\\ elliptic\\ curve\\ value* OR *incorrect\\ signature* OR *error\\ in\\ libcrypto* OR *unexpected\\ bytes\\ remain\\ after\\ decoding* OR *fatal\\:\\ buffer_get_string\\:\\ bad\\ string* OR *Local\\:\\ crc32\\ compensation\\ attack* OR *bad\\ client\\ public\\ DH\\ value* OR *Corrupted\\ MAC\\ on\\ input*"
+}

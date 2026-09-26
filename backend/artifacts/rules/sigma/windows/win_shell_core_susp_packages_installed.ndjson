@@ -1,0 +1,51 @@
+{
+  "id": "516eeae4-f9b4-4db9-854c-569bfe53392c",
+  "name": "Suspicious Application Installed",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious application installed by looking at the added shortcut to the app resolver cache",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Packages or applications being legitimately used by users or administrators"
+  ],
+  "from": "now-360s",
+  "rule_id": "06b117a6-a2da-40e6-ae71-39537a82e3c9",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://nasbench.medium.com/finding-forensic-goodness-in-obscure-windows-event-logs-60e978ea45a3"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Shell\\-Core\\/Operational AND ((event.code:28115 AND (winlog.event_data.Name:(*Zenmap* OR *AnyDesk* OR *wireshark* OR *openvpn*))) OR (event.code:28115 AND (winlog.event_data.AppID:(*zenmap.exe* OR *prokzult\\ ad* OR *wireshark* OR *openvpn*))))"
+}

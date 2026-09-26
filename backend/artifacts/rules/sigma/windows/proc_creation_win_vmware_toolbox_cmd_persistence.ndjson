@@ -1,0 +1,71 @@
+{
+  "id": "c9ecb2cf-264a-4ff0-b434-650cd95bb916",
+  "name": "Potential Persistence Via VMwareToolBoxCmd.EXE VM State Change Script",
+  "tags": [
+    "attack.execution",
+    "attack.persistence",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the \"VMwareToolBoxCmd.exe\" with the \"script\" and \"set\" flag to setup a specific script to run for a specific VM state",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1c4d5229-3c10-41fc-8f80-e4cc3d388964",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://bohops.com/2021/10/08/analyzing-and-detecting-a-vmtools-persistence-technique/",
+    "https://www.hexacorn.com/blog/2017/01/14/beyond-good-ol-run-key-part-53/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\VMwareToolBoxCmd.exe OR process.pe.original_file_name:toolbox\\-cmd.exe) AND (process.command_line:*\\ script\\ * AND process.command_line:*\\ set\\ *)"
+}

@@ -1,0 +1,12 @@
+---
+sidebar_position: 4
+title: AI
+---
+
+# AI
+coming soon...
+
+# References
+- [Tools for LLM](https://docs.langchain.com/oss/python/langchain/tools)
+- [LangGraph](https://docs.langchain.com/oss/python/langgraph/overview)
+- [ReAct Agent](https://docs.langchain.com/oss/python/langchain/agents#tool-use-in-the-react-loop)

@@ -1,0 +1,70 @@
+{
+  "id": "aa6fded7-0810-411f-866f-fa1e20834b57",
+  "name": "Modify System Firewall",
+  "tags": [
+    "attack.t1562.004",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the removal of system firewall rules. Adversaries may only delete or modify a specific system firewall rule to bypass controls limiting network usage or access.\nDetection rules that match only on the disabling of firewalls will miss this.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate admin activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "18900784-9b68-4778-8ef8-6a52b3a26dd1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trendmicro.com/en_us/research/22/c/cyclops-blink-sets-sights-on-asus-routers--.html",
+    "https://blog.aquasec.com/container-security-tnt-container-attack"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(type:EXECVE AND a0:iptables AND a1:*DROP*) OR (type:EXECVE AND a0:firewall\\-cmd AND a1:*remove*) OR (type:EXECVE AND a0:ufw AND a1:*delete*)"
+}

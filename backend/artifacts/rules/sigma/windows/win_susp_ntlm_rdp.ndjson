@@ -1,0 +1,71 @@
+{
+  "id": "24273c76-b368-4969-9eb2-b964d041fefe",
+  "name": "Potential Remote Desktop Connection to Non-Domain Host",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1219",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects logons using NTLM to hosts that are potentially not part of the domain.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Host connections to valid domains, exclude these.",
+    "Host connections not using host FQDN.",
+    "Host connections to external legitimate domains."
+  ],
+  "from": "now-360s",
+  "rule_id": "c877b3d4-8ec4-4ef6-b4ca-ce0cca0104b6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1219",
+          "name": "Remote Access Tools",
+          "reference": "https://attack.mitre.org/techniques/T1219/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "n/a"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-NTLM\\/Operational AND (event.code:8001 AND winlog.event_data.TargetName:TERMSRV*)"
+}

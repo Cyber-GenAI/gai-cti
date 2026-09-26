@@ -1,0 +1,69 @@
+{
+  "id": "1b40968c-be9b-410d-9a57-e990f26d44db",
+  "name": "Tamper Windows Defender - PSClassic",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Attempting to disable scheduled scanning and other parts of Windows Defender ATP or set default actions to allow.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate PowerShell scripts that disable Windows Defender for troubleshooting purposes. Must be investigated."
+  ],
+  "from": "now-360s",
+  "rule_id": "84224aa5-ca34-4edc-b555-e3bffdfb11f7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1562.001/T1562.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.Data:*Set\\-MpPreference* AND ((winlog.event_data.Data:(*\\-dbaf\\ $true* OR *\\-dbaf\\ 1* OR *\\-dbm\\ $true* OR *\\-dbm\\ 1* OR *\\-dips\\ $true* OR *\\-dips\\ 1* OR *\\-DisableArchiveScanning\\ $true* OR *\\-DisableArchiveScanning\\ 1* OR *\\-DisableBehaviorMonitoring\\ $true* OR *\\-DisableBehaviorMonitoring\\ 1* OR *\\-DisableBlockAtFirstSeen\\ $true* OR *\\-DisableBlockAtFirstSeen\\ 1* OR *\\-DisableCatchupFullScan\\ $true* OR *\\-DisableCatchupFullScan\\ 1* OR *\\-DisableCatchupQuickScan\\ $true* OR *\\-DisableCatchupQuickScan\\ 1* OR *\\-DisableIntrusionPreventionSystem\\ $true* OR *\\-DisableIntrusionPreventionSystem\\ 1* OR *\\-DisableIOAVProtection\\ $true* OR *\\-DisableIOAVProtection\\ 1* OR *\\-DisableRealtimeMonitoring\\ $true* OR *\\-DisableRealtimeMonitoring\\ 1* OR *\\-DisableRemovableDriveScanning\\ $true* OR *\\-DisableRemovableDriveScanning\\ 1* OR *\\-DisableScanningMappedNetworkDrivesForFullScan\\ $true* OR *\\-DisableScanningMappedNetworkDrivesForFullScan\\ 1* OR *\\-DisableScanningNetworkFiles\\ $true* OR *\\-DisableScanningNetworkFiles\\ 1* OR *\\-DisableScriptScanning\\ $true* OR *\\-DisableScriptScanning\\ 1* OR *\\-MAPSReporting\\ $false* OR *\\-MAPSReporting\\ 0* OR *\\-drdsc\\ $true* OR *\\-drdsc\\ 1* OR *\\-drtm\\ $true* OR *\\-drtm\\ 1* OR *\\-dscrptsc\\ $true* OR *\\-dscrptsc\\ 1* OR *\\-dsmndf\\ $true* OR *\\-dsmndf\\ 1* OR *\\-dsnf\\ $true* OR *\\-dsnf\\ 1* OR *\\-dss\\ $true* OR *\\-dss\\ 1*)) OR (winlog.event_data.Data:(*HighThreatDefaultAction\\ Allow* OR *htdefac\\ Allow* OR *LowThreatDefaultAction\\ Allow* OR *ltdefac\\ Allow* OR *ModerateThreatDefaultAction\\ Allow* OR *mtdefac\\ Allow* OR *SevereThreatDefaultAction\\ Allow* OR *stdefac\\ Allow*)))"
+}

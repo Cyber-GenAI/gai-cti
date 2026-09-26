@@ -1,0 +1,54 @@
+{
+  "id": "5e730842-89e0-47f5-98b7-05fc83a00285",
+  "name": "Standard User In High Privileged Group",
+  "tags": [
+    "attack.credential-access",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect standard users login that are part of high privileged groups such as the Administrator group",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Standard domain users who are part of the administrator group. These users shouldn't have these right. But in the case where it's necessary. They should be filtered out using the \"TargetUserName\" field"
+  ],
+  "from": "now-360s",
+  "rule_id": "4f14087b-e45f-4e86-b8a0-db39e143334f",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-identifiers",
+    "https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/configuring-additional-lsa-protection",
+    "https://github.com/nasbench/EVTX-ETW-Resources/blob/7a806a148b3d9d381193d4a80356016e6e8b1ee8/ETWProvidersManifests/Windows11/22H2/W11_22H2_Pro_20221220_22621.963/WEPExplorer/LsaSrv.xml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-LSA\\/Operational AND ((event.code:300 AND winlog.event_data.TargetUserSid:S\\-1\\-5\\-21\\-* AND (winlog.event_data.SidList:(*S\\-1\\-5\\-32\\-544* OR *\\-500\\}* OR *\\-518\\}* OR *\\-519\\}*))) AND (NOT (winlog.event_data.TargetUserSid:(*\\-500 OR *\\-518 OR *\\-519))))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "2daf938a-5498-4d92-9ea5-7a1a30b381f5",
+  "name": "Monitoring For Persistence Via BITS",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1197",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "BITS will allow you to schedule a command to execute after a successful download to notify you that the job is finished.\nWhen the job runs on the system the command specified in the BITS job will be executed.\nThis can be abused by actors to create a backdoor within the system and for persistence.\nIt will be chained in a BITS job to schedule the download of malware/additional binaries and execute the program after being downloaded.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a8261109-0241-4b38-bcd5-725186b1f198",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1197",
+          "name": "BITS Jobs",
+          "reference": "https://attack.mitre.org/techniques/T1197/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.fireeye.com/blog/threat-research/2020/10/kegtap-and-singlemalt-with-a-ransomware-chaser.html",
+    "http://0xthem.blogspot.com/2014/03/t-emporal-persistence-with-and-schtasks.html",
+    "https://isc.sans.edu/diary/Wipe+the+drive+Stealthy+Malware+Persistence+Mechanism+-+Part+1/15394"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\bitsadmin.exe OR process.pe.original_file_name:bitsadmin.exe) AND ((process.command_line:*\\/SetNotifyCmdLine* AND (process.command_line:(*%COMSPEC%* OR *cmd.exe* OR *regsvr32.exe*))) OR (process.command_line:*\\/Addfile* AND (process.command_line:(*http\\:* OR *https\\:* OR *ftp\\:* OR *ftps\\:*))))"
+}

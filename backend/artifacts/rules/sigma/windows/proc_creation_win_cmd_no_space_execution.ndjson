@@ -1,0 +1,70 @@
+{
+  "id": "22f36545-93f0-418c-9901-4850e73f2e76",
+  "name": "Cmd.EXE Missing Space Characters Execution Anomaly",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Windows command lines that miss a space before or after the /c flag when running a command using the cmd.exe.\nThis could be a sign of obfuscation of a fat finger problem (typo by the developer).\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a882e0b7-927a-4691-b7f2-d934e2f72879",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/cyb3rops/status/1562072617552678912",
+    "https://ss64.com/nt/cmd.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:(*cmd.exe\\/c* OR *\\\\cmd\\/c* OR *\\\"cmd\\/c* OR *cmd.exe\\/k* OR *\\\\cmd\\/k* OR *\\\"cmd\\/k* OR *cmd.exe\\/r* OR *\\\\cmd\\/r* OR *\\\"cmd\\/r*)) OR (process.command_line:(*\\/cwhoami* OR *\\/cpowershell* OR *\\/cschtasks* OR *\\/cbitsadmin* OR *\\/ccertutil* OR *\\/kwhoami* OR *\\/kpowershell* OR *\\/kschtasks* OR *\\/kbitsadmin* OR *\\/kcertutil*)) OR (process.command_line:(*cmd.exe\\ \\/c* OR *cmd\\ \\/c* OR *cmd.exe\\ \\/k* OR *cmd\\ \\/k* OR *cmd.exe\\ \\/r* OR *cmd\\ \\/r*))) AND (NOT ((process.command_line:(*cmd.exe\\ \\/c\\ * OR *cmd\\ \\/c\\ * OR *cmd.exe\\ \\/k\\ * OR *cmd\\ \\/k\\ * OR *cmd.exe\\ \\/r\\ * OR *cmd\\ \\/r\\ *)) OR (process.command_line:(*AppData\\\\Local\\\\Programs\\\\Microsoft\\ VS\\ Code\\\\resources\\\\app\\\\node_modules* OR *cmd.exe\\/c\\ . OR cmd.exe\\ \\/c))))"
+}

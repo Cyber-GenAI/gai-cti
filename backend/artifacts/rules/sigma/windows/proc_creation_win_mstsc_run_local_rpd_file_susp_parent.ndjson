@@ -1,0 +1,52 @@
+{
+  "id": "a94dc54e-2326-4cbe-b229-468c6897090c",
+  "name": "Mstsc.EXE Execution From Uncommon Parent",
+  "tags": [
+    "attack.lateral-movement",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential RDP connection via Mstsc using a local \".rdp\" file located in suspicious locations.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "b6a4d7b9-d0f3-4d70-915b-1ecd4ccf645d",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.blackhillsinfosec.com/rogue-rdp-revisiting-initial-access-methods/",
+    "https://web.archive.org/web/20230726144748/https://blog.thickmints.dev/mintsights/detecting-rogue-rdp/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:(*\\\\brave.exe OR *\\\\CCleanerBrowser.exe OR *\\\\chrome.exe OR *\\\\chromium.exe OR *\\\\firefox.exe OR *\\\\iexplore.exe OR *\\\\microsoftedge.exe OR *\\\\msedge.exe OR *\\\\opera.exe OR *\\\\vivaldi.exe OR *\\\\whale.exe OR *\\\\outlook.exe)) AND (process.executable:*\\\\mstsc.exe OR process.pe.original_file_name:mstsc.exe)"
+}

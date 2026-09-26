@@ -1,0 +1,69 @@
+{
+  "id": "10e03212-ceff-4a78-b382-ecc0a8e5b2fc",
+  "name": "Windows Binaries Write Suspicious Extensions",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Windows executables that write files with suspicious extensions",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "42715bae-9266-4cc5-89f7-9bcfa28a321b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\csrss.exe OR *\\\\lsass.exe OR *\\\\RuntimeBroker.exe OR *\\\\sihost.exe OR *\\\\smss.exe OR *\\\\wininit.exe OR *\\\\winlogon.exe)) AND (file.path:(*.bat OR *.dll OR *.exe OR *.hta OR *.iso OR *.ps1 OR *.txt OR *.vbe OR *.vbs))) OR ((process.executable:(*\\\\dllhost.exe OR *\\\\rundll32.exe OR *\\\\svchost.exe)) AND (file.path:(*.bat OR *.hta OR *.iso OR *.ps1 OR *.vbe OR *.vbs)))) AND (NOT ((process.executable:C\\:\\\\Windows\\\\System32\\\\dllhost.exe AND (file.path:*\\:\\\\Users\\\\* AND file.path:*\\\\AppData\\\\Local\\\\Temp\\\\__PSScriptPolicyTest_*) AND file.path:*.ps1) OR (process.executable:C\\:\\\\Windows\\\\system32\\\\svchost.exe AND (file.path:*C\\:\\\\Windows\\\\System32\\\\GroupPolicy\\\\DataStore\\\\* AND file.path:*\\\\sysvol\\\\* AND file.path:*\\\\Policies\\\\* AND file.path:*\\\\Machine\\\\Scripts\\\\Startup\\\\*) AND (file.path:(*.ps1 OR *.bat)))))"
+}

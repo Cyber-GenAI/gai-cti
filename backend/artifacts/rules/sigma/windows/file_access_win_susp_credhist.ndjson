@@ -1,0 +1,70 @@
+{
+  "id": "54d071fe-59ae-4259-be59-910a1d76bef0",
+  "name": "Access To Windows Credential History File By Uncommon Applications",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1555.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects file access requests to the Windows Credential History File by an uncommon application.\nThis can be a sign of credential stealing. Example case would be usage of mimikatz \"dpapi::credhist\" function\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2b51a600-c9cd-43e9-ae49-97eb7ea368e4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1555",
+          "name": "Credentials from Password Stores",
+          "reference": "https://attack.mitre.org/techniques/T1555/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://tools.thehacker.recipes/mimikatz/modules/dpapi/credhist",
+    "https://www.passcape.com/windows_password_recovery_dpapi_credhist"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\Microsoft\\\\Protect\\\\CREDHIST AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\Windows\\\\system32\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\*)) OR process.executable:C\\:\\\\Windows\\\\explorer.exe))"
+}

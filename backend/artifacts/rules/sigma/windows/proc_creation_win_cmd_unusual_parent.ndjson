@@ -1,0 +1,69 @@
+{
+  "id": "e4d7dcee-d8a9-437b-9a76-b9062e5bf4ca",
+  "name": "Unusual Parent Process For Cmd.EXE",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious parent process for cmd.exe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1c98d184-ee89-40a5-8a29-cbee70b74308",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/guide/en/security/current/unusual-parent-process-for-cmd.exe.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\cmd.exe AND (process.parent.executable:(*\\\\csrss.exe OR *\\\\ctfmon.exe OR *\\\\dllhost.exe OR *\\\\epad.exe OR *\\\\FlashPlayerUpdateService.exe OR *\\\\GoogleUpdate.exe OR *\\\\jucheck.exe OR *\\\\jusched.exe OR *\\\\LogonUI.exe OR *\\\\lsass.exe OR *\\\\regsvr32.exe OR *\\\\SearchIndexer.exe OR *\\\\SearchProtocolHost.exe OR *\\\\SIHClient.exe OR *\\\\sihost.exe OR *\\\\slui.exe OR *\\\\spoolsv.exe OR *\\\\sppsvc.exe OR *\\\\taskhostw.exe OR *\\\\unsecapp.exe OR *\\\\WerFault.exe OR *\\\\wermgr.exe OR *\\\\wlanext.exe OR *\\\\WUDFHost.exe))"
+}

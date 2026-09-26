@@ -1,0 +1,71 @@
+{
+  "id": "b11ca407-c269-4c50-bbda-79dbb421bfc5",
+  "name": "Lsass Full Dump Request Via DumpType Registry Settings",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the setting of the \"DumpType\" registry value to \"2\" which stands for a \"Full Dump\". Technique such as LSASS Shtinkering requires this value to be \"2\" in order to dump LSASS.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate application that needs to do a full dump of their process"
+  ],
+  "from": "now-360s",
+  "rule_id": "70814413-c417-43d8-9f75-9c66ae238723",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/deepinstinct/Lsass-Shtinkering",
+    "https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps",
+    "https://media.defcon.org/DEF%20CON%2030/DEF%20CON%2030%20presentations/Asaf%20Gilboa%20-%20LSASS%20Shtinkering%20Abusing%20Windows%20Error%20Reporting%20to%20Dump%20LSASS.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\Windows\\ Error\\ Reporting\\\\LocalDumps\\\\DumpType* OR *\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\Windows\\ Error\\ Reporting\\\\LocalDumps\\\\lsass.exe\\\\DumpType*)) AND winlog.event_data.Details:DWORD\\ \\(0x00000002\\)"
+}

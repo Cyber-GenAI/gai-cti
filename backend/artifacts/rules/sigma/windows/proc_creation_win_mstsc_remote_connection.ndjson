@@ -1,0 +1,70 @@
+{
+  "id": "fe19daee-f328-437e-aefd-e4abbf45c74d",
+  "name": "New Remote Desktop Connection Initiated Via Mstsc.EXE",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1021.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of \"mstsc.exe\" with the \"/v\" flag to initiate a connection to a remote server.\nAdversaries may use valid accounts to log into a computer using the Remote Desktop Protocol (RDP). The adversary may then perform actions as the logged-on user.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "WSL (Windows Sub System For Linux)"
+  ],
+  "from": "now-360s",
+  "rule_id": "63f40525-011f-40f2-b82e-f2947a83248c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1021.001/T1021.001.md#t1021001---remote-desktop-protocol",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/mstsc"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\mstsc.exe OR process.pe.original_file_name:mstsc.exe) AND process.command_line:(*\\ \\-v\\:* OR *\\ \\/v\\:* OR *\\ \u2013v\\:* OR *\\ \u2014v\\:* OR *\\ \u2015v\\:*)) AND (NOT (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\lxss\\\\wslhost.exe AND process.command_line:*C\\:\\\\ProgramData\\\\Microsoft\\\\WSL\\\\wslg.rdp*))"
+}

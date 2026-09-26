@@ -1,0 +1,69 @@
+{
+  "id": "1e6dff17-2f0e-446c-95f7-0dc4d36dbf6f",
+  "name": "Cat Sudoers",
+  "tags": [
+    "attack.reconnaissance",
+    "attack.t1592.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a cat /etc/sudoers to list all users that have sudo rights",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "887a07d4-d75f-45bf-b3f1-84ab2b88c0e8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0043",
+        "name": "Reconnaissance",
+        "reference": "https://attack.mitre.org/tactics/TA0043/"
+      },
+      "technique": [
+        {
+          "id": "T1592",
+          "name": "Gather Victim Host Information",
+          "reference": "https://attack.mitre.org/techniques/T1592/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/sleventyeleven/linuxprivchecker/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/cat OR *grep OR *\\/head OR *\\/tail OR *\\/more)) AND CommandLine:*\\ \\/etc\\/sudoers*"
+}

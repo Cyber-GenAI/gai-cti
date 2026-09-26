@@ -1,0 +1,69 @@
+{
+  "id": "f70dff58-8d47-498b-9053-b87b1fcc6eb7",
+  "name": "Suspicious GUP Usage",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the Notepad++ updater in a suspicious directory, which is often used in DLL side-loading attacks",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Execution of tools named GUP.exe and located in folders different than Notepad++\\updater"
+  ],
+  "from": "now-360s",
+  "rule_id": "c21f6318-ab43-48a4-a012-7cafa18e181f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.fireeye.com/blog/threat-research/2018/09/apt10-targeting-japanese-corporations-using-updated-ttps.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\GUP.exe AND (NOT ((process.executable:(*\\\\Program\\ Files\\\\Notepad\\+\\+\\\\updater\\\\GUP.exe OR *\\\\Program\\ Files\\ \\(x86\\)\\\\Notepad\\+\\+\\\\updater\\\\GUP.exe)) OR (process.executable:*\\\\Users\\\\* AND (process.executable:(*\\\\AppData\\\\Local\\\\Notepad\\+\\+\\\\updater\\\\GUP.exe OR *\\\\AppData\\\\Roaming\\\\Notepad\\+\\+\\\\updater\\\\GUP.exe)))))"
+}

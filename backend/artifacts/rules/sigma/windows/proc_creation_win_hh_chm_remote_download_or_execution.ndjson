@@ -1,0 +1,71 @@
+{
+  "id": "c4cffd93-d490-4358-b037-facdcd76f129",
+  "name": "Remote CHM File Download/Execution Via HH.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of \"hh.exe\" to execute/download remotely hosted \".chm\" files.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "087db820-eb01-4165-b15e-fce4080fdea0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/follina-for-protocol-handlers.html",
+    "https://github.com/redcanaryco/atomic-red-team/blob/1cf4dd51f83dcb0ebe6ade902d6157ad2dbc6ac8/atomics/T1218.001/T1218.001.md",
+    "https://www.zscaler.com/blogs/security-research/unintentional-leak-glimpse-attack-vectors-apt37"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:HH.exe OR process.executable:*\\\\hh.exe) AND (process.command_line:(*http\\:\\/\\/* OR *https\\:\\/\\/* OR *\\\\\\\\*))"
+}

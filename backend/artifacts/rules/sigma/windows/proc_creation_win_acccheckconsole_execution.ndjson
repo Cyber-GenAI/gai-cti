@@ -1,0 +1,54 @@
+{
+  "id": "f3da7ac2-b79a-4b8d-b287-a3c8f4d4b2f2",
+  "name": "Potential DLL Injection Via AccCheckConsole",
+  "tags": [
+    "attack.execution",
+    "detection.threat-hunting",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution \"AccCheckConsole\" a command-line tool for verifying the accessibility implementation of an application's UI.\nOne of the tests that this checker can run are called \"verification routine\", which tests for things like Consistency, Navigation, etc.\nThe tool allows a user to provide a DLL that can contain a custom \"verification routine\". An attacker can build such DLLs and pass it via the CLI, which would then be loaded in the context of the \"AccCheckConsole\" utility.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the UI Accessibility Checker"
+  ],
+  "from": "now-360s",
+  "rule_id": "fc452e52-db63-4435-9bbf-be4ae4a77448",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://gist.github.com/bohops/2444129419c8acf837aedda5f0e7f340",
+    "https://twitter.com/bohops/status/1477717351017680899?s=12",
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/AccCheckConsole/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\AccCheckConsole.exe OR process.pe.original_file_name:AccCheckConsole.exe) AND (process.command_line:(*\\ \\-hwnd* OR *\\ \\-process\\ * OR *\\ \\-window\\ *))"
+}

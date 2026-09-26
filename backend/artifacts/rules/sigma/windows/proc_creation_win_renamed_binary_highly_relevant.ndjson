@@ -1,0 +1,75 @@
+{
+  "id": "479a7a3d-a4b1-45fe-bab8-75cf61f63ce1",
+  "name": "Potential Defense Evasion Via Rename Of Highly Relevant Binaries",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.003",
+    "car.2013-05-009",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a renamed binary often used by attackers or malware leveraging new Sysmon OriginalFileName datapoint.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Custom applications use renamed binaries adding slight change to binary name. Typically this is easy to spot and add to whitelist",
+    "PsExec installed via Windows Store doesn't contain original filename field (False negative)"
+  ],
+  "from": "now-360s",
+  "rule_id": "457161e8-63da-4562-8aff-03befa34efe2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://mgreen27.github.io/posts/2019/05/12/BinaryRename.html",
+    "https://mgreen27.github.io/posts/2019/05/29/BinaryRename2.html",
+    "https://www.trendmicro.com/vinfo/hk-en/security/news/cybercrime-and-digital-threats/megacortex-ransomware-spotted-attacking-enterprise-networks",
+    "https://twitter.com/christophetd/status/1164506034720952320",
+    "https://threatresearch.ext.hp.com/svcready-a-new-loader-reveals-itself/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.description:Execute\\ processes\\ remotely OR process.pe.product:Sysinternals\\ PsExec OR (process.pe.description:(Windows\\ PowerShell* OR pwsh*)) OR (process.pe.original_file_name:(certutil.exe OR cmstp.exe OR cscript.exe OR IE4UINIT.EXE OR mshta.exe OR msiexec.exe OR msxsl.exe OR powershell_ise.exe OR powershell.exe OR psexec.c OR psexec.exe OR psexesvc.exe OR pwsh.dll OR reg.exe OR regsvr32.exe OR rundll32.exe OR WerMgr OR wmic.exe OR wscript.exe))) AND (NOT (process.executable:(*\\\\certutil.exe OR *\\\\cmstp.exe OR *\\\\cscript.exe OR *\\\\ie4uinit.exe OR *\\\\mshta.exe OR *\\\\msiexec.exe OR *\\\\msxsl.exe OR *\\\\powershell_ise.exe OR *\\\\powershell.exe OR *\\\\psexec.exe OR *\\\\psexec64.exe OR *\\\\PSEXESVC.exe OR *\\\\pwsh.exe OR *\\\\reg.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\wermgr.exe OR *\\\\wmic.exe OR *\\\\wscript.exe)))"
+}

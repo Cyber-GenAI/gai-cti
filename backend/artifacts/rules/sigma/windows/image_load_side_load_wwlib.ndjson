@@ -1,0 +1,88 @@
+{
+  "id": "20a3a163-7f1b-47ba-9c96-cd62c13403d7",
+  "name": "Potential WWlib.DLL Sideloading",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL sideloading of \"wwlib.dll\"",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e36a7540-7672-46bf-96b5-5b7cb7b480c6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/WhichbufferArda/status/1658829954182774784",
+    "https://news.sophos.com/en-us/2022/11/03/family-tree-dll-sideloading-cases-may-be-related/",
+    "https://securelist.com/apt-luminousmoth/103332/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\wwlib.dll AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\* OR C\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\*)) AND process.executable:*\\\\winword.exe AND (file.path:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\* OR C\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\*))))"
+}

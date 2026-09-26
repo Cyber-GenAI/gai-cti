@@ -1,0 +1,71 @@
+{
+  "id": "e13c7704-7c80-46d8-bc2b-34cd4057b80d",
+  "name": "Proxy Execution Via Wuauclt.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the Windows Update Client binary (wuauclt.exe) for proxy execution.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "490dc3c0-0f2f-4ef2-8a91-4ce329b87b37",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://dtm.uk/wuauclt/",
+    "https://blog.malwarebytes.com/threat-intelligence/2022/01/north-koreas-lazarus-apt-leverages-windows-update-client-github-in-latest-campaign/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\wuauclt.exe OR process.pe.original_file_name:wuauclt.exe) AND (process.command_line:*UpdateDeploymentProvider* AND process.command_line:*RunHandlerComServer*)) AND (NOT (process.command_line:*\\ \\/UpdateDeploymentProvider\\ UpdateDeploymentProvider.dll\\ * OR process.command_line:*\\ wuaueng.dll\\ * OR (process.command_line:(*\\:\\\\Windows\\\\UUS\\\\Packages\\\\Preview\\\\amd64\\\\updatedeploy.dll\\ \\/ClassId* OR *\\:\\\\Windows\\\\UUS\\\\amd64\\\\UpdateDeploy.dll\\ \\/ClassId*)) OR (process.command_line:*\\:\\\\Windows\\\\WinSxS\\\\* AND process.command_line:*\\\\UpdateDeploy.dll\\ \\/ClassId\\ *)))"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "cc1b8152-3333-4e3b-bb31-dc910e7486d5",
+  "name": "HackTool - Wmiexec Default Powershell Command",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.lateral-movement",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of PowerShell with a specific flag sequence that is used by the Wmiexec script",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "7527d009-ad99-4040-9a81-ddcb7bcae360",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/fortra/impacket/blob/f4b848fa27654ca95bc0f4c73dbba8b9c2c9f30a/examples/wmiexec.py"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*\\-NoP\\ \\-NoL\\ \\-sta\\ \\-NonI\\ \\-W\\ Hidden\\ \\-Exec\\ Bypass\\ \\-Enc*"
+}

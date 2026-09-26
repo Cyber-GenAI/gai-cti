@@ -1,0 +1,52 @@
+{
+  "id": "db105111-e4a2-4024-8cc1-3166fb85c788",
+  "name": "Suspicious IIS URL GlobalRules Rewrite Via AppCmd",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of \"appcmd\" to create new global URL rewrite rules. This behaviour has been observed being used by threat actors to add new rules so they can access their webshells.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of appcmd to add new URL rewrite rules"
+  ],
+  "from": "now-360s",
+  "rule_id": "dc35d7b1-18da-4e44-a711-4d1f747e5097",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/malmoeb/status/1616702107242971144",
+    "https://learn.microsoft.com/en-us/answers/questions/739120/how-to-add-re-write-global-rule-with-action-type-r"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\appcmd.exe OR process.pe.original_file_name:appcmd.exe) AND (process.command_line:*set* AND process.command_line:*config* AND process.command_line:*section\\:system.webServer\\/rewrite\\/globalRules* AND process.command_line:*commit\\:*)"
+}

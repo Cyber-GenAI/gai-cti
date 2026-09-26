@@ -1,0 +1,51 @@
+{
+  "id": "57129bea-03c0-4251-9aae-600ab890545b",
+  "name": "Rebuild Performance Counter Values Via Lodctr.EXE",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"lodctr.exe\" to rebuild the performance counter registry values. This can be abused by attackers by providing a malicious config file to overwrite performance counter configuration to confuse and evade monitoring and security solutions.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage by an administrator"
+  ],
+  "from": "now-360s",
+  "rule_id": "28ee0d2a-6623-4724-bf56-5c602a83068b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/security/identity-protection/virtual-smart-cards/virtual-smart-card-tpmvscmgr"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\lodctr.exe AND process.pe.original_file_name:LODCTR.EXE) AND process.command_line:(*\\ \\-r* OR *\\ \\/r* OR *\\ \u2013r* OR *\\ \u2014r* OR *\\ \u2015r*)"
+}

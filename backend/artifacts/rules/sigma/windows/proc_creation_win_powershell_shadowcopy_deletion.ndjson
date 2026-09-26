@@ -1,0 +1,70 @@
+{
+  "id": "e7588d42-4643-4690-ae83-a8ba815af4b3",
+  "name": "Deletion of Volume Shadow Copies via WMI with PowerShell",
+  "tags": [
+    "attack.impact",
+    "attack.t1490",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects deletion of Windows Volume Shadow Copies with PowerShell code and Get-WMIObject. This technique is used by numerous ransomware families such as Sodinokibi/REvil",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "72959427-24ce-4ccf-9db4-6836044b9278",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1490",
+          "name": "Inhibit System Recovery",
+          "reference": "https://attack.mitre.org/techniques/T1490/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1490/T1490.md#atomic-test-5---windows---delete-volume-shadow-copies-via-wmi-with-powershell",
+    "https://www.elastic.co/guide/en/security/current/volume-shadow-copy-deletion-via-powershell.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*Get\\-WmiObject* OR *gwmi* OR *Get\\-CimInstance* OR *gcim*)) AND process.command_line:*Win32_ShadowCopy* AND (process.command_line:(*.Delete\\(\\)* OR *Remove\\-WmiObject* OR *rwmi* OR *Remove\\-CimInstance* OR *rcim*))"
+}

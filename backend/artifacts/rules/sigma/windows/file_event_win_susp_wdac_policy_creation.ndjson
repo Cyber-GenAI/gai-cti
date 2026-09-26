@@ -1,0 +1,56 @@
+{
+  "id": "243697c5-19a3-4c00-a379-e0683208b502",
+  "name": "Potentially Suspicious WDAC Policy File Creation",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious Windows Defender Application Control (WDAC) policy file creation from abnormal processes that could be abused by attacker to block EDR/AV components while allowing their own malicious code to run on the system.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrators and security vendors could leverage WDAC, apply additional filters as needed."
+  ],
+  "from": "now-360s",
+  "rule_id": "530c737c-1799-4a77-88c8-4594810342fc",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-using-group-policy",
+    "https://beierle.win/2024-12-20-Weaponizing-WDAC-Killing-the-Dreams-of-EDR/",
+    "https://github.com/logangoins/Krueger/tree/main",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/appcontrol-deployment-guide",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-with-script",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-with-memcm"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\Windows\\\\System32\\\\CodeIntegrity\\\\* AND (NOT ((process.executable:(*\\\\Microsoft.ConfigurationManagement.exe OR *\\\\WDAC\\ Wizard.exe OR *C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\pwsh.exe OR *C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe OR *C\\:\\\\Windows\\\\System32\\\\dllhost.exe OR *C\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe OR *C\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe OR *C\\:\\\\Windows\\\\SysWOW64\\\\dllhost.exe OR *C\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe OR *C\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe)) OR ((winlog.event_data.CommandLine:*ConvertFrom\\-CIPolicy\\ \\-XmlFilePath* AND winlog.event_data.CommandLine:*\\-BinaryFilePath\\ *) OR winlog.event_data.CommandLine:*CiTool\\ \\-\\-update\\-policy* OR (winlog.event_data.CommandLine:*Copy\\-Item\\ \\-Path* AND winlog.event_data.CommandLine:*\\-Destination*)) OR process.executable:System))"
+}

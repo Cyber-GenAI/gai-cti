@@ -1,0 +1,71 @@
+{
+  "id": "ee47c7de-9514-481e-9dad-bda0224ca85d",
+  "name": "Security Tools Keyword Lookup Via Findstr.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1518.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"findstr\" to search for common names of security tools. Attackers often pipe the results of recon commands such as \"tasklist\" or \"whoami\" to \"findstr\" in order to filter out the results.\nThis detection focuses on the keywords that the attacker might use as a filter.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "5061fcf0-74a4-4236-83ec-251a408a79aa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1518",
+          "name": "Software Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1518/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/987e3ca988ae3cff4b9f6e388c139c05bf44bbb8/atomics/T1518.001/T1518.001.md#atomic-test-1---security-software-discovery",
+    "https://www.microsoft.com/en-us/security/blog/2023/10/18/multiple-north-korean-threat-actors-exploiting-the-teamcity-cve-2023-42793-vulnerability/",
+    "https://www.hhs.gov/sites/default/files/manage-engine-vulnerability-sector-alert-tlpclear.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\find.exe OR *\\\\findstr.exe)) OR (process.pe.original_file_name:(FIND.EXE OR FINDSTR.EXE))) AND (process.command_line:(*\\ avira OR *\\ avira\\\" OR *\\ cb OR *\\ cb\\\" OR *\\ cylance OR *\\ cylance\\\" OR *\\ defender OR *\\ defender\\\" OR *\\ kaspersky OR *\\ kaspersky\\\" OR *\\ kes OR *\\ kes\\\" OR *\\ mc OR *\\ mc\\\" OR *\\ sec OR *\\ sec\\\" OR *\\ sentinel OR *\\ sentinel\\\" OR *\\ symantec OR *\\ symantec\\\" OR *\\ virus OR *\\ virus\\\"))"
+}

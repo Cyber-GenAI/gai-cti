@@ -1,0 +1,51 @@
+{
+  "id": "146c918d-3fa0-4972-8df5-517b6dc5b66f",
+  "name": "Suspicious Log Entries",
+  "tags": [
+    "attack.impact",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious log entries in Linux log files",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4d37ab46-419d-4cb6-9662-6bb4946cd74a",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/ossec/ossec-hids/blob/master/etc/rules/syslog_rules.xml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*entered\\ promiscuous\\ mode* OR *Deactivating\\ service* OR *Oversized\\ packet\\ received\\ from* OR *imuxsock\\ begins\\ to\\ drop\\ messages*"
+}

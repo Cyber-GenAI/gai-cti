@@ -1,0 +1,82 @@
+{
+  "id": "9b3c23fc-27cc-4695-87b5-6fcc92af31bf",
+  "name": "File Was Not Allowed To Run",
+  "tags": [
+    "attack.execution",
+    "attack.t1204.002",
+    "attack.t1059.001",
+    "attack.t1059.003",
+    "attack.t1059.005",
+    "attack.t1059.006",
+    "attack.t1059.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect run not allowed files. Applocker is a very useful tool, especially on servers where unprivileged users have access. For example terminal servers. You need configure applocker and log collect to receive these events.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Need tuning applocker or add exceptions in SIEM"
+  ],
+  "from": "now-360s",
+  "rule_id": "eb20e5a8-db79-4baa-975b-d65bcb5f0f26",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/applocker/what-is-applocker",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/applocker/using-event-viewer-with-applocker",
+    "https://nxlog.co/documentation/nxlog-user-guide/applocker.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.channel:(Microsoft\\-Windows\\-AppLocker\\/MSI\\ and\\ Script OR Microsoft\\-Windows\\-AppLocker\\/EXE\\ and\\ DLL OR Microsoft\\-Windows\\-AppLocker\\/Packaged\\ app\\-Deployment OR Microsoft\\-Windows\\-AppLocker\\/Packaged\\ app\\-Execution)) AND (event.code:(8004 OR 8007 OR 8022 OR 8025))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "26d3de34-96a3-488e-99c6-a87d0f4cb5fe",
+  "name": "Msiexec Quiet Installation",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may abuse msiexec.exe to proxy execution of malicious payloads.\nMsiexec.exe is the command-line utility for the Windows Installer and is thus commonly associated with executing installation packages (.msi)\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "WindowsApps installing updates via the quiet flag"
+  ],
+  "from": "now-360s",
+  "rule_id": "31d5c988-c5c1-4d85-b308-42f80b5d4eb3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/msiexec",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1218.007/T1218.007.md",
+    "https://twitter.com/_st0pp3r_/status/1583914244344799235"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\msiexec.exe OR process.pe.original_file_name:msiexec.exe) AND (process.command_line:(*\\-i* OR *\\/i* OR *\u2013i* OR *\u2014i* OR *\u2015i*) OR process.command_line:(*\\-package* OR *\\/package* OR *\u2013package* OR *\u2014package* OR *\u2015package*) OR process.command_line:(*\\-a* OR *\\/a* OR *\u2013a* OR *\u2014a* OR *\u2015a*) OR process.command_line:(*\\-j* OR *\\/j* OR *\u2013j* OR *\u2014j* OR *\u2015j*)) AND process.command_line:(*\\-q* OR *\\/q* OR *\u2013q* OR *\u2014q* OR *\u2015q*)) AND (NOT ((process.parent.executable:C\\:\\\\Users\\\\* AND process.parent.executable:*\\\\AppData\\\\Local\\\\Temp\\\\*) OR process.parent.executable:C\\:\\\\Windows\\\\Temp\\\\* OR (process.parent.executable:C\\:\\\\Windows\\\\CCM\\\\Ccm32BitLauncher.exe AND (winlog.event_data.IntegrityLevel:(System OR S\\-1\\-16\\-16384)))))"
+}

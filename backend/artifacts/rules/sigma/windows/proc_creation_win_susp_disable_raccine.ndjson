@@ -1,0 +1,69 @@
+{
+  "id": "6774e291-7071-4f8c-bc03-15ba1d788444",
+  "name": "Raccine Uninstall",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects commands that indicate a Raccine removal from an end system. Raccine is a free ransomware protection tool.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate deinstallation by administrative staff"
+  ],
+  "from": "now-360s",
+  "rule_id": "d370e81f-2d01-4122-ac8a-4ffe067ae0fc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Neo23x0/Raccine"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*taskkill\\ * AND process.command_line:*RaccineSettings.exe*) OR (process.command_line:*reg.exe* AND process.command_line:*delete* AND process.command_line:*Raccine\\ Tray*) OR (process.command_line:*schtasks* AND process.command_line:*\\/DELETE* AND process.command_line:*Raccine\\ Rules\\ Updater*)"
+}

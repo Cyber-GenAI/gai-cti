@@ -1,0 +1,70 @@
+{
+  "id": "8dbf722e-070f-4789-a77e-61272165ad51",
+  "name": "Cscript/Wscript Uncommon Script Extension Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.005",
+    "attack.t1059.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Wscript/Cscript executing a file with an uncommon (i.e. non-script) extension",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8a05eef7-827a-4fa8-9869-1b82807269a5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.pe.original_file_name:(wscript.exe OR cscript.exe)) OR (process.executable:(*\\\\wscript.exe OR *\\\\cscript.exe))) AND (process.command_line:(*.csv* OR *.dat* OR *.doc* OR *.gif* OR *.jpeg* OR *.jpg* OR *.png* OR *.ppt* OR *.txt* OR *.xls* OR *.xml*))"
+}

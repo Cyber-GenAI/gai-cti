@@ -1,0 +1,70 @@
+{
+  "id": "0decd404-adcf-4ea2-a761-9579bbdc627d",
+  "name": "Delete Volume Shadow Copies Via WMI With PowerShell",
+  "tags": [
+    "attack.impact",
+    "attack.t1490",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Shadow Copies deletion using operating systems utilities via PowerShell",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate Administrator deletes Shadow Copies using operating systems utilities for legitimate reason"
+  ],
+  "from": "now-360s",
+  "rule_id": "fec0c8a8-eaee-4f5c-a30d-107c45710c29",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1490",
+          "name": "Inhibit System Recovery",
+          "reference": "https://attack.mitre.org/techniques/T1490/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1490/T1490.md",
+    "https://www.fortinet.com/blog/threat-research/stomping-shadow-copies-a-second-look-into-deletion-methods"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.Data:*Get\\-WmiObject* AND winlog.event_data.Data:*Win32_ShadowCopy*) AND (winlog.event_data.Data:(*Delete\\(\\)* OR *Remove\\-WmiObject*))"
+}

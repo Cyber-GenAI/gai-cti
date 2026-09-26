@@ -1,0 +1,71 @@
+{
+  "id": "e5fbf406-1a00-4733-bb3d-50d3f8b1e18e",
+  "name": "Suspicious Manipulation Of Default Accounts Via Net.EXE",
+  "tags": [
+    "attack.collection",
+    "attack.t1560.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious manipulations of default accounts such as 'administrator' and 'guest'. For example 'enable' or 'disable' accounts or change the password...etc",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives could occur with the admin or guest account. It depends on the scripts being used by the admins in your env. If you experience a lot of FP you could reduce the level to medium"
+  ],
+  "from": "now-360s",
+  "rule_id": "4782321d-2f61-43db-8d18-d92719874e47",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1560",
+          "name": "Archive Collected Data",
+          "reference": "https://attack.mitre.org/techniques/T1560/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trellix.com/en-sg/about/newsroom/stories/threat-labs/lockergoga-ransomware-family-used-in-targeted-attacks.html",
+    "https://redacted.com/blog/bianlian-ransomware-gang-gives-it-a-go/",
+    "https://www.microsoft.com/security/blog/2022/09/07/profiling-dev-0270-phosphorus-ransomware-operations/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\net.exe OR *\\\\net1.exe)) OR (process.pe.original_file_name:(net.exe OR net1.exe))) AND process.command_line:*\\ user\\ * AND (process.command_line:(*\\ J\u00e4rjestelm\u00e4nvalvoja\\ * OR *\\ Rendszergazda\\ * OR *\\ \u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440\\ * OR *\\ Administrateur\\ * OR *\\ Administrador\\ * OR *\\ Administrat\u00f6r\\ * OR *\\ Administrator\\ * OR *\\ guest\\ * OR *\\ DefaultAccount\\ * OR *\\ \\\"J\u00e4rjestelm\u00e4nvalvoja\\\"\\ * OR *\\ \\\"Rendszergazda\\\"\\ * OR *\\ \\\"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440\\\"\\ * OR *\\ \\\"Administrateur\\\"\\ * OR *\\ \\\"Administrador\\\"\\ * OR *\\ \\\"Administrat\u00f6r\\\"\\ * OR *\\ \\\"Administrator\\\"\\ * OR *\\ \\\"guest\\\"\\ * OR *\\ \\\"DefaultAccount\\\"\\ * OR *\\ 'J\u00e4rjestelm\u00e4nvalvoja'\\ * OR *\\ 'Rendszergazda'\\ * OR *\\ '\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440'\\ * OR *\\ 'Administrateur'\\ * OR *\\ 'Administrador'\\ * OR *\\ 'Administrat\u00f6r'\\ * OR *\\ 'Administrator'\\ * OR *\\ 'guest'\\ * OR *\\ 'DefaultAccount'\\ *))) AND (NOT (process.command_line:*guest* AND process.command_line:*\\/active\\ no*))"
+}

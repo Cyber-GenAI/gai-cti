@@ -1,0 +1,72 @@
+{
+  "id": "9ca684c0-8681-4cc2-a632-02a7e884eb04",
+  "name": "Classes Autorun Keys Modification",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects modification of autostart extensibility point (ASEP) in registry.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate software automatically (mostly, during installation) sets up autorun keys for legitimate reason",
+    "Legitimate administrator sets up autorun keys for legitimate reason"
+  ],
+  "from": "now-360s",
+  "rule_id": "f9a3797a-0145-45ac-a0aa-fdb60a79b0a1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1547.001/T1547.001.md",
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns",
+    "https://gist.github.com/GlebSukhodolskiy/0fc5fa5f482903064b448890db1eaf9d"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Software\\\\Classes* AND (registry.path:(*\\\\Folder\\\\ShellEx\\\\ExtShellFolderViews* OR *\\\\Folder\\\\ShellEx\\\\DragDropHandlers* OR *\\\\Folder\\\\Shellex\\\\ColumnHandlers* OR *\\\\Filter* OR *\\\\Exefile\\\\Shell\\\\Open\\\\Command\\\\\\(Default\\)* OR *\\\\Directory\\\\Shellex\\\\DragDropHandlers* OR *\\\\Directory\\\\Shellex\\\\CopyHookHandlers* OR *\\\\CLSID\\\\\\{AC757296\\-3522\\-4E11\\-9862\\-C17BE5A1767E\\}\\\\Instance* OR *\\\\CLSID\\\\\\{ABE3B9A4\\-257D\\-4B97\\-BD1A\\-294AF496222E\\}\\\\Instance* OR *\\\\CLSID\\\\\\{7ED96837\\-96F0\\-4812\\-B211\\-F13C24117ED3\\}\\\\Instance* OR *\\\\CLSID\\\\\\{083863F1\\-70DE\\-11d0\\-BD40\\-00A0C911CE86\\}\\\\Instance* OR *\\\\Classes\\\\AllFileSystemObjects\\\\ShellEx\\\\DragDropHandlers* OR *\\\\.exe* OR *\\\\.cmd* OR *\\\\ShellEx\\\\PropertySheetHandlers* OR *\\\\ShellEx\\\\ContextMenuHandlers*))) AND (NOT (winlog.event_data.Details:\\(Empty\\) OR winlog.event_data.Details:\\{807583E5\\-5146\\-11D5\\-A672\\-00B0D022E945\\} OR process.executable:C\\:\\\\Windows\\\\System32\\\\drvinst.exe OR (process.executable:C\\:\\\\Windows\\\\System32\\\\svchost.exe AND registry.path:*\\\\lnkfile\\\\shellex\\\\ContextMenuHandlers\\\\*)))"
+}

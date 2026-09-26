@@ -1,0 +1,69 @@
+{
+  "id": "0b980a62-f6f7-429b-a532-cc829ccabb1b",
+  "name": "Webshell Tool Reconnaissance Activity",
+  "tags": [
+    "attack.persistence",
+    "attack.t1505.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects processes spawned from web servers (PHP, Tomcat, IIS, etc.) that perform reconnaissance looking for the existence of popular scripting tools (perl, python, wget) on the system via the help commands\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9f0a80eb-78e0-49ea-8457-42f1588d5939",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://ragged-lab.blogspot.com/2020/07/webshells-automating-reconnaissance.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\caddy.exe OR *\\\\httpd.exe OR *\\\\nginx.exe OR *\\\\php\\-cgi.exe OR *\\\\w3wp.exe OR *\\\\ws_tomcatservice.exe)) OR ((process.parent.executable:(*\\\\java.exe OR *\\\\javaw.exe)) AND (process.parent.executable:(*\\-tomcat\\-* OR *\\\\tomcat*))) OR ((process.parent.executable:(*\\\\java.exe OR *\\\\javaw.exe)) AND (process.command_line:(*CATALINA_HOME* OR *catalina.jar*)))) AND (process.command_line:(*perl\\ \\-\\-help* OR *perl\\ \\-h* OR *python\\ \\-\\-help* OR *python\\ \\-h* OR *python3\\ \\-\\-help* OR *python3\\ \\-h* OR *wget\\ \\-\\-help*))"
+}

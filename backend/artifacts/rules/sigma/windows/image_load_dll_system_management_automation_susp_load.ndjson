@@ -1,0 +1,71 @@
+{
+  "id": "d030deb3-cb47-4d93-90eb-be89e2edf104",
+  "name": "PowerShell Core DLL Loaded By Non PowerShell Process",
+  "tags": [
+    "attack.t1059.001",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects loading of essential DLLs used by PowerShell by non-PowerShell process.\nDetects behavior similar to meterpreter's \"load powershell\" extension.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Used by some .NET binaries, minimal on user workstation.",
+    "Used by Microsoft SQL Server Management Studio"
+  ],
+  "from": "now-360s",
+  "rule_id": "574c1f75-2aa1-4c2a-a95d-103ae21bc2d4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://adsecurity.org/?p=2921",
+    "https://github.com/p3nt4/PowerShdll"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.pe.description:System.Management.Automation OR file.pe.original_file_name:System.Management.Automation.dll OR (file.path:(*\\\\System.Management.Automation.dll OR *\\\\System.Management.Automation.ni.dll))) AND (NOT ((process.executable:(*\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe OR *\\:\\\\Windows\\\\System32\\\\dsac.exe OR *\\:\\\\WINDOWS\\\\System32\\\\RemoteFXvGPUDisablement.exe OR *\\:\\\\Windows\\\\System32\\\\runscripthelper.exe OR *\\:\\\\WINDOWS\\\\System32\\\\sdiagnhost.exe OR *\\:\\\\Windows\\\\System32\\\\ServerManager.exe OR *\\:\\\\Windows\\\\System32\\\\SyncAppvPublishingServer.exe OR *\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe OR *\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe OR *\\:\\\\Windows\\\\System32\\\\winrshost.exe OR *\\:\\\\Windows\\\\System32\\\\wsmprovhost.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\winrshost.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\wsmprovhost.exe)) OR ((process.executable:(*\\:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\* OR *\\:\\\\Windows\\\\Microsoft.NET\\\\Framework64\\\\*)) AND process.executable:*\\\\mscorsvw.exe))) AND (NOT (((process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ SQL\\ Server\\ Management\\ Studio* OR *\\:\\\\Program\\ Files\\\\Microsoft\\ SQL\\ Server\\ Management\\ Studio*)) AND process.executable:*\\\\IDE\\\\Ssms.exe) OR ((process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ SQL\\ Server\\\\* OR *\\:\\\\Program\\ Files\\\\Microsoft\\ SQL\\ Server\\\\*)) AND process.executable:*\\\\Tools\\\\Binn\\\\SQLPS.exe) OR process.executable:*\\\\Citrix\\\\ConfigSync\\\\ConfigSyncRun.exe OR (process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Visual\\ Studio\\\\* OR *\\:\\\\Program\\ Files\\\\Microsoft\\ Visual\\ Studio\\\\*)) OR process.executable:*\\:\\\\ProgramData\\\\chocolatey\\\\choco.exe* OR (process.executable:*\\:\\\\Windows\\\\Temp\\\\asgard2\\-agent\\\\* AND (process.executable:(*\\\\thor64.exe OR *\\\\thor.exe))) OR (NOT _exists_:process.executable)))"
+}

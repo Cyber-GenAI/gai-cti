@@ -1,0 +1,70 @@
+{
+  "id": "65e9e6a5-fdeb-4aed-a7b7-c1e54f4f71da",
+  "name": "Suspicious Windows Defender Folder Exclusion Added Via Reg.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of \"reg.exe\" to add Defender folder exclusions. Qbot has been seen using this technique to add exclusions for folders within AppData and ProgramData.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "20b073e6-4bfa-47a6-bd72-9b7fd2f60bbe",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/02/07/qbot-likes-to-move-it-move-it/",
+    "https://redcanary.com/threat-detection-report/threats/qbot/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\reg.exe AND (process.command_line:(*SOFTWARE\\\\Microsoft\\\\Windows\\ Defender\\\\Exclusions\\\\Paths* OR *SOFTWARE\\\\Microsoft\\\\Microsoft\\ Antimalware\\\\Exclusions\\\\Paths*)) AND (process.command_line:*ADD\\ * AND process.command_line:*\\/t\\ * AND process.command_line:*REG_DWORD\\ * AND process.command_line:*\\/v\\ * AND process.command_line:*\\/d\\ * AND process.command_line:*0*)"
+}

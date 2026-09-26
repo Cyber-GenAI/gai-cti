@@ -1,0 +1,51 @@
+{
+  "id": "7c9d30f3-6024-4c3c-b67c-858e94b14faa",
+  "name": "Potentially Suspicious Execution Of PDQDeployRunner",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious execution of \"PDQDeployRunner\" which is part of the PDQDeploy service stack that is responsible for executing commands and packages on a remote machines",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the PDQDeploy tool to execute these commands"
+  ],
+  "from": "now-360s",
+  "rule_id": "c191cc3f-7aa3-459b-808b-b6d32e997961",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/malmoeb/status/1550483085472432128"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\PDQDeployRunner\\-* AND ((process.executable:(*\\\\bash.exe OR *\\\\certutil.exe OR *\\\\cmd.exe OR *\\\\csc.exe OR *\\\\cscript.exe OR *\\\\dllhost.exe OR *\\\\mshta.exe OR *\\\\msiexec.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\scriptrunner.exe OR *\\\\wmic.exe OR *\\\\wscript.exe OR *\\\\wsl.exe)) OR (process.executable:(*\\:\\\\ProgramData\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\TEMP\\\\* OR *\\\\AppData\\\\Local\\\\Temp*)) OR (process.command_line:(*\\ \\-decode\\ * OR *\\ \\-enc\\ * OR *\\ \\-encodedcommand\\ * OR *\\ \\-w\\ hidden* OR *DownloadString* OR *FromBase64String* OR *http* OR *iex\\ * OR *Invoke\\-*)))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "2f0f3cde-9e2c-4337-8512-0fac67a4320d",
+  "name": "Certificate Exported Via PowerShell - ScriptBlock",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1552.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects calls to cmdlets inside of PowerShell scripts that are used to export certificates from the local certificate store. Threat actors were seen abusing this to steal private keys from compromised machines.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate certificate exports by administrators. Additional filters might be required."
+  ],
+  "from": "now-360s",
+  "rule_id": "86e94930-376b-486c-aa13-d7262d5cfe35",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://us-cert.cisa.gov/ncas/analysis-reports/ar21-112a",
+    "https://learn.microsoft.com/en-us/powershell/module/pki/export-pfxcertificate?view=windowsserver2022-ps",
+    "https://www.splunk.com/en_us/blog/security/breaking-the-chain-defending-against-certificate-services-abuse.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*Export\\-PfxCertificate* OR *Export\\-Certificate*)) AND (NOT powershell.file.script_block_text:*CmdletsToExport\\ \\=\\ @\\(*)"
+}

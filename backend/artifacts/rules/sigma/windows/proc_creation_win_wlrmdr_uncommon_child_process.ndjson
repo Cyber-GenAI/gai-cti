@@ -1,0 +1,70 @@
+{
+  "id": "35facd51-d577-41eb-8abe-4178bf976ecc",
+  "name": "Wlrmdr.EXE Uncommon Argument Or Child Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"Wlrmdr.exe\" with the \"-u\" command line flag which allows anything passed to it to be an argument of the ShellExecute API, which would allow an attacker to execute arbitrary binaries.\nThis detection also focuses on any uncommon child processes spawned from \"Wlrmdr.exe\" as a supplement for those that posses \"ParentImage\" telemetry.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0315a932-f81c-46e1-bb83-a9af16454be6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/0gtweet/status/1493963591745220608?s=20&t=xUg9DsZhJy1q9bPTUWgeIQ",
+    "https://lolbas-project.github.io/lolbas/Binaries/Wlrmdr/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\wlrmdr.exe OR (((process.executable:*\\\\wlrmdr.exe OR process.pe.original_file_name:WLRMNDR.EXE) AND (process.command_line:(*\\-s\\ * OR *\\/s\\ * OR *\u2013s\\ * OR *\u2014s\\ * OR *\u2015s\\ *) AND process.command_line:(*\\-f\\ * OR *\\/f\\ * OR *\u2013f\\ * OR *\u2014f\\ * OR *\u2015f\\ *) AND process.command_line:(*\\-t\\ * OR *\\/t\\ * OR *\u2013t\\ * OR *\u2014t\\ * OR *\u2015t\\ *) AND process.command_line:(*\\-m\\ * OR *\\/m\\ * OR *\u2013m\\ * OR *\u2014m\\ * OR *\u2015m\\ *) AND process.command_line:(*\\-a\\ * OR *\\/a\\ * OR *\u2013a\\ * OR *\u2014a\\ * OR *\u2015a\\ *) AND process.command_line:(*\\-u\\ * OR *\\/u\\ * OR *\u2013u\\ * OR *\u2014u\\ * OR *\u2015u\\ *))) AND (NOT (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\winlogon.exe OR (process.parent.executable:(\"\" OR \\-)) OR (NOT _exists_:process.parent.executable))))"
+}

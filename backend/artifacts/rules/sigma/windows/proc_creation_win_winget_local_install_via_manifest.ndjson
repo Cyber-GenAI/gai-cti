@@ -1,0 +1,72 @@
+{
+  "id": "41ce54d4-b8f6-4e77-874a-079a4b36c6e6",
+  "name": "Install New Package Via Winget Local Manifest",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of winget to install applications via manifest file. Adversaries can abuse winget to download payloads remotely and execute them.\nThe manifest option enables you to install an application by passing in a YAML file directly to the client.\nWinget can be used to download and install exe, msi or msix files later.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives are expected in some environment that may use this functionality to install and test their custom applications"
+  ],
+  "from": "now-360s",
+  "rule_id": "5f507580-7190-4f16-af0c-0e62c9c5a7d6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/package-manager/winget/install#local-install",
+    "https://lolbas-project.github.io/lolbas/Binaries/Winget/",
+    "https://github.com/nasbench/Misc-Research/tree/b9596e8109dcdb16ec353f316678927e507a5b8d/LOLBINs/Winget"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\winget.exe OR process.pe.original_file_name:winget.exe) AND (process.command_line:(*install* OR *\\ add\\ *)) AND (process.command_line:(*\\-m\\ * OR *\\-\\-manifest*))"
+}

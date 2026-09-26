@@ -1,0 +1,71 @@
+{
+  "id": "d49e741a-e927-4524-bd7f-b294956da91d",
+  "name": "PetitPotam Suspicious Kerberos TGT Request",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1187",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect suspicious Kerberos TGT requests.\nOnce an attacer obtains a computer certificate by abusing Active Directory Certificate Services in combination with PetitPotam, the next step would be to leverage the certificate for malicious purposes.\nOne way of doing this is to request a Kerberos Ticket Granting Ticket using a tool like Rubeus.\nThis request will generate a 4768 event with some unusual fields depending on the environment.\nThis analytic will require tuning, we recommend filtering Account_Name to the Domain Controller computer accounts.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives are possible if the environment is using certificates for authentication. We recommend filtering Account_Name to the Domain Controller computer accounts."
+  ],
+  "from": "now-360s",
+  "rule_id": "646de6ed-f2c0-4221-bf1d-389615bebb82",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1187",
+          "name": "Forced Authentication",
+          "reference": "https://attack.mitre.org/techniques/T1187/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/topotam/PetitPotam",
+    "https://isc.sans.edu/forums/diary/Active+Directory+Certificate+Services+ADCS+PKI+domain+admin+vulnerability/27668/",
+    "https://github.com/splunk/security_content/blob/develop/detections/endpoint/petitpotam_suspicious_kerberos_tgt_request.yml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4768 AND winlog.event_data.TargetUserName:*$ AND winlog.event_data.CertThumbprint:*) AND (NOT (source.ip:\\:\\:1 OR winlog.event_data.CertThumbprint:\"\")))"
+}

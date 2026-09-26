@@ -1,0 +1,101 @@
+{
+  "id": "417763c4-d8d8-44e4-8feb-43df2dbefb79",
+  "name": "Webshell Hacking Activity Patterns",
+  "tags": [
+    "attack.persistence",
+    "attack.discovery",
+    "attack.t1505.003",
+    "attack.t1018",
+    "attack.t1033",
+    "attack.t1087",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects certain parent child patterns found in cases in which a web shell is used to perform certain credential dumping or exfiltration activities on a compromised system\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "dd4850b0-79ab-4711-943c-a346f42f4e2e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1018",
+          "name": "Remote System Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1018/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://youtu.be/7aemGhaE9ds?t=641"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\caddy.exe OR *\\\\httpd.exe OR *\\\\nginx.exe OR *\\\\php\\-cgi.exe OR *\\\\w3wp.exe OR *\\\\ws_tomcatservice.exe)) OR ((process.parent.executable:(*\\\\java.exe OR *\\\\javaw.exe)) AND (process.parent.executable:(*\\-tomcat\\-* OR *\\\\tomcat*))) OR ((process.parent.executable:(*\\\\java.exe OR *\\\\javaw.exe)) AND (process.command_line:(*catalina.jar* OR *CATALINA_HOME*)))) AND ((process.command_line:*rundll32* AND process.command_line:*comsvcs*) OR (process.command_line:*\\ \\-hp* AND process.command_line:*\\ a\\ * AND process.command_line:*\\ \\-m*) OR (process.command_line:*net* AND process.command_line:*\\ user\\ * AND process.command_line:*\\ \\/add*) OR (process.command_line:*net* AND process.command_line:*\\ localgroup\\ * AND process.command_line:*\\ administrators\\ * AND process.command_line:*\\/add*) OR (process.executable:(*\\\\ntdsutil.exe OR *\\\\ldifde.exe OR *\\\\adfind.exe OR *\\\\procdump.exe OR *\\\\Nanodump.exe OR *\\\\vssadmin.exe OR *\\\\fsutil.exe)) OR (process.command_line:(*\\ \\-decode\\ * OR *\\ \\-NoP\\ * OR *\\ \\-W\\ Hidden\\ * OR *\\ \\/decode\\ * OR *\\ \\/ticket\\:* OR *\\ sekurlsa* OR *.dmp\\ full* OR *.downloadfile\\(* OR *.downloadstring\\(* OR *FromBase64String* OR *process\\ call\\ create* OR *reg\\ save\\ * OR *whoami\\ \\/priv*)))"
+}

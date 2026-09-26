@@ -1,0 +1,70 @@
+{
+  "id": "c5b193da-4685-437d-b795-4f6a841c4c2d",
+  "name": "New Netsh Helper DLL Registered From A Suspicious Location",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to the Netsh registry key to add a new DLL value that is located on a suspicious location. This change might be an indication of a potential persistence attempt by adding a malicious Netsh helper\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "446e5f14-d4b1-4355-a361-5d11f24e34ce",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.ired.team/offensive-security/persistence/t1128-netsh-helper-dll",
+    "https://pentestlab.blog/2019/10/29/persistence-netsh-helper-dll/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\NetSh* AND ((winlog.event_data.Details:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Temporary\\ Internet*)) OR ((winlog.event_data.Details:*\\:\\\\Users\\\\* AND winlog.event_data.Details:*\\\\Favorites\\\\*) OR (winlog.event_data.Details:*\\:\\\\Users\\\\* AND winlog.event_data.Details:*\\\\Favourites\\\\*) OR (winlog.event_data.Details:*\\:\\\\Users\\\\* AND winlog.event_data.Details:*\\\\Contacts\\\\*) OR (winlog.event_data.Details:*\\:\\\\Users\\\\* AND winlog.event_data.Details:*\\\\Pictures\\\\*)))"
+}

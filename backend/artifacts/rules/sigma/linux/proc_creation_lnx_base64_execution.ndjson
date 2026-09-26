@@ -1,0 +1,70 @@
+{
+  "id": "e3f99101-d53e-4a34-9372-31b6c3f459b1",
+  "name": "Linux Base64 Encoded Pipe to Shell",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1140",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious process command line that uses base64 encoded input for execution with a shell",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "c24a48c0-4543-4757-8919-731f66f01cc4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1140",
+          "name": "Deobfuscate/Decode Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1140/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/arget13/DDexec",
+    "https://www.mandiant.com/resources/blog/barracuda-esg-exploited-globally"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "CommandLine:*base64\\ * AND ((CommandLine:(*\\|\\ bash\\ * OR *\\|\\ sh\\ * OR *\\|bash\\ * OR *\\|sh\\ *)) OR (CommandLine:(*\\ \\|sh OR *\\|\\ bash OR *\\|\\ sh OR *\\|bash)))"
+}

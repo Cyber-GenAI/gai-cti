@@ -1,0 +1,71 @@
+{
+  "id": "358e71fa-de05-4797-814c-2acc53992498",
+  "name": "Potential Suspicious Mofcomp Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the \"mofcomp\" utility as a child of a suspicious shell or script running utility or by having a suspicious path in the commandline.\nThe \"mofcomp\" utility parses a file containing MOF statements and adds the classes and class instances defined in the file to the WMI repository.\nAttackers abuse this utility to install malicious MOF scripts\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "298b8a3b-2f24-4922-8c70-b6ee13103176",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/07/11/select-xmrig-from-sqlserver/",
+    "https://github.com/The-DFIR-Report/Sigma-Rules/blob/75260568a7ffe61b2458ca05f6f25914efb44337/win_mofcomp_execution.yml",
+    "https://learn.microsoft.com/en-us/windows/win32/wmisdk/mofcomp"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\mofcomp.exe OR process.pe.original_file_name:mofcomp.exe) AND ((process.parent.executable:(*\\\\cmd.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wsl.exe OR *\\\\wscript.exe OR *\\\\cscript.exe)) OR (process.command_line:(*\\\\AppData\\\\Local\\\\Temp* OR *\\\\Users\\\\Public\\\\* OR *\\\\WINDOWS\\\\Temp\\\\* OR *%temp%* OR *%tmp%* OR *%appdata%*)))) AND (NOT (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\wbem\\\\WmiPrvSE.exe AND process.command_line:*C\\:\\\\Windows\\\\TEMP\\\\* AND process.command_line:*.mof)) AND (NOT (process.command_line:*C\\:\\\\Windows\\\\TEMP\\\\* AND process.command_line:*.mof))"
+}

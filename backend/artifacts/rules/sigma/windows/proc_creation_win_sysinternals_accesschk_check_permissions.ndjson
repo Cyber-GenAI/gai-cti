@@ -1,0 +1,72 @@
+{
+  "id": "27dbd418-9ad6-49fd-af7f-7735dbd14701",
+  "name": "Permission Check Via Accesschk.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1069.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of the \"Accesschk\" utility, an access and privilege audit tool developed by SysInternal and often being abused by attacker to verify process privileges",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "System administrator Usage"
+  ],
+  "from": "now-360s",
+  "rule_id": "1450d59c-5182-4dd8-85db-40122385beb6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1069",
+          "name": "Permission Groups Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1069/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-privilege-escalation-in-windows-environment?slide=43",
+    "https://www.youtube.com/watch?v=JGs-aKf2OtU&ab_channel=OFFZONEMOSCOW",
+    "https://github.com/carlospolop/PEASS-ng/blob/fa0f2e17fbc1d86f1fd66338a40e665e7182501d/winPEAS/winPEASbat/winPEAS.bat",
+    "https://github.com/gladiatx0r/Powerless/blob/04f553bbc0c65baf4e57344deff84e3f016e6b51/Powerless.bat"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.product:*AccessChk OR process.pe.description:*Reports\\ effective\\ permissions* OR (process.executable:(*\\\\accesschk.exe OR *\\\\accesschk64.exe)) OR process.pe.original_file_name:accesschk.exe) AND (process.command_line:(*uwcqv\\ * OR *kwsu\\ * OR *qwsu\\ * OR *uwdqs\\ *))"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "4fb9ba50-3d6b-44e5-8919-cff0f9c0cd3d",
+  "name": "Creation of a Diagcab",
+  "tags": [
+    "attack.resource-development",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of diagcab file, which could be caused by some legitimate installer or is a sign of exploitation (review the filename and its location)",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate microsoft diagcab"
+  ],
+  "from": "now-360s",
+  "rule_id": "502a8ba9-a51a-4d6a-a694-ff883fb98061",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://threadreaderapp.com/thread/1533879688141086720.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*.diagcab"
+}

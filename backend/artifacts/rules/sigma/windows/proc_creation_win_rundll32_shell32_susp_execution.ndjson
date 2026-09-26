@@ -1,0 +1,70 @@
+{
+  "id": "229fe379-248d-4a8c-bd85-e682de5d5dd4",
+  "name": "Shell32 DLL Execution in Suspicious Directory",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "attack.t1218.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects shell32.dll executing a DLL in a suspicious directory",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "40d9d23c-81a2-4d64-b9d9-7445e3372590",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.group-ib.com/resources/threat-research/red-curl-2.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE) AND ((process.command_line:*shell32.dll* AND process.command_line:*Control_RunDLL*) AND (process.command_line:(*%AppData%* OR *%LocalAppData%* OR *%Temp%* OR *%tmp%* OR *\\\\AppData\\\\* OR *\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\*)))"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "188c9b5e-26b9-47ea-8bdf-3604c1e4e4f7",
+  "name": "Remote Access Tool - NetSupport Execution From Unusual Location",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of client32.exe (NetSupport RAT) from an unusual location (outside of 'C:\\Program Files')",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "52fba788-da18-4427-b3e9-4a61f19b3480",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/misbehaving-rats/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\client32.exe OR process.pe.product:*NetSupport\\ Remote\\ Control* OR process.pe.original_file_name:*client32.exe* OR winlog.event_data.Hashes:*IMPHASH\\=a9d50692e95b79723f3e76fcf70d023e*) AND (NOT (process.executable:(C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\*)))"
+}

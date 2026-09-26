@@ -1,0 +1,69 @@
+{
+  "id": "439a85fa-dc64-4658-b5a7-2487767a0302",
+  "name": "Security Software Discovery - Linux",
+  "tags": [
+    "attack.discovery",
+    "attack.t1518.001",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of system utilities (only grep and egrep for now) to discover security software discovery",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "c511d7ad-3d86-4df3-bda6-9a7d8329c880",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1518",
+          "name": "Software Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1518/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1518.001/T1518.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/grep OR *\\/egrep)) AND (CommandLine:(*nessusd* OR *td\\-agent* OR *packetbeat* OR *filebeat* OR *auditbeat* OR *osqueryd* OR *cbagentd* OR *falcond*))"
+}

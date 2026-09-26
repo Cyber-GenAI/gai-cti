@@ -1,0 +1,89 @@
+{
+  "id": "90cc50d6-74ee-488c-9895-4ff8437caadf",
+  "name": "PUA - AdvancedRun Suspicious Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1134.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of AdvancedRun utility in the context of the TrustedInstaller, SYSTEM, Local Service or Network Service accounts",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "ef3c3e76-9c87-4785-a856-6cf22260c38b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/splinter_code/status/1483815103279603714",
+    "https://medium.com/s2wblog/analysis-of-destructive-malware-whispergate-targeting-ukraine-9d5d158f19f3",
+    "https://www.elastic.co/security-labs/operation-bleeding-bear",
+    "https://www.winhelponline.com/blog/run-program-as-system-localsystem-account-windows/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\/EXEFilename* OR *\\/CommandLine*)) AND ((process.command_line:(*\\ \\/RunAs\\ 8\\ * OR *\\ \\/RunAs\\ 4\\ * OR *\\ \\/RunAs\\ 10\\ * OR *\\ \\/RunAs\\ 11\\ *)) OR (process.command_line:(*\\/RunAs\\ 8 OR *\\/RunAs\\ 4 OR *\\/RunAs\\ 10 OR *\\/RunAs\\ 11)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "177b6c67-4797-4ea4-b8f1-236e3f30227c",
+  "name": "PUA - AdFind.EXE Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of Adfind.exe utility, which can be used for reconnaissance in an Active Directory environment",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e173bd18-4b5e-47ae-919c-93cef13b15a4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.joeware.net/freetools/tools/adfind/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1087.002/T1087.002.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\AdFind.exe OR process.pe.original_file_name:AdFind.exe OR (winlog.event_data.Hashes:(*IMPHASH\\=d144de8117df2beceaba2201ad304764* OR *IMPHASH\\=12ce1c0f3f5837ecc18a3782408fa975* OR *IMPHASH\\=bca5675746d13a1f246e2da3c2217492* OR *IMPHASH\\=4fbf3f084fbbb2470b80b2013134df35* OR *IMPHASH\\=49b639b4acbecc49d72a01f357aa4930* OR *IMPHASH\\=53e117a96057eaf19c41380d0e87f1c2* OR *IMPHASH\\=680dad9e300346e05a85023965867201* OR *IMPHASH\\=21aa085d54992511b9f115355e468782*))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "f0531758-8e02-46c5-a557-b5830f906ec8",
+  "name": "Suspicious Child Process of AspNetCompiler",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1127",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious child processes of \"aspnet_compiler.exe\".",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "75a56f5e-e6e0-4735-81d8-f893f66bbc94",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1127",
+          "name": "Trusted Developer Utilities Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1127/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Aspnet_Compiler/",
+    "https://ijustwannared.team/2020/08/01/the-curious-case-of-aspnet_compiler-exe/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\aspnet_compiler.exe AND ((process.executable:(*\\\\calc.exe OR *\\\\notepad.exe)) OR (process.executable:(*\\\\Users\\\\Public\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Roaming\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks\\\\* OR *\\:\\\\Windows\\\\Tasks\\\\*)))"
+}

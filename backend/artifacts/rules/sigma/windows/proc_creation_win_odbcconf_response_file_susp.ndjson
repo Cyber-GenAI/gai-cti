@@ -1,0 +1,71 @@
+{
+  "id": "fe5ebc78-2df6-4b90-a35d-91ce543b69cc",
+  "name": "Suspicious Response File Execution Via Odbcconf.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"odbcconf\" with the \"-f\" flag in order to load a response file with a non-\".rsp\" extension.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "9745dd01-1f26-4a2f-ac54-7d0bfa0458e5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sql/odbc/odbcconf-exe?view=sql-server-ver16",
+    "https://lolbas-project.github.io/lolbas/Binaries/Odbcconf/",
+    "https://www.trendmicro.com/en_us/research/17/h/backdoor-carrying-emails-set-sights-on-russian-speaking-businesses.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\odbcconf.exe OR process.pe.original_file_name:odbcconf.exe) AND process.command_line:(*\\ \\-f\\ * OR *\\ \\/f\\ * OR *\\ \u2013f\\ * OR *\\ \u2014f\\ * OR *\\ \u2015f\\ *)) AND (NOT (process.command_line:*.rsp* OR (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\runonce.exe AND process.executable:C\\:\\\\Windows\\\\System32\\\\odbcconf.exe AND process.command_line:*.exe\\ \\/E\\ \\/F\\ \\\"C\\:\\\\WINDOWS\\\\system32\\\\odbcconf.tmp\\\"*)))"
+}

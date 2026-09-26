@@ -1,0 +1,71 @@
+{
+  "id": "c7ce75fc-dbce-490c-81e7-958c0363ab20",
+  "name": "Script Interpreter Execution From Suspicious Folder",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious script execution in temporary folders or folders accessible by environment variables",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "392bde19-64df-4257-9448-067777b6db9a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.virustotal.com/gui/file/91ba814a86ddedc7a9d546e26f912c541205b47a853d227756ab1334ade92c3f",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/shuckworm-russia-ukraine-military",
+    "https://learn.microsoft.com/en-us/windows/win32/shell/csidl"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\wscript.exe)) OR (process.command_line:(*\\ \\-ep\\ bypass\\ * OR *\\ \\-ExecutionPolicy\\ bypass\\ * OR *\\ \\-w\\ hidden\\ * OR *\\/e\\:javascript\\ * OR *\\/e\\:Jscript\\ * OR *\\/e\\:vbscript\\ *)) OR (process.pe.original_file_name:(cscript.exe OR mshta.exe OR wscript.exe))) AND ((process.command_line:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\\\AppData\\\\Local\\\\Temp* OR *\\\\AppData\\\\Roaming\\\\Temp* OR *\\\\Temporary\\ Internet* OR *\\\\Windows\\\\Temp*)) OR ((process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favorites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favourites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Contacts\\\\*)))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "72852082-a037-453b-b673-f7463bbf6ef3",
+  "name": "Rclone Config File Creation",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1567.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Rclone config files being created",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate Rclone usage"
+  ],
+  "from": "now-360s",
+  "rule_id": "8190cc70-696a-4fd9-82af-d80b99fe519e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1567",
+          "name": "Exfiltration Over Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1567/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://research.nccgroup.com/2021/05/27/detecting-rclone-an-effective-tool-for-exfiltration/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\:\\\\Users\\\\* AND file.path:*\\\\.config\\\\rclone\\\\*"
+}

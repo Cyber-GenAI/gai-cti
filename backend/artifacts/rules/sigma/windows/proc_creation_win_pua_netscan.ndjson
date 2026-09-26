@@ -1,0 +1,75 @@
+{
+  "id": "8e824159-8c30-4989-926b-dd8bd8412012",
+  "name": "PUA - SoftPerfect Netscan Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1046",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of SoftPerfect's \"netscan.exe\". An application for scanning networks.\nIt is actively used in-the-wild by threat actors to inspect and understand the network architecture of a victim.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrator activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "792155f7-729a-4da5-9c55-395c8d97ef8b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1046",
+          "name": "Network Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1046/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.protect.airbus.com/blog/uncovering-cyber-intruders-netscan/",
+    "https://secjoes-reports.s3.eu-central-1.amazonaws.com/Sockbot%2Bin%2BGoLand.pdf",
+    "https://www.sentinelone.com/labs/black-basta-ransomware-attacks-deploy-custom-edr-evasion-tools-tied-to-fin7-threat-actor/",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/yanluowang-ransomware-attacks-continue",
+    "https://research.nccgroup.com/2022/07/13/climbing-mount-everest-black-byte-bytes-back/",
+    "https://www.bleepingcomputer.com/news/security/microsoft-exchange-servers-hacked-to-deploy-hive-ransomware/",
+    "https://www.softperfect.com/products/networkscanner/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\netscan.exe OR process.pe.product:Network\\ Scanner OR process.pe.description:Application\\ for\\ scanning\\ networks"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "3638b8e1-ce4f-4623-b585-552084709221",
+  "name": "Suspicious Scheduled Task Name As GUID",
+  "tags": [
+    "attack.execution",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of a scheduled task with a GUID like name",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate software naming their tasks as GUIDs"
+  ],
+  "from": "now-360s",
+  "rule_id": "6ff95ff5-8fb5-4ef1-beb2-03a8f3643722",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/10/31/follina-exploit-leads-to-domain-compromise/",
+    "https://thedfirreport.com/2022/02/21/qbot-and-zerologon-lead-to-full-domain-compromise/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\schtasks.exe AND process.command_line:*\\/Create\\ *) AND (process.command_line:(*\\/TN\\ \\\"\\{* OR *\\/TN\\ '\\{* OR *\\/TN\\ \\{*)) AND (process.command_line:(*\\}\\\"* OR *\\}'* OR *\\}\\ *))"
+}

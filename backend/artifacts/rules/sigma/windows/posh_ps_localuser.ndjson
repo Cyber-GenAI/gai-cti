@@ -1,0 +1,70 @@
+{
+  "id": "70652fa1-310d-49a0-9b25-1c7f1a3da6af",
+  "name": "Powershell LocalAccount Manipulation",
+  "tags": [
+    "attack.persistence",
+    "attack.t1098",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may manipulate accounts to maintain access to victim systems.\nAccount manipulation may consist of any action that preserves adversary access to a compromised account, such as modifying credentials or permission groups\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative script"
+  ],
+  "from": "now-360s",
+  "rule_id": "b4ac2bc5-41e8-4b1d-ace6-1685d0abc701",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1098",
+          "name": "Account Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1098/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1098/T1098.md#atomic-test-1---admin-account-manipulate",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.localaccounts/?view=powershell-5.1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*Disable\\-LocalUser* OR *Enable\\-LocalUser* OR *Get\\-LocalUser* OR *Set\\-LocalUser* OR *New\\-LocalUser* OR *Rename\\-LocalUser* OR *Remove\\-LocalUser*)"
+}

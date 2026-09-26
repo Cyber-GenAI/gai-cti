@@ -1,0 +1,73 @@
+{
+  "id": "8a3f8726-e8c1-4a6e-9826-56e1da24b791",
+  "name": "PUA - Rclone Execution",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1567.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of RClone utility for exfiltration as used by various ransomwares strains like REvil, Conti, FiveHands, etc",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "219344b4-7715-45b3-afa6-84e1fe1eca2f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1567",
+          "name": "Exfiltration Over Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1567/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://research.nccgroup.com/2021/05/27/detecting-rclone-an-effective-tool-for-exfiltration/",
+    "https://thedfirreport.com/2021/03/29/sodinokibi-aka-revil-ransomware",
+    "https://us-cert.cisa.gov/ncas/analysis-reports/ar21-126a",
+    "https://labs.sentinelone.com/egregor-raas-continues-the-chaos-with-cobalt-strike-and-rclone",
+    "https://www.splunk.com/en_us/blog/security/darkside-ransomware-splunk-threat-update-and-detections.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*\\-\\-config\\ * AND process.command_line:*\\-\\-no\\-check\\-certificate\\ * AND process.command_line:*\\ copy\\ *) OR ((process.executable:*\\\\rclone.exe OR process.pe.description:Rsync\\ for\\ cloud\\ storage) AND (process.command_line:(*pass* OR *user* OR *copy* OR *sync* OR *config* OR *lsd* OR *remote* OR *ls* OR *mega* OR *pcloud* OR *ftp* OR *ignore\\-existing* OR *auto\\-confirm* OR *transfers* OR *multi\\-thread\\-streams* OR *no\\-check\\-certificate\\ *)))"
+}

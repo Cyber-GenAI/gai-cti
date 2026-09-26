@@ -1,0 +1,53 @@
+{
+  "id": "01be313b-2c1e-472a-9e2d-ef475e491202",
+  "name": "Suspicious WindowsTerminal Child Processes",
+  "tags": [
+    "attack.execution",
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious children spawned via the Windows Terminal application which could be a sign of persistence via WindowsTerminal (see references section)",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other legitimate \"Windows Terminal\" profiles"
+  ],
+  "from": "now-360s",
+  "rule_id": "da19f4a9-4cc0-409d-8f85-a62e0405151a",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/windowsterminalprofile.html",
+    "https://twitter.com/nas_bench/status/1550836225652686848"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\WindowsTerminal.exe OR *\\\\wt.exe)) AND ((process.executable:(*\\\\rundll32.exe OR *\\\\regsvr32.exe OR *\\\\certutil.exe OR *\\\\cscript.exe OR *\\\\wscript.exe OR *\\\\csc.exe)) OR (process.executable:(*C\\:\\\\Users\\\\Public\\\\* OR *\\\\Downloads\\\\* OR *\\\\Desktop\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Windows\\\\TEMP\\\\*)) OR (process.command_line:(*\\ iex\\ * OR *\\ icm* OR *Invoke\\-* OR *Import\\-Module\\ * OR *ipmo\\ * OR *DownloadString\\(* OR *\\ \\/c\\ * OR *\\ \\/k\\ * OR *\\ \\/r\\ *)))) AND (NOT ((process.command_line:*Import\\-Module* AND process.command_line:*Microsoft.VisualStudio.DevShell.dll* AND process.command_line:*Enter\\-VsDevShell*) OR (process.command_line:*\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.WindowsTerminal_* AND process.command_line:*\\\\LocalState\\\\settings.json*) OR (process.command_line:*C\\:\\\\Program\\ Files\\\\Microsoft\\ Visual\\ Studio\\\\* AND process.command_line:*\\\\Common7\\\\Tools\\\\VsDevCmd.bat*)))"
+}

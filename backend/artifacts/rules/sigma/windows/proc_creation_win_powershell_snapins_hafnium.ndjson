@@ -1,0 +1,89 @@
+{
+  "id": "1047175d-14a4-48dd-b4cb-8ee5f00d6e3e",
+  "name": "Exchange PowerShell Snap-Ins Usage",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "attack.collection",
+    "attack.t1114",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects adding and using Exchange PowerShell snap-ins to export mailbox data. As seen used by HAFNIUM and APT27",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "684c71e3-f175-4486-85ba-32da81db2b1a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1114",
+          "name": "Email Collection",
+          "reference": "https://attack.mitre.org/techniques/T1114/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.volexity.com/blog/2021/03/02/active-exploitation-of-microsoft-exchange-zero-day-vulnerabilities/",
+    "https://www.microsoft.com/security/blog/2021/03/02/hafnium-targeting-exchange-servers/",
+    "https://www.intrinsec.com/apt27-analysis/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND process.command_line:*Add\\-PSSnapin* AND (process.command_line:(*Microsoft.Exchange.Powershell.Snapin* OR *Microsoft.Exchange.Management.PowerShell.SnapIn*))) AND (NOT (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\msiexec.exe AND process.command_line:*$exserver\\=Get\\-ExchangeServer\\ \\(\\[Environment\\]\\:\\:MachineName\\)\\ \\-ErrorVariable\\ exerr\\ 2\\>\\ $null*))"
+}

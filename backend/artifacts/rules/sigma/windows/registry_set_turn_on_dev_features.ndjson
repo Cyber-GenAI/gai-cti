@@ -1,0 +1,52 @@
+{
+  "id": "8acba74a-a2d9-424e-9de4-48d94fa788e5",
+  "name": "Potential Signing Bypass Via Windows Developer Features - Registry",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when the enablement of developer features such as \"Developer Mode\" or \"Application Sideloading\". Which allows the user to install untrusted packages.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e2210c3d-cdcf-4432-8486-c7351d947e9c",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/malmoeb/status/1560536653709598721",
+    "https://www.sentinelone.com/labs/inside-malicious-windows-apps-for-malware-deployment/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\AppModelUnlock* OR *\\\\Policies\\\\Microsoft\\\\Windows\\\\Appx\\\\*)) AND (registry.path:(*\\\\AllowAllTrustedApps OR *\\\\AllowDevelopmentWithoutDevLicense)) AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\)"
+}

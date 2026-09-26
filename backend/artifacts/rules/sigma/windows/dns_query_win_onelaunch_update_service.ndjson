@@ -1,0 +1,71 @@
+{
+  "id": "a94ab3b8-7d6e-468e-8991-932f5f3af44f",
+  "name": "DNS Query Request To OneLaunch Update Service",
+  "tags": [
+    "attack.collection",
+    "attack.t1056",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DNS query requests to \"update.onelaunch.com\". This domain is associated with the OneLaunch adware application.\nWhen the OneLaunch application is installed it will attempt to get updates from this domain.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "e028023a-8479-40f5-b376-d61e48afaed8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1056",
+          "name": "Input Capture",
+          "reference": "https://attack.mitre.org/techniques/T1056/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.malwarebytes.com/blog/detections/pup-optional-onelaunch-silentcf",
+    "https://www.myantispyware.com/2020/12/14/how-to-uninstall-onelaunch-browser-removal-guide/",
+    "https://malware.guide/browser-hijacker/remove-onelaunch-virus/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "dns.question.name:update.onelaunch.com AND process.executable:*\\\\OneLaunch.exe"
+}

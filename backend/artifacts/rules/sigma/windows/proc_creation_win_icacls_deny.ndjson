@@ -1,0 +1,69 @@
+{
+  "id": "b6906688-b793-4df7-932f-3f7930ea00da",
+  "name": "Use Icacls to Hide File to Everyone",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect use of icacls to deny access for everyone in Users folder sometimes used to hide malicious files",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "eb3ea926-7ebf-41d7-aec0-c1dd7840b4a3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/1df999e6-1cb8-45e3-8b61-499d1b7d5a9b/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:iCACLS.EXE OR process.executable:*\\\\icacls.exe) AND (process.command_line:*\\/deny* AND process.command_line:*S\\-1\\-1\\-0\\:*)"
+}

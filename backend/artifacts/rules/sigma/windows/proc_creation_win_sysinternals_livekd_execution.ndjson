@@ -1,0 +1,51 @@
+{
+  "id": "028c4511-cd00-4a15-acce-744c7ef1daed",
+  "name": "Potential Memory Dumping Activity Via LiveKD",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of LiveKD based on PE metadata or image name",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administration and debugging activity (must be investigated)"
+  ],
+  "from": "now-360s",
+  "rule_id": "e640e6d5-2e64-4c78-a263-486125215329",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/livekd"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\livekd.exe OR *\\\\livekd64.exe)) OR process.pe.original_file_name:livekd.exe"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "f301cf6f-4817-4980-96e2-5a04e3b01993",
+  "name": "Regsvr32 DLL Execution With Uncommon Extension",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1574",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a \"regsvr32\" execution where the DLL doesn't contain a common file extension.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other legitimate extensions currently not in the list either from third party or specific Windows components."
+  ],
+  "from": "now-360s",
+  "rule_id": "afb2cc6c-9bf7-4086-b969-9852bd453608",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/34221348-072d-4b70-93f3-aa71f6ebecad/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\regsvr32.exe OR process.pe.original_file_name:REGSVR32.EXE) AND (NOT ((process.command_line:(*.ax* OR *.cpl* OR *.dll* OR *.ocx*)) OR (NOT _exists_:process.command_line) OR process.command_line:\"\")) AND (NOT (process.command_line:(*.ppl* OR *.bav*)))"
+}

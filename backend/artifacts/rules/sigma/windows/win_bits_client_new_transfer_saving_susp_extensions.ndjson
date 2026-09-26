@@ -1,0 +1,86 @@
+{
+  "id": "394abbcd-76a1-40eb-881b-a5a1e52a0e8a",
+  "name": "BITS Transfer Job Downloading File Potential Suspicious Extension",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "attack.t1197",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects new BITS transfer job saving local files with potential suspicious extensions",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "While the file extensions in question can be suspicious at times. It's best to add filters according to your environment to avoid large amount false positives"
+  ],
+  "from": "now-360s",
+  "rule_id": "9bdd410e-1bde-4060-b931-8c5960e3d032",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1197",
+          "name": "BITS Jobs",
+          "reference": "https://attack.mitre.org/techniques/T1197/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1197",
+          "name": "BITS Jobs",
+          "reference": "https://attack.mitre.org/techniques/T1197/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1197/T1197.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Bits\\-Client\\/Operational AND ((event.code:16403 AND (winlog.event_data.LocalName:(*.bat OR *.dll OR *.exe OR *.hta OR *.ps1 OR *.psd1 OR *.sh OR *.vbe OR *.vbs))) AND (NOT (winlog.event_data.LocalName:*\\\\AppData\\\\* AND winlog.event_data.RemoteName:*.com*)))"
+}

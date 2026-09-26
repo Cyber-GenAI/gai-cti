@@ -1,0 +1,69 @@
+{
+  "id": "82ee1c33-929e-4450-8dfe-76e44051af08",
+  "name": "Suspicious Service Installed",
+  "tags": [
+    "attack.t1562.001",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects installation of NalDrv or PROCEXP152 services via registry-keys to non-system32 folders.\nBoth services are used in the tool Ghost-In-The-Logs (https://github.com/bats3c/Ghost-In-The-Logs), which uses KDU (https://github.com/hfiref0x/KDU)\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other legimate tools using this service names and drivers. Note - clever attackers may easily bypass this detection by just renaming the services. Therefore just Medium-level and don't rely on it."
+  ],
+  "from": "now-360s",
+  "rule_id": "f740ef85-7d3f-4636-a4f4-963552d0e576",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20200419024230/https://blog.dylan.codes/evading-sysmon-and-windows-event-logging/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\NalDrv\\\\ImagePath OR HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\PROCEXP152\\\\ImagePath)) AND (NOT ((process.executable:(*\\\\procexp64.exe OR *\\\\procexp.exe OR *\\\\procmon64.exe OR *\\\\procmon.exe OR *\\\\handle.exe OR *\\\\handle64.exe)) AND winlog.event_data.Details:*\\\\WINDOWS\\\\system32\\\\Drivers\\\\PROCEXP152.SYS*))"
+}

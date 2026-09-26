@@ -1,0 +1,52 @@
+{
+  "id": "bf418156-35bc-484d-93e9-7c742f2491af",
+  "name": "Potential Persistence Via AutodialDLL",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects change the the \"AutodialDLL\" key which could be used as a persistence method to load custom DLL via the \"ws2_32\" library",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "c81a1125-fb34-4eb2-9a12-82d4214adaa8",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2015/01/13/beyond-good-ol-run-key-part-24/",
+    "https://persistence-info.github.io/Data/autodialdll.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Services\\\\WinSock2\\\\Parameters\\\\AutodialDLL*"
+}

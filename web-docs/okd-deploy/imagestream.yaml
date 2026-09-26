@@ -1,0 +1,6 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: gai-cti-docs
+  namespace: gai-cti-docs-project
+spec: {}

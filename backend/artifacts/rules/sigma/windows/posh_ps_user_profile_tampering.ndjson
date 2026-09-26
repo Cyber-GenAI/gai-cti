@@ -1,0 +1,86 @@
+{
+  "id": "bad31fb7-4d8a-468c-99f5-17ed7e7dcf0d",
+  "name": "Potential Persistence Via PowerShell User Profile Using Add-Content",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1546.013",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects calls to \"Add-Content\" cmdlet in order to modify the content of the user profile and potentially adding suspicious commands for persistence",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration and tuning scripts that aim to add functionality to a user PowerShell session"
+  ],
+  "from": "now-360s",
+  "rule_id": "e5cb6d53-22ce-4864-9afa-b7af9853e78a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1546.013/T1546.013.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Add\\-Content\\ $profile* AND (powershell.file.script_block_text:(*\\-Value\\ \\\"IEX\\ * OR *\\-Value\\ \\\"Invoke\\-Expression* OR *\\-Value\\ \\\"Invoke\\-WebRequest* OR *\\-Value\\ \\\"Start\\-Process* OR *\\-Value\\ 'IEX\\ * OR *\\-Value\\ 'Invoke\\-Expression* OR *\\-Value\\ 'Invoke\\-WebRequest* OR *\\-Value\\ 'Start\\-Process*))"
+}

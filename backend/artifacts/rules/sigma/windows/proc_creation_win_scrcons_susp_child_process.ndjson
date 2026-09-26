@@ -1,0 +1,70 @@
+{
+  "id": "b6ac3cf7-2c89-4de6-b2ef-7460f350fd08",
+  "name": "Script Event Consumer Spawning Process",
+  "tags": [
+    "attack.execution",
+    "attack.t1047",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious child process of Script Event Consumer (scrcons.exe).",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3c3c6a59-d96e-45af-a503-ece3826b3116",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1047",
+          "name": "Windows Management Instrumentation",
+          "reference": "https://attack.mitre.org/techniques/T1047/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/child-processes/",
+    "https://docs.paloaltonetworks.com/cortex/cortex-xdr/cortex-xdr-analytics-alert-reference/cortex-xdr-analytics-alert-reference/scrcons-exe-rare-child-process.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\scrcons.exe AND (process.executable:(*\\\\svchost.exe OR *\\\\dllhost.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wscript.exe OR *\\\\cscript.exe OR *\\\\schtasks.exe OR *\\\\regsvr32.exe OR *\\\\mshta.exe OR *\\\\rundll32.exe OR *\\\\msiexec.exe OR *\\\\msbuild.exe))"
+}

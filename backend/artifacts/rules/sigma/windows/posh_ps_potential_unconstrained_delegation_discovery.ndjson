@@ -1,0 +1,106 @@
+{
+  "id": "cae4c43e-a740-462f-9c85-555cd0e3ae02",
+  "name": "Potential Unconstrained Delegation Discovery Via Get-ADComputer - ScriptBlock",
+  "tags": [
+    "attack.reconnaissance",
+    "attack.discovery",
+    "attack.credential-access",
+    "attack.t1018",
+    "attack.t1558",
+    "attack.t1589.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the \"Get-ADComputer\" cmdlet in order to identify systems which are configured for unconstrained delegation.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the library for administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "67a04543-f312-4660-9155-f083f7eafb47",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0043",
+        "name": "Reconnaissance",
+        "reference": "https://attack.mitre.org/tactics/TA0043/"
+      },
+      "technique": [
+        {
+          "id": "T1589",
+          "name": "Gather Victim Identity Information",
+          "reference": "https://attack.mitre.org/techniques/T1589/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1018",
+          "name": "Remote System Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1018/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1558",
+          "name": "Steal or Forge Kerberos Tickets",
+          "reference": "https://attack.mitre.org/techniques/T1558/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://pentestlab.blog/2022/03/21/unconstrained-delegation/",
+    "https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-adcomputer?view=windowsserver2022-ps"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*\\-Properties*TrustedForDelegation* OR *\\-Properties*TrustedToAuthForDelegation* OR *\\-Properties*msDS\\-AllowedToDelegateTo* OR *\\-Properties*PrincipalsAllowedToDelegateToAccount* OR *\\-LDAPFilter*\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=524288\\)*)"
+}

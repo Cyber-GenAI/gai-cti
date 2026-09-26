@@ -1,0 +1,52 @@
+{
+  "id": "9426b298-ddc5-4f96-b0e8-b5578f892390",
+  "name": "File Encryption/Decryption Via Gpg4win From Suspicious Locations",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of Gpg4win to encrypt/decrypt files located in potentially suspicious locations.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c53f0a95-3067-46be-b76b-b10a95efb251",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://blogs.vmware.com/security/2022/11/batloader-the-evasive-downloader-malware.html",
+    "https://news.sophos.com/en-us/2022/01/19/zloader-installs-remote-access-backdoors-and-delivers-cobalt-strike/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\gpg.exe OR *\\\\gpg2.exe)) OR process.pe.product:GNU\\ Privacy\\ Guard\\ \\(GnuPG\\) OR process.pe.description:GnuPG\u2019s\\ OpenPGP\\ tool) AND process.command_line:*\\-passphrase* AND (process.command_line:(*\\:\\\\PerfLogs\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Roaming\\\\*))"
+}

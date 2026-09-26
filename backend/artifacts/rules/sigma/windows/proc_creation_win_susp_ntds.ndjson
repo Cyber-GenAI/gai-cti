@@ -1,0 +1,75 @@
+{
+  "id": "1d01bde3-e042-4820-810b-727d1dee8269",
+  "name": "Suspicious Process Patterns NTDS.DIT Exfil",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious process patterns used in NTDS.DIT exfiltration",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "77b21763-60ea-4da0-b14e-48bd44f55ded",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.ired.team/offensive-security/credential-access-and-credential-dumping/ntds.dit-enumeration",
+    "https://www.n00py.io/2022/03/manipulating-user-passwords-without-mimikatz/",
+    "https://pentestlab.blog/tag/ntds-dit/",
+    "https://github.com/samratashok/nishang/blob/414ee1104526d7057f9adaeee196d91ae447283e/Gather/Copy-VSS.ps1",
+    "https://github.com/zcgonvh/NTDSDumpEx",
+    "https://github.com/rapid7/metasploit-framework/blob/d297adcebb5c1df6fe30b12ca79b161deb71571c/data/post/powershell/NTDSgrab.ps1",
+    "https://blog.talosintelligence.com/2022/08/recent-cyber-attack.html?m=1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\NTDSDump.exe OR *\\\\NTDSDumpEx.exe)) OR (process.command_line:*ntds.dit* AND process.command_line:*system.hiv*) OR process.command_line:*NTDSgrab.ps1*) OR (process.command_line:*ac\\ i\\ ntds* AND process.command_line:*create\\ full*) OR (process.command_line:*\\/c\\ copy\\ * AND process.command_line:*\\\\windows\\\\ntds\\\\ntds.dit*) OR (process.command_line:*activate\\ instance\\ ntds* AND process.command_line:*create\\ full*) OR (process.command_line:*powershell* AND process.command_line:*ntds.dit*)) OR (process.command_line:*ntds.dit* AND ((process.parent.executable:(*\\\\apache* OR *\\\\tomcat* OR *\\\\AppData\\\\* OR *\\\\Temp\\\\* OR *\\\\Public\\\\* OR *\\\\PerfLogs\\\\*)) OR (process.executable:(*\\\\apache* OR *\\\\tomcat* OR *\\\\AppData\\\\* OR *\\\\Temp\\\\* OR *\\\\Public\\\\* OR *\\\\PerfLogs\\\\*))))"
+}

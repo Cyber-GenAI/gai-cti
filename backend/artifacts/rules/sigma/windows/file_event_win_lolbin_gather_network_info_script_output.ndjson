@@ -1,0 +1,52 @@
+{
+  "id": "158956cd-481a-4e4d-8cd0-5961328398df",
+  "name": "GatherNetworkInfo.VBS Reconnaissance Script Output",
+  "tags": [
+    "attack.discovery",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of files which are the results of executing the built-in reconnaissance script \"C:\\Windows\\System32\\gatherNetworkInfo.vbs\".",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8a7b0680-8712-4aa5-87c1-592f4fe3fc7b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://posts.slayerlabs.com/living-off-the-land/#gathernetworkinfovbs",
+    "https://www.mandiant.com/resources/blog/trojanized-windows-installers-ukrainian-government"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:C\\:\\\\Windows\\\\System32\\\\config* AND (file.path:(*\\\\Hotfixinfo.txt OR *\\\\netiostate.txt OR *\\\\sysportslog.txt OR *\\\\VmSwitchLog.evtx))"
+}

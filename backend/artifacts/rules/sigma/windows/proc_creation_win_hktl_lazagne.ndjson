@@ -1,0 +1,55 @@
+{
+  "id": "6e06ea49-392a-4ca0-aa91-5bfe10cc37fd",
+  "name": "HackTool - LaZagne Execution",
+  "tags": [
+    "attack.credential-access",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the LaZagne. A utility used to retrieve multiple types of passwords stored on a local computer.\nLaZagne has been leveraged multiple times by threat actors in order to dump credentials.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positive is expected from tools with similar command line flags."
+  ],
+  "from": "now-360s",
+  "rule_id": "1cbbf0a1-83c8-4695-882b-abe77b1bd45a",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/AlessandroZ/LaZagne/tree/master",
+    "https://thedfirreport.com/2022/05/09/seo-poisoning-a-gootloader-story/",
+    "https://cloud.google.com/blog/topics/threat-intelligence/alphv-ransomware-backup/",
+    "https://securelist.com/defttorero-tactics-techniques-and-procedures/107610/",
+    "https://github.com/CyberMonitor/APT_CyberCriminal_Campagin_Collections/raw/800c0e06571993a54e39571cf27fd474dcc5c0bc/2017/2017.11.14.Muddying_the_Water/muddying-the-water-targeted-attacks.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\lazagne.exe OR ((process.executable:(*\\:\\\\PerfLogs\\\\* OR *\\:\\\\ProgramData\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Tmp\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\* OR *\\\\Downloads\\\\* OR *\\\\Users\\\\Public\\\\*)) AND (process.command_line:(*.exe\\ all OR *.exe\\ browsers OR *.exe\\ chats OR *.exe\\ databases OR *.exe\\ games OR *.exe\\ git OR *.exe\\ mails OR *.exe\\ maven OR *.exe\\ memory OR *.exe\\ multimedia OR *.exe\\ sysadmin OR *.exe\\ unused OR *.exe\\ wifi OR *.exe\\ windows))) OR ((process.command_line:(*all\\ * OR *browsers\\ * OR *chats\\ * OR *databases\\ * OR *games\\ * OR *git\\ * OR *mails\\ * OR *maven\\ * OR *memory\\ * OR *multimedia\\ * OR *php\\ * OR *svn\\ * OR *sysadmin\\ * OR *unused\\ * OR *wifi\\ * OR *windows\\ *)) AND (process.command_line:(*\\-oA* OR *\\-oJ* OR *\\-oN* OR *\\-output* OR *\\-password* OR *\\-1Password* OR *\\-apachedirectorystudio* OR *\\-autologon* OR *\\-ChromiumBased* OR *\\-composer* OR *\\-coreftp* OR *\\-credfiles* OR *\\-credman* OR *\\-cyberduck* OR *\\-dbvis* OR *\\-EyeCon* OR *\\-filezilla* OR *\\-filezillaserver* OR *\\-ftpnavigator* OR *\\-galconfusion* OR *\\-gitforwindows* OR *\\-hashdump* OR *\\-iisapppool* OR *\\-IISCentralCertP* OR *\\-kalypsomedia* OR *\\-keepass* OR *\\-keepassconfig* OR *\\-lsa_secrets* OR *\\-mavenrepositories* OR *\\-memory_dump* OR *\\-Mozilla* OR *\\-mRemoteNG* OR *\\-mscache* OR *\\-opensshforwindows* OR *\\-openvpn* OR *\\-outlook* OR *\\-pidgin* OR *\\-postgresql* OR *\\-psi\\-im* OR *\\-puttycm* OR *\\-pypykatz* OR *\\-Rclone* OR *\\-rdpmanager* OR *\\-robomongo* OR *\\-roguestale* OR *\\-skype* OR *\\-SQLDeveloper* OR *\\-squirrel* OR *\\-tortoise* OR *\\-turba* OR *\\-UCBrowser* OR *\\-unattended* OR *\\-vault* OR *\\-vaultfiles* OR *\\-vnc* OR *\\-windows* OR *\\-winscp* OR *\\-wsl*)))"
+}

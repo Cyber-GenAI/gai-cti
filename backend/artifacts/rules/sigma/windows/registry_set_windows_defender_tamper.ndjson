@@ -1,0 +1,77 @@
+{
+  "id": "10ee0994-4606-4a70-9eb2-255554fa95dc",
+  "name": "Disable Windows Defender Functionalities Via Registry Keys",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when attackers or tools disable Windows Defender functionalities via the Windows registry",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator actions via the Windows Defender interface",
+    "Third party Antivirus"
+  ],
+  "from": "now-360s",
+  "rule_id": "ff1bfa70-00fa-4e19-baff-9eb7d2b8e76f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/10/18/icedid-to-xinglocker-ransomware-in-24-hours/",
+    "https://gist.github.com/anadr/7465a9fde63d41341136949f14c21105",
+    "https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::SpyNetReporting",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/ransomware-hive-conti-avoslocker",
+    "https://www.tenforums.com/tutorials/32236-enable-disable-microsoft-defender-pua-protection-windows-10-a.html",
+    "https://www.tenforums.com/tutorials/105533-enable-disable-windows-defender-exploit-protection-settings.html",
+    "https://www.tenforums.com/tutorials/123792-turn-off-tamper-protection-microsoft-defender-antivirus.html",
+    "https://securelist.com/key-group-ransomware-samples-and-telegram-schemes/114025/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\ Defender\\\\* OR *\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\ Defender\\ Security\\ Center\\\\* OR *\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\ Defender\\\\*)) AND (((registry.path:(*\\\\DisableAntiSpyware OR *\\\\DisableAntiVirus OR *\\\\DisableBehaviorMonitoring OR *\\\\DisableBlockAtFirstSeen OR *\\\\DisableEnhancedNotifications OR *\\\\DisableIntrusionPreventionSystem OR *\\\\DisableIOAVProtection OR *\\\\DisableOnAccessProtection OR *\\\\DisableRealtimeMonitoring OR *\\\\DisableScanOnRealtimeEnable OR *\\\\DisableScriptScanning)) AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\)) OR ((registry.path:(*\\\\DisallowExploitProtectionOverride OR *\\\\Features\\\\TamperProtection OR *\\\\MpEngine\\\\MpEnablePus OR *\\\\PUAProtection OR *\\\\Signature\\ Update\\\\ForceUpdateFromMU OR *\\\\SpyNet\\\\SpynetReporting OR *\\\\SpyNet\\\\SubmitSamplesConsent OR *\\\\Windows\\ Defender\\ Exploit\\ Guard\\\\Controlled\\ Folder\\ Access\\\\EnableControlledFolderAccess)) AND winlog.event_data.Details:DWORD\\ \\(0x00000000\\))) AND (NOT (process.executable:C\\:\\\\Program\\ Files\\\\Symantec\\\\Symantec\\ Endpoint\\ Protection\\\\* AND process.executable:*\\\\sepWscSvc64.exe))"
+}

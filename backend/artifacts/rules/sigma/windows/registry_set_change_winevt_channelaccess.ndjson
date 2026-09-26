@@ -1,0 +1,71 @@
+{
+  "id": "cf595d9e-a449-4f4d-bad3-ac27eab84f45",
+  "name": "Change Winevt Channel Access Permission Via Registry",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects tampering with the \"ChannelAccess\" registry key in order to change access to Windows event channel.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "df665ce6-025c-4164-bc8c-efaa5f064811",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/77b2e328-8f36-46b2-b2e2-8a80398217ab/",
+    "https://learn.microsoft.com/en-us/windows/win32/api/winevt/",
+    "https://itconnect.uw.edu/tools-services-support/it-systems-infrastructure/msinf/other-help/understanding-sddl-syntax/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\* AND registry.path:*\\\\ChannelAccess AND (winlog.event_data.Details:(*\\(A;;0x1;;;LA\\)* OR *\\(A;;0x1;;;SY\\)* OR *\\(A;;0x5;;;BA\\)*))) AND (NOT (process.executable:C\\:\\\\Windows\\\\servicing\\\\TrustedInstaller.exe OR (process.executable:C\\:\\\\Windows\\\\WinSxS\\\\* AND process.executable:*\\\\TiWorker.exe)))"
+}

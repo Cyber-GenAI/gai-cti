@@ -1,0 +1,69 @@
+{
+  "id": "ac2b160f-8d26-4c73-a94e-b5a2c4514a41",
+  "name": "Atera Agent Installation",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1219",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects successful installation of Atera Remote Monitoring & Management (RMM) agent as recently found to be used by Conti operators",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate Atera agent installation"
+  ],
+  "from": "now-360s",
+  "rule_id": "2680e8e2-d205-47ea-b1a7-d6ae03da1006",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1219",
+          "name": "Remote Access Tools",
+          "reference": "https://attack.mitre.org/techniques/T1219/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.advintel.io/post/secret-backdoor-behind-conti-ransomware-operation-introducing-atera-agent"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (event.code:1033 AND winlog.provider_name:MsiInstaller AND winlog.event_data.Message:*AteraAgent*)"
+}

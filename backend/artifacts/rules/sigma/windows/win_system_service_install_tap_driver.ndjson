@@ -1,0 +1,69 @@
+{
+  "id": "52e4e78b-8e13-4c51-85a0-04c4535c76c4",
+  "name": "Tap Driver Installation",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1048",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Well-known TAP software installation. Possible preparation for data exfiltration using tunnelling techniques",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate OpenVPN TAP installation"
+  ],
+  "from": "now-360s",
+  "rule_id": "6486dcec-e88a-4e9f-8032-7ac1db2aa9e0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1048",
+          "name": "Exfiltration Over Alternative Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1048/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://community.openvpn.net/openvpn/wiki/ManagingWindowsTAPDrivers"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND (winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045 AND winlog.event_data.ImagePath:*tap0901*)"
+}

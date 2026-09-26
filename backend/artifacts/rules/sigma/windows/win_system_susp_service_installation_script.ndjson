@@ -1,0 +1,87 @@
+{
+  "id": "b2bfd42c-b193-4112-993f-b2ade9216926",
+  "name": "Suspicious Service Installation Script",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "car.2013-09-005",
+    "attack.t1543.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious service installation scripts",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8f002f04-8297-470e-9db9-9420211c38d2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045) AND (winlog.event_data.ImagePath:(*\\ \\-c\\ * OR *\\ \\/c\\ * OR *\\ \u2013c\\ * OR *\\ \u2014c\\ * OR *\\ \u2015c\\ *) OR winlog.event_data.ImagePath:(*\\ \\-r\\ * OR *\\ \\/r\\ * OR *\\ \u2013r\\ * OR *\\ \u2014r\\ * OR *\\ \u2015r\\ *) OR winlog.event_data.ImagePath:(*\\ \\-k\\ * OR *\\ \\/k\\ * OR *\\ \u2013k\\ * OR *\\ \u2014k\\ * OR *\\ \u2015k\\ *)) AND (winlog.event_data.ImagePath:(*cscript* OR *mshta* OR *powershell* OR *pwsh* OR *regsvr32* OR *rundll32* OR *wscript*)))"
+}

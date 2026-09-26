@@ -1,0 +1,71 @@
+{
+  "id": "5f175dc8-4fb8-4a46-b4c2-df418192d714",
+  "name": "Suspicious Volume Shadow Copy VSS_PS.dll Load",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.impact",
+    "attack.t1490",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the image load of vss_ps.dll by uncommon executables",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e4999193-7a51-46a4-99b6-0ba4cd93a14c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1490",
+          "name": "Inhibit System Recovery",
+          "reference": "https://attack.mitre.org/techniques/T1490/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.virustotal.com/gui/file/ba88ca45589fae0139a40ca27738a8fc2dfbe1be5a64a9558f4e0f52b35c5add",
+    "https://twitter.com/am0nsec/status/1412232114980982787"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\vss_ps.dll AND (NOT ((process.executable:C\\:\\\\Windows\\\\* AND (process.executable:(*\\\\clussvc.exe OR *\\\\dismhost.exe OR *\\\\dllhost.exe OR *\\\\inetsrv\\\\appcmd.exe OR *\\\\inetsrv\\\\iissetup.exe OR *\\\\msiexec.exe OR *\\\\rundll32.exe OR *\\\\searchindexer.exe OR *\\\\srtasks.exe OR *\\\\svchost.exe OR *\\\\System32\\\\SystemPropertiesAdvanced.exe OR *\\\\taskhostw.exe OR *\\\\thor.exe OR *\\\\thor64.exe OR *\\\\tiworker.exe OR *\\\\vssvc.exe OR *\\\\WmiPrvSE.exe OR *\\\\wsmprovhost.exe))) OR (process.executable:(C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\*)) OR (winlog.event_data.CommandLine:C\\:\\\\$WinREAgent\\\\Scratch\\\\* AND winlog.event_data.CommandLine:*\\\\dismhost.exe\\ \\{*) OR (NOT _exists_:process.executable)))"
+}

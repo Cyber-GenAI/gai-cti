@@ -1,0 +1,70 @@
+{
+  "id": "9bf720f1-50ac-46c0-b0c3-de2ee77f8942",
+  "name": "Service StartupType Change Via PowerShell Set-Service",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the PowerShell \"Set-Service\" cmdlet to change the startup type of a service to \"disabled\" or \"manual\"",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives may occur with troubleshooting scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "3582b0bf-f899-4e13-9bd9-63be0174d349",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.virustotal.com/gui/file/38283b775552da8981452941ea74191aa0d203edd3f61fb2dee7b0aea3514955"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\powershell.exe OR process.pe.original_file_name:PowerShell.EXE) AND ((process.command_line:*Set\\-Service* AND process.command_line:*\\-StartupType*) AND (process.command_line:(*Disabled* OR *Manual*)))"
+}

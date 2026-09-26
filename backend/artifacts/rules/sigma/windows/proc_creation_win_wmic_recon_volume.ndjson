@@ -1,0 +1,88 @@
+{
+  "id": "d56b6189-1e97-4162-8474-5e20f4e1ff79",
+  "name": "System Disk And Volume Reconnaissance Via Wmic.EXE",
+  "tags": [
+    "attack.execution",
+    "attack.discovery",
+    "attack.t1047",
+    "attack.t1082",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "An adversary might use WMI to discover information about the system, such as the volume name, size,\nfree space, and other disk information. This can be done using the `wmic` command-line utility and has been\nobserved being used by threat actors such as Volt Typhoon.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1cf0ccd3-e314-4453-af1e-d5b7903f5bd2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1047",
+          "name": "Windows Management Instrumentation",
+          "reference": "https://attack.mitre.org/techniques/T1047/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-144a",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wmic"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\WMIC.exe OR process.pe.original_file_name:wmic.exe) AND (process.command_line:(*volume* OR *path\\ win32_logicaldisk*))"
+}

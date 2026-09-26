@@ -1,0 +1,78 @@
+{
+  "id": "ccf9efd9-7a61-4090-952e-0ea8a3946a2f",
+  "name": "Potentially Suspicious EventLog Recon Activity Using Log Query Utilities",
+  "tags": [
+    "attack.credential-access",
+    "attack.discovery",
+    "attack.t1552",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of different log query utilities and commands to search and dump the content of specific event logs or look for specific event IDs.\nThis technique is used by threat actors in order to extract sensitive information from events logs such as usernames, IP addresses, hostnames, etc.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the utility by administrators to query the event log"
+  ],
+  "from": "now-360s",
+  "rule_id": "5908287b-d9d8-4671-a8e7-5fb913e29895",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "http://blog.talosintelligence.com/2022/09/lazarus-three-rats.html",
+    "https://thedfirreport.com/2023/10/30/netsupport-intrusion-results-in-domain-compromise/",
+    "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-144a",
+    "https://www.group-ib.com/blog/apt41-world-tour-2021/",
+    "https://labs.withsecure.com/content/dam/labs/docs/f-secureLABS-tlp-white-lazarus-threat-intel-report2.pdf",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.diagnostics/get-winevent?view=powershell-7.3",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-eventlog?view=powershell-5.1",
+    "http://www.solomonson.com/posts/2010-07-09-reading-eventviewer-command-line/",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wevtutil"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:(*Microsoft\\-Windows\\-PowerShell* OR *Microsoft\\-Windows\\-Security\\-Auditing* OR *Microsoft\\-Windows\\-TerminalServices\\-LocalSessionManager* OR *Microsoft\\-Windows\\-TerminalServices\\-RemoteConnectionManager* OR *Microsoft\\-Windows\\-Windows\\ Defender* OR *PowerShellCore* OR *Security* OR *Windows\\ PowerShell*)) OR (process.command_line:(*\\-InstanceId\\ 462?* OR *.eventid\\ \\-eq\\ 462?* OR *EventCode\\=?462?* OR *EventIdentifier\\=?462?* OR *System\\[EventID\\=462?\\]* OR *\\-InstanceId\\ 4778* OR *.eventid\\ \\-eq\\ 4778* OR *System\\[EventID\\=4778\\]* OR *EventCode\\=?4778?* OR *EventIdentifier\\=?4778?* OR *\\-InstanceId\\ 25* OR *.eventid\\ \\-eq\\ 25* OR *System\\[EventID\\=25\\]* OR *EventCode\\=?25?* OR *EventIdentifier\\=?25?*))) AND ((process.command_line:*Select* AND process.command_line:*Win32_NTLogEvent*) OR ((process.executable:*\\\\wevtutil.exe OR process.pe.original_file_name:wevtutil.exe) AND (process.command_line:(*\\ qe\\ * OR *\\ query\\-events\\ *))) OR ((process.executable:*\\\\wmic.exe OR process.pe.original_file_name:wmic.exe) AND process.command_line:*\\ ntevent*) OR (process.command_line:(*Get\\-WinEvent\\ * OR *get\\-eventlog\\ *)))"
+}

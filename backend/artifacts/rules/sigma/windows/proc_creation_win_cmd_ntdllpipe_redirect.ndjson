@@ -1,0 +1,51 @@
+{
+  "id": "21073804-2722-478f-8ea0-e36961b83f2c",
+  "name": "NtdllPipe Like Activity Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command that type the content of ntdll.dll to a different file or a pipe in order to evade AV / EDR detection. As seen being used in the POC NtdllPipe",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b075992d-d1d1-4dd8-abbb-ad9cf31733ce",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20220306121156/https://www.x86matthew.com/view_post?id=ntdll_pipe"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:(*type\\ %windir%\\\\system32\\\\ntdll.dll* OR *type\\ %systemroot%\\\\system32\\\\ntdll.dll* OR *type\\ c\\:\\\\windows\\\\system32\\\\ntdll.dll* OR *\\\\ntdll.dll\\ \\>\\ \\\\\\\\.\\\\pipe\\\\*)"
+}

@@ -1,0 +1,90 @@
+{
+  "id": "c7f9d545-9964-4b7e-8a1f-2b3afe2645a3",
+  "name": "DNS Query Request By QuickAssist.EXE",
+  "tags": [
+    "attack.command-and-control",
+    "attack.initial-access",
+    "attack.t1071.001",
+    "attack.t1210",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DNS queries initiated by \"QuickAssist.exe\" to Microsoft Quick Assist primary endpoint that is used to establish a session.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of Quick Assist in the environment."
+  ],
+  "from": "now-360s",
+  "rule_id": "17e1716e-7bc3-4f04-b5d9-9b7083913c4d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1071/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1210",
+          "name": "Exploitation of Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1210/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/en-us/security/blog/2024/05/15/threat-actors-misusing-quick-assist-in-social-engineering-attacks-leading-to-ransomware/",
+    "https://www.linkedin.com/posts/kevin-beaumont-security_ive-been-assisting-a-few-orgs-hit-with-successful-activity-7268055739116445701-xxjZ/",
+    "https://x.com/cyb3rops/status/1862406110365245506",
+    "https://learn.microsoft.com/en-us/windows/client-management/client-tools/quick-assist"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\QuickAssist.exe AND dns.question.name:*remoteassistance.support.services.microsoft.com"
+}

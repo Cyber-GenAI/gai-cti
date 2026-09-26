@@ -1,0 +1,70 @@
+{
+  "id": "7dced7f9-3ac6-4017-8c3a-3dbb963b69bf",
+  "name": "Powershell Timestomp",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may modify file time attributes to hide new or changes to existing files.\nTimestomping is a technique that modifies the timestamps of a file (the modify, access, create, and change times), often to mimic files that are in the same folder.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate admin script"
+  ],
+  "from": "now-360s",
+  "rule_id": "261adbfb-7e33-459f-b48e-06ccb8eb25f6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1070.006/T1070.006.md",
+    "https://www.offensive-security.com/metasploit-unleashed/timestomp/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*.CreationTime\\ \\=* OR *.LastWriteTime\\ \\=* OR *.LastAccessTime\\ \\=* OR *\\[IO.File\\]\\:\\:SetCreationTime* OR *\\[IO.File\\]\\:\\:SetLastAccessTime* OR *\\[IO.File\\]\\:\\:SetLastWriteTime*)"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "778aa0f3-e033-4c7e-b9d0-85853170726b",
+  "name": "Potential Suspicious BPF Activity - Linux",
+  "tags": [
+    "attack.persistence",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the presence of \"bpf_probe_write_user\" BPF helper-generated warning messages. Which could be a sign of suspicious eBPF activity on the system.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "31be7d52-646b-424c-b9fb-973c1c59f7a5",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/ebpf-malware/",
+    "https://man7.org/linux/man-pages/man7/bpf-helpers.7.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*bpf_probe_write_user*"
+}

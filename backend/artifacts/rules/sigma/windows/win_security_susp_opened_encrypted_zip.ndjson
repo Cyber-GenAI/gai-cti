@@ -1,0 +1,69 @@
+{
+  "id": "fe5bac3d-574d-4f16-b943-14dd615f7acd",
+  "name": "Password Protected ZIP File Opened",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1027",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the extraction of password protected ZIP archives. See the filename variable for more details on which file has been opened.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate used of encrypted ZIP files"
+  ],
+  "from": "now-360s",
+  "rule_id": "97d15ed7-bb58-4a04-9abd-9ef7d736f02e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/sbousseaden/status/1523383197513379841"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:5379 AND winlog.event_data.TargetName:*Microsoft_Windows_Shell_ZipFolder\\:filename*) AND (NOT winlog.event_data.TargetName:*\\\\Temporary\\ Internet\\ Files\\\\Content.Outlook*))"
+}

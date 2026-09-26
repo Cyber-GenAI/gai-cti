@@ -1,0 +1,77 @@
+{
+  "id": "65115fe8-d98b-4685-bca7-e71bcccf9c4f",
+  "name": "Reconnaissance Activity",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087.002",
+    "attack.t1069.002",
+    "attack.s0039",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects activity as \"net user administrator /domain\" and \"net group domain admins /domain\"",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "ac7f706d-b0f4-4437-a647-279eadae9ed1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1069",
+          "name": "Permission Groups Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1069/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://findingbad.blogspot.de/2017/01/hunting-what-does-it-look-like.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4661 AND winlog.event_data.AccessMask:0x2d AND (winlog.event_data.ObjectType:(SAM_USER OR SAM_GROUP)) AND winlog.event_data.ObjectName:S\\-1\\-5\\-21\\-* AND (winlog.event_data.ObjectName:(*\\-500 OR *\\-512)))"
+}

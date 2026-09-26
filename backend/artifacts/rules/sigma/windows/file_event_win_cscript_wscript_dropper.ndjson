@@ -1,0 +1,70 @@
+{
+  "id": "09a7dacb-c9f3-4d61-ba85-a27918a775c2",
+  "name": "WScript or CScript Dropper - File",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.005",
+    "attack.t1059.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a file ending in jse, vbe, js, vba, vbs written by cscript.exe or wscript.exe",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "5bdacfab-b6b5-4d17-ac06-d06d12ce10e6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "WScript or CScript Dropper (cea72823-df4d-4567-950c-0b579eaf0846)"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\wscript.exe OR *\\\\cscript.exe)) AND (file.path:(C\\:\\\\Users\\\\* OR C\\:\\\\ProgramData*)) AND (file.path:(*.jse OR *.vbe OR *.js OR *.vba OR *.vbs))"
+}

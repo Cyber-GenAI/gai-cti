@@ -1,0 +1,53 @@
+{
+  "id": "b4dce63e-4ea3-488b-a6fe-21634aa4132d",
+  "name": "Potential AutoLogger Sessions Tampering",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects tampering with autologger trace sessions which is a technique used by attackers to disable logging",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a124ae11-a2a7-4a4e-8402-153c50d07666",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/MichalKoczwara/status/1553634816016498688",
+    "https://thedfirreport.com/2021/10/18/icedid-to-xinglocker-ransomware-in-24-hours/",
+    "https://i.blackhat.com/EU-21/Wednesday/EU-21-Teodorescu-Veni-No-Vidi-No-Vici-Attacks-On-ETW-Blind-EDRs.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\System\\\\CurrentControlSet\\\\Control\\\\WMI\\\\Autologger\\\\* AND ((registry.path:(*\\\\EventLog\\-* OR *\\\\Defender*)) AND (registry.path:(*\\\\Enable OR *\\\\Start)) AND winlog.event_data.Details:DWORD\\ \\(0x00000000\\))) AND (NOT process.executable:C\\:\\\\Windows\\\\system32\\\\wevtutil.exe)"
+}

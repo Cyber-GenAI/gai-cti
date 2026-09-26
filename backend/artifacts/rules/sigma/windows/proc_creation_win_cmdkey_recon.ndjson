@@ -1,0 +1,71 @@
+{
+  "id": "59f155c7-ed5f-4f58-bafc-d620e48d0fcc",
+  "name": "Potential Reconnaissance For Cached Credentials Via Cmdkey.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of cmdkey to look for cached credentials on the system",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative tasks"
+  ],
+  "from": "now-360s",
+  "rule_id": "328860d7-77c9-46e4-953d-4e7406febe7f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.peew.pw/blog/2017/11/26/exploring-cmdkey-an-edge-case-for-privilege-escalation",
+    "https://technet.microsoft.com/en-us/library/cc754243(v=ws.11).aspx",
+    "https://github.com/redcanaryco/atomic-red-team/blob/b27a3cb25025161d49ac861cb216db68c46a3537/atomics/T1003.005/T1003.005.md#atomic-test-1---cached-credential-dump-via-cmdkey"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\cmdkey.exe OR process.pe.original_file_name:cmdkey.exe) AND process.command_line:(*\\ \\-l* OR *\\ \\/l* OR *\\ \u2013l* OR *\\ \u2014l* OR *\\ \u2015l*)"
+}

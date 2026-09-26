@@ -1,0 +1,70 @@
+{
+  "id": "b3d0850a-a584-4106-a690-b8a77755906f",
+  "name": "Suspicious Outlook Child Process",
+  "tags": [
+    "attack.execution",
+    "attack.t1204.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious process spawning from an Outlook process.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "19cc0058-e6d7-4884-83e5-d8bb96090f49",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.hybrid-analysis.com/sample/465aabe132ccb949e75b8ab9c5bda36d80cf2fd503d52b8bad54e295f28bbc21?environmentId=100",
+    "https://mgreen27.github.io/posts/2018/04/02/DownloadCradle.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\OUTLOOK.EXE AND (process.executable:(*\\\\AppVLP.exe OR *\\\\bash.exe OR *\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\forfiles.exe OR *\\\\hh.exe OR *\\\\mftrace.exe OR *\\\\msbuild.exe OR *\\\\msdt.exe OR *\\\\mshta.exe OR *\\\\msiexec.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\schtasks.exe OR *\\\\scrcons.exe OR *\\\\scriptrunner.exe OR *\\\\sh.exe OR *\\\\svchost.exe OR *\\\\wmic.exe OR *\\\\wscript.exe))"
+}

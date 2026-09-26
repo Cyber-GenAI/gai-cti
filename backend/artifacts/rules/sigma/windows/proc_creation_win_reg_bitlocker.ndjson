@@ -1,0 +1,69 @@
+{
+  "id": "903ed280-2510-4154-a0df-e89765396427",
+  "name": "Suspicious Reg Add BitLocker",
+  "tags": [
+    "attack.impact",
+    "attack.t1486",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious addition to BitLocker related registry keys via the reg.exe utility",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "cc52ed72-db42-464f-964f-a7b75a1e03bc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1486",
+          "name": "Data Encrypted for Impact",
+          "reference": "https://attack.mitre.org/techniques/T1486/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/11/15/exchange-exploit-leads-to-domain-wide-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*REG* AND process.command_line:*ADD* AND process.command_line:*\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\FVE* AND process.command_line:*\\/v* AND process.command_line:*\\/f*) AND (process.command_line:(*EnableBDEWithNoTPM* OR *UseAdvancedStartup* OR *UseTPM* OR *UseTPMKey* OR *UseTPMKeyPIN* OR *RecoveryKeyMessageSource* OR *UseTPMPIN* OR *RecoveryKeyMessage*))"
+}

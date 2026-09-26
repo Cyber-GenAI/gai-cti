@@ -1,0 +1,74 @@
+{
+  "id": "3ce82cf2-019c-4a44-b23d-d8ec126fce71",
+  "name": "New Port Forwarding Rule Added Via Netsh.EXE",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.defense-evasion",
+    "attack.command-and-control",
+    "attack.t1090",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of netsh commands that configure a new port forwarding (PortProxy) rule",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activity",
+    "WSL2 network bridge PowerShell script used for WSL/Kubernetes/Docker (e.g. https://github.com/microsoft/WSL/issues/4150#issuecomment-504209723)"
+  ],
+  "from": "now-360s",
+  "rule_id": "9d2884c9-1561-4ebb-96e3-33449e21c420",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.fireeye.com/blog/threat-research/2019/01/bypassing-network-restrictions-through-rdp-tunneling.html",
+    "https://adepts.of0x.cc/netsh-portproxy-code/",
+    "https://www.dfirnotes.net/portproxy_detection/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\netsh.exe OR process.pe.original_file_name:netsh.exe) AND ((process.command_line:*interface* AND process.command_line:*portproxy* AND process.command_line:*add* AND process.command_line:*v4tov4*) OR (process.command_line:*i\\ * AND process.command_line:*p\\ * AND process.command_line:*a\\ * AND process.command_line:*v\\ *) OR (process.command_line:*connectp* AND process.command_line:*listena* AND process.command_line:*c\\=*))"
+}

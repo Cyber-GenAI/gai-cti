@@ -1,0 +1,70 @@
+{
+  "id": "071b8fd8-32b4-404c-a6ac-d0e6035a28b5",
+  "name": "Uncommon Microsoft Office Trusted Location Added",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to registry keys related to \"Trusted Location\" of Microsoft Office where the path is set to something uncommon. Attackers might add additional trusted locations to avoid macro security restrictions.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other unknown legitimate or custom paths need to be filtered to avoid false positives"
+  ],
+  "from": "now-360s",
+  "rule_id": "5ba23ce5-5fd1-42f9-82f3-fe15de556f82",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://admx.help/?Category=Office2016&Policy=excel16.Office.Microsoft.Policies.Windows::L_TrustedLoc01"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*Security\\\\Trusted\\ Locations\\\\Location* AND registry.path:*\\\\Path) AND (NOT ((process.executable:*\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\ClickToRun\\\\* AND process.executable:*\\\\OfficeClickToRun.exe) OR (process.executable:(*\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\*)))) AND (NOT (winlog.event_data.Details:(*%APPDATA%\\\\Microsoft\\\\Templates* OR *%%APPDATA%%\\\\Microsoft\\\\Templates* OR *%APPDATA%\\\\Microsoft\\\\Word\\\\Startup* OR *%%APPDATA%%\\\\Microsoft\\\\Word\\\\Startup* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\root\\\\Templates\\\\* OR *\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\ \\(x86\\)\\\\Templates* OR *\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\root\\\\Templates\\\\* OR *\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\Templates\\\\*)))"
+}

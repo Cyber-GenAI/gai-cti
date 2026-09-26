@@ -1,0 +1,70 @@
+{
+  "id": "133bcaf3-e287-47b3-947a-bd66b191741e",
+  "name": "Azure AD Health Service Agents Registry Keys Access",
+  "tags": [
+    "attack.discovery",
+    "attack.t1012",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "This detection uses Windows security events to detect suspicious access attempts to the registry key values and sub-keys of Azure AD Health service agents (e.g AD FS).\nInformation from AD Health service agents can be used to potentially abuse some of the features provided by those services in the cloud (e.g. Federation).\nThis detection requires an access control entry (ACE) on the system access control list (SACL) of the following securable object: HKLM:\\SOFTWARE\\Microsoft\\ADHealthAgent.\nMake sure you set the SACL to propagate to its sub-keys.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "cf6b5aa7-c41c-4fd2-a95f-f567d46b65a9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1012",
+          "name": "Query Registry",
+          "reference": "https://attack.mitre.org/techniques/T1012/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://o365blog.com/post/hybridhealthagent/",
+    "https://github.com/OTRF/Set-AuditRule/blob/c3dec5443414231714d850565d364ca73475ade5/rules/registry/aad_connect_health_service_agent.yml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (((event.code:(4656 OR 4663)) AND winlog.event_data.ObjectType:Key AND winlog.event_data.ObjectName:\\\\REGISTRY\\\\MACHINE\\\\SOFTWARE\\\\Microsoft\\\\ADHealthAgent) AND (NOT (process.executable:(*Microsoft.Identity.Health.Adfs.DiagnosticsAgent.exe* OR *Microsoft.Identity.Health.Adfs.InsightsService.exe* OR *Microsoft.Identity.Health.Adfs.MonitoringAgent.Startup.exe* OR *Microsoft.Identity.Health.Adfs.PshSurrogate.exe* OR *Microsoft.Identity.Health.Common.Clients.ResourceMonitor.exe*))))"
+}

@@ -1,0 +1,92 @@
+{
+  "author": [
+    "GAI-CTI"
+  ],
+  "description": "This rule is triggered when an email indicator from the Threat Intel Filebeat module or integrations matches an event containing email-related data, such as logs from email security gateways or email service providers.",
+  "from": "now-10h",
+  "index": [
+      "log*",
+      "*packetbeat*"
+  ],
+  "interval": "1h",
+  "language": "kuery",
+  "name": "Threat Intel Email Indicator Match",
+  "query": "*:*",
+  "required_fields": [
+    {
+      "ecs": true,
+      "name": "email.from.address",
+      "type": "keyword"
+    },
+    {
+      "ecs": true,
+      "name": "email.reply_to.address",
+      "type": "keyword"
+    },
+    {
+      "ecs": true,
+      "name": "email.sender.address",
+      "type": "keyword"
+    },
+    {
+      "ecs": true,
+      "name": "email.to.address",
+      "type": "keyword"
+    }
+  ],
+  "risk_score": 99,
+  "rule_id": "fcf18de8-ad7d-4d01-b3f7-a11d5b3883af",
+  "severity": "critical",
+  "tags": [
+    "Rule Type: Threat Match",
+    "Resources: Investigation Guide",
+    "Type: GAI_CTI_TI"
+  ],
+  
+  "threat_index": [
+     "opencti*"
+  ],
+  "threat_indicator_path": "threat.indicator",
+  "threat_language": "kuery",
+  "threat_mapping": [
+    {
+      "entries": [
+        {
+          "field": "email.from.address",
+          "type": "mapping",
+          "value": "threatintel.indicator.email.address.keyword"
+        }
+      ]
+    },
+    {
+      "entries": [
+        {
+          "field": "email.to.address",
+          "type": "mapping",
+          "value": "threatintel.indicator.email.address.keyword"
+        }
+      ]
+    },
+    {
+      "entries": [
+        {
+          "field": "email.sender.address",
+          "type": "mapping",
+          "value": "threatintel.indicator.email.address.keyword"
+        }
+      ]
+    },
+    {
+      "entries": [
+        {
+          "field": "email.reply_to.address",
+          "type": "mapping",
+          "value": "threatintel.indicator.email.address.keyword"
+        }
+      ]
+    }
+  ],
+  "threat_query": "*:*",
+  "type": "threat_match",
+  "version": 1
+}

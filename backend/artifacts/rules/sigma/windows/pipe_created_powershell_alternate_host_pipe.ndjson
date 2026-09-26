@@ -1,0 +1,70 @@
+{
+  "id": "266d3fa5-12cd-40ad-b815-e83a1f7cea00",
+  "name": "Alternate PowerShell Hosts Pipe",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects alternate PowerShell hosts potentially bypassing detections looking for powershell.exe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Programs using PowerShell directly without invocation of a dedicated interpreter."
+  ],
+  "from": "now-360s",
+  "rule_id": "5451839d-d82e-4769-a10b-230b2c89d3d4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://threathunterplaybook.com/hunts/windows/190610-PwshAlternateHosts/notebook.html",
+    "https://threathunterplaybook.com/hunts/windows/190410-LocalPwshExecution/notebook.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.name:\\\\PSHost* AND (NOT ((process.executable:(*\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\pwsh.exe* OR *\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe* OR *\\:\\\\Windows\\\\system32\\\\dsac.exe* OR *\\:\\\\Windows\\\\system32\\\\inetsrv\\\\w3wp.exe* OR *\\:\\\\Windows\\\\System32\\\\sdiagnhost.exe* OR *\\:\\\\Windows\\\\system32\\\\ServerManager.exe* OR *\\:\\\\Windows\\\\system32\\\\wbem\\\\wmiprvse.exe* OR *\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe* OR *\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe* OR *\\:\\\\Windows\\\\System32\\\\wsmprovhost.exe* OR *\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell_ise.exe* OR *\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe*)) OR (NOT _exists_:process.executable))) AND (NOT (((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\Program\\ Files\\\\*)) AND process.executable:*\\\\Microsoft\\ SQL\\ Server\\\\* AND process.executable:*\\\\Tools\\\\Binn\\\\SQLPS.exe) OR (process.executable:C\\:\\\\Program\\ Files\\\\AzureConnectedMachineAgent\\\\GCArcService* AND process.executable:*\\\\GC\\\\gc_worker.exe) OR process.executable:C\\:\\\\Program\\ Files\\\\Citrix\\\\* OR process.executable:C\\:\\\\Program\\ Files\\\\Microsoft\\\\Exchange\\ Server\\\\*))"
+}

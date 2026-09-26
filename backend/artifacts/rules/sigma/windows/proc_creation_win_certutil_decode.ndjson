@@ -1,0 +1,74 @@
+{
+  "id": "c52564d8-cb3f-4cb3-b302-6634eb73c165",
+  "name": "File Decoded From Base64/Hex Via Certutil.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1027",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of certutil with either the \"decode\" or \"decodehex\" flags to decode base64 or hex encoded files. This can be abused by attackers to decode an encoded payload before execution",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "db37c386-85fc-4d58-ac39-415220ed9b73",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/certutil",
+    "https://unit42.paloaltonetworks.com/new-babyshark-malware-targets-u-s-national-security-think-tanks/",
+    "https://news.sophos.com/en-us/2021/04/13/compromised-exchange-server-hosting-cryptojacker-targeting-other-exchange-servers/",
+    "https://twitter.com/JohnLaTwC/status/835149808817991680",
+    "https://learn.microsoft.com/en-us/archive/blogs/pki/basic-crl-checking-with-certutil",
+    "https://lolbas-project.github.io/lolbas/Binaries/Certutil/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\certutil.exe OR process.pe.original_file_name:CertUtil.exe) AND (process.command_line:(*\\-decode\\ * OR *\\/decode\\ * OR *\u2013decode\\ * OR *\u2014decode\\ * OR *\u2015decode\\ *) OR process.command_line:(*\\-decodehex\\ * OR *\\/decodehex\\ * OR *\u2013decodehex\\ * OR *\u2014decodehex\\ * OR *\u2015decodehex\\ *))"
+}

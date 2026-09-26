@@ -1,0 +1,94 @@
+{
+  "id": "398c559c-69a6-4bdf-8499-a9adf0af3552",
+  "name": "New Outlook Macro Created",
+  "tags": [
+    "attack.persistence",
+    "attack.command-and-control",
+    "attack.t1137",
+    "attack.t1008",
+    "attack.t1546",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a macro file for Outlook.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "User genuinely creates a VB Macro for their email"
+  ],
+  "from": "now-360s",
+  "rule_id": "b8cfd474-fc67-4dd6-8b8a-783c9cbdd11b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1137",
+          "name": "Office Application Startup",
+          "reference": "https://attack.mitre.org/techniques/T1137/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1008",
+          "name": "Fallback Channels",
+          "reference": "https://attack.mitre.org/techniques/T1008/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.mdsec.co.uk/2020/11/a-fresh-outlook-on-mail-based-persistence/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\outlook.exe AND file.path:*\\\\Microsoft\\\\Outlook\\\\VbaProject.OTM"
+}

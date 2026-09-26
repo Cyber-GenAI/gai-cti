@@ -1,0 +1,70 @@
+{
+  "id": "b7540f69-61d7-4766-8eaa-f9d22d98df49",
+  "name": "HackTool - Inveigh Execution",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of Inveigh a cross-platform .NET IPv4/IPv6 machine-in-the-middle tool",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Very unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "a38b84fc-de36-4eb2-9e4d-32bac3a864d4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Kevin-Robertson/Inveigh",
+    "https://thedfirreport.com/2020/11/23/pysa-mespinoza-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\Inveigh.exe OR (process.pe.original_file_name:(\\\\Inveigh.exe OR \\\\Inveigh.dll)) OR process.pe.description:Inveigh OR (process.command_line:(*\\ \\-SpooferIP* OR *\\ \\-ReplyToIPs\\ * OR *\\ \\-ReplyToDomains\\ * OR *\\ \\-ReplyToMACs\\ * OR *\\ \\-SnifferIP*))"
+}

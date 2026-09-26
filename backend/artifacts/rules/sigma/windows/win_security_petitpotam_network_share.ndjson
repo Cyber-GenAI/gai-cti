@@ -1,0 +1,70 @@
+{
+  "id": "d84ed84b-4272-4633-8e10-fc6e27d90aee",
+  "name": "Possible PetitPotam Coerce Authentication Attempt",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1187",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect PetitPotam coerced authentication activity.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown. Feedback welcomed."
+  ],
+  "from": "now-360s",
+  "rule_id": "36f37025-b2c6-4686-89bc-802d5e7b565d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1187",
+          "name": "Forced Authentication",
+          "reference": "https://attack.mitre.org/techniques/T1187/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/topotam/PetitPotam",
+    "https://github.com/splunk/security_content/blob/0dd6de32de2118b2818550df9e65255f4109a56d/detections/endpoint/petitpotam_network_share_access_request.yml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:5145 AND winlog.event_data.ShareName:\\\\\\\\* AND winlog.event_data.ShareName:*\\\\IPC$ AND winlog.event_data.RelativeTargetName:lsarpc AND user.name:ANONYMOUS\\ LOGON)"
+}

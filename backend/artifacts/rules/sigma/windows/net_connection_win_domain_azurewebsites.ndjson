@@ -1,0 +1,73 @@
+{
+  "id": "7ff0ddb5-8ee2-47b6-8262-4d2b9ffdcb9b",
+  "name": "Network Connection Initiated To AzureWebsites.NET By Non-Browser Process",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1102",
+    "attack.t1102.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an initiated network connection by a non browser process on the system to \"azurewebsites.net\". The latter was often used by threat actors as a malware hosting and exfiltration site.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "625c613b-b195-4efe-8db4-3a2757530c45",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.sentinelone.com/labs/wip26-espionage-threat-actors-abuse-cloud-infrastructure-in-targeted-telco-attacks/",
+    "https://symantec-enterprise-blogs.security.com/threat-intelligence/harvester-new-apt-attacks-asia",
+    "https://www.ptsecurity.com/ww-en/analytics/pt-esc-threat-intelligence/higaisa-or-winnti-apt-41-backdoors-old-and-new/",
+    "https://intezer.com/blog/research/how-we-escaped-docker-in-azure-functions/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(network.direction:true AND destination.domain:*azurewebsites.net) AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe)) OR (process.executable:C\\:\\\\Users\\\\* AND process.executable:*\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe) OR (process.executable:(C\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Mozilla\\ Firefox\\\\firefox.exe)) OR (process.executable:C\\:\\\\Users\\\\* AND process.executable:*\\\\AppData\\\\Local\\\\Mozilla\\ Firefox\\\\firefox.exe) OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Internet\\ Explorer\\\\iexplore.exe OR C\\:\\\\Program\\ Files\\\\Internet\\ Explorer\\\\iexplore.exe)) OR (process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\* OR process.executable:*\\\\WindowsApps\\\\MicrosoftEdge.exe OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe))) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeCore\\\\* OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\EdgeCore\\\\*)) AND (process.executable:(*\\\\msedge.exe OR *\\\\msedgewebview2.exe))) OR ((process.executable:(*C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Safari\\\\* OR *C\\:\\\\Program\\ Files\\\\Safari\\\\*)) AND process.executable:*\\\\safari.exe) OR ((process.executable:(*C\\:\\\\Program\\ Files\\\\Windows\\ Defender\\ Advanced\\ Threat\\ Protection\\\\* OR *C\\:\\\\Program\\ Files\\\\Windows\\ Defender\\\\* OR *C\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\\\Platform\\\\*)) AND (process.executable:(*\\\\MsMpEng.exe OR *\\\\MsSense.exe))) OR (process.executable:(*C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\PRTG\\ Network\\ Monitor\\\\PRTG\\ Probe.exe OR *C\\:\\\\Program\\ Files\\\\PRTG\\ Network\\ Monitor\\\\PRTG\\ Probe.exe)) OR (process.executable:C\\:\\\\Program\\ Files\\\\BraveSoftware\\\\* AND process.executable:*\\\\brave.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Maxthon\\\\* AND process.executable:*\\\\maxthon.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Programs\\\\Opera\\\\* AND process.executable:*\\\\opera.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\SeaMonkey\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SeaMonkey\\\\*)) AND process.executable:*\\\\seamonkey.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Vivaldi\\\\* AND process.executable:*\\\\vivaldi.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Naver\\\\Naver\\ Whale\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Naver\\\\Naver\\ Whale\\\\*)) AND process.executable:*\\\\whale.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Waterfox\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Waterfox\\\\*)) AND process.executable:*\\\\Waterfox.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\SlimBrowser\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SlimBrowser\\\\*)) AND process.executable:*\\\\slimbrowser.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Flock\\\\* AND process.executable:*\\\\Flock.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Phoebe\\\\* AND process.executable:*\\\\Phoebe.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Falkon\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Falkon\\\\*)) AND process.executable:*\\\\falkon.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\QtWeb\\\\* OR C\\:\\\\Program\\ Files\\\\QtWeb\\\\*)) AND process.executable:*\\\\QtWeb.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Avant\\ Browser\\\\* OR C\\:\\\\Program\\ Files\\\\Avant\\ Browser\\\\*)) AND process.executable:*\\\\avant.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Discord\\\\* AND process.executable:*\\\\Discord.exe) OR (NOT _exists_:process.executable) OR process.executable:\"\"))"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "8fc5f924-97dd-4d05-94a3-02e130b062af",
+  "name": "Process Launched Without Image Name",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect the use of processes with no name (\".exe\"), which can be used to evade Image-based detections.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare legitimate software."
+  ],
+  "from": "now-360s",
+  "rule_id": "46a7b87d-070d-49bf-8d5f-f34072182f7b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.huntress.com/blog/fake-browser-updates-lead-to-boinc-volunteer-computing-software"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\.exe"
+}

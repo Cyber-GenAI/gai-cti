@@ -1,0 +1,71 @@
+{
+  "id": "76877cee-16c2-4513-b7ce-64753c0db48b",
+  "name": "Capabilities Discovery - Linux",
+  "tags": [
+    "attack.discovery",
+    "attack.t1083",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of \"getcap\" binary. This is often used during recon activity to determine potential binaries that can be abused as GTFOBins or other.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "afdb3eda-0869-49e3-96a4-6a23a4cf0e0d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/SaiSathvik1/Linux-Privilege-Escalation-Notes",
+    "https://github.com/carlospolop/PEASS-ng",
+    "https://github.com/diego-treitos/linux-smart-enumeration"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/getcap AND CommandLine:(*\\ \\-r\\ * OR *\\ \\/r\\ * OR *\\ \u2013r\\ * OR *\\ \u2014r\\ * OR *\\ \u2015r\\ *)"
+}

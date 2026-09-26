@@ -1,0 +1,52 @@
+{
+  "id": "3569907f-7513-437b-9f34-7ad6fd1cdc23",
+  "name": "Renamed AutoHotkey.EXE Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of a renamed autohotkey.exe binary based on PE metadata fields",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c7c30024-1191-4748-a6c4-0477b9f0cfeb",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.autohotkey.com/download/",
+    "https://thedfirreport.com/2023/02/06/collect-exfiltrate-sleep-repeat/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.product:*AutoHotkey* OR process.pe.description:*AutoHotkey* OR (process.pe.original_file_name:(AutoHotkey.exe OR AutoHotkey.rc))) AND (NOT ((process.executable:(*\\\\AutoHotkey.exe OR *\\\\AutoHotkey32.exe OR *\\\\AutoHotkey32_UIA.exe OR *\\\\AutoHotkey64.exe OR *\\\\AutoHotkey64_UIA.exe OR *\\\\AutoHotkeyA32.exe OR *\\\\AutoHotkeyA32_UIA.exe OR *\\\\AutoHotkeyU32.exe OR *\\\\AutoHotkeyU32_UIA.exe OR *\\\\AutoHotkeyU64.exe OR *\\\\AutoHotkeyU64_UIA.exe)) OR process.executable:*\\\\AutoHotkey*))"
+}

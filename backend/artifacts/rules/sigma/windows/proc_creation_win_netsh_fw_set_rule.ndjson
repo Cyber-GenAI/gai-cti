@@ -1,0 +1,52 @@
+{
+  "id": "343265d6-8978-4439-b098-e23797ddc49b",
+  "name": "Firewall Rule Update Via Netsh.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of netsh with the \"advfirewall\" and the \"set\" option in order to set new values for properties of a existing rule",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activity",
+    "Software installations and removal"
+  ],
+  "from": "now-360s",
+  "rule_id": "e2d0a520-4ecd-49a6-8db9-5a91be04b7fe",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://ss64.com/nt/netsh.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\netsh.exe OR process.pe.original_file_name:netsh.exe) AND (process.command_line:*\\ firewall\\ * AND process.command_line:*\\ set\\ *)"
+}

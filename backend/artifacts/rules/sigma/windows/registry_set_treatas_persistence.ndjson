@@ -1,0 +1,70 @@
+{
+  "id": "27fbc626-564f-4adf-ae1f-c42ce38277b9",
+  "name": "COM Hijacking via TreatAs",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.015",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect modification of TreatAs key to enable \"rundll32.exe -sta\" command",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "884bb968-6def-44ca-8025-9c81722101c2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/40b77d63808dd4f4eafb83949805636735a1fd15/atomics/T1546.015/T1546.015.md",
+    "https://www.youtube.com/watch?v=3gz1QmiMhss&t=1251s"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*TreatAs\\\\\\(Default\\) AND (NOT ((process.executable:C\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\ClickToRun\\\\* AND process.executable:*\\\\OfficeClickToRun.exe) OR process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\root\\\\integration\\\\integrator.exe OR process.executable:C\\:\\\\Windows\\\\system32\\\\svchost.exe OR (process.executable:(C\\:\\\\Windows\\\\system32\\\\msiexec.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\msiexec.exe))))"
+}

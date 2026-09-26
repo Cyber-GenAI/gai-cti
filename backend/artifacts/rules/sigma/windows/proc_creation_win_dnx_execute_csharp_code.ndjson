@@ -1,0 +1,77 @@
+{
+  "id": "12734a6f-501a-4bb7-bddd-cf9b802d790c",
+  "name": "Potential Application Whitelisting Bypass via Dnx.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "attack.t1027.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of Dnx.EXE. The Dnx utility allows for the execution of C# code.\nAttackers might abuse this in order to bypass application whitelisting.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of dnx.exe by legitimate user"
+  ],
+  "from": "now-360s",
+  "rule_id": "1e4645ef-02ed-43a7-bee0-cd4c54e1251f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Csi/",
+    "https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\dnx.exe"
+}

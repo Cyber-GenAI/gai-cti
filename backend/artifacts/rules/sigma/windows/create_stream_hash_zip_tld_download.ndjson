@@ -1,0 +1,52 @@
+{
+  "id": "de4fa1f0-558e-4b74-9913-5a08787a8ed5",
+  "name": "Potentially Suspicious File Download From ZIP TLD",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the download of a file with a potentially suspicious extension from a .zip top level domain.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate file downloads from a websites and web services that uses the \".zip\" top level domain."
+  ],
+  "from": "now-360s",
+  "rule_id": "fa7c6dbb-a424-4fca-90c2-4614a753014e",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/cyb3rops/status/1659175181695287297",
+    "https://fabian-voith.de/2020/06/25/sysmon-v11-1-reads-alternate-data-streams/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.Contents:*.zip\\/* AND (file.path:(*.bat\\:Zone* OR *.dat\\:Zone* OR *.dll\\:Zone* OR *.doc\\:Zone* OR *.docm\\:Zone* OR *.exe\\:Zone* OR *.hta\\:Zone* OR *.pptm\\:Zone* OR *.ps1\\:Zone* OR *.rar\\:Zone* OR *.rtf\\:Zone* OR *.sct\\:Zone* OR *.vbe\\:Zone* OR *.vbs\\:Zone* OR *.ws\\:Zone* OR *.wsf\\:Zone* OR *.xll\\:Zone* OR *.xls\\:Zone* OR *.xlsm\\:Zone* OR *.zip\\:Zone*))"
+}

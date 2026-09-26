@@ -1,0 +1,76 @@
+{
+  "id": "a8740979-3693-4496-961b-54f9397dc9a1",
+  "name": "Potential Persistence Attempt Via Existing Service Tampering",
+  "tags": [
+    "attack.persistence",
+    "attack.t1543.003",
+    "attack.t1574.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the modification of an existing service in order to execute an arbitrary payload when the service is started or killed as a potential method for persistence.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f09a4eae-ca01-457b-ad44-62d3ebb49e5c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://pentestlab.blog/2020/01/22/persistence-modify-existing-service/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:*sc\\ * AND process.command_line:*config\\ * AND process.command_line:*binpath\\=*) OR (process.command_line:*sc\\ * AND process.command_line:*failure* AND process.command_line:*command\\=*)) OR (((process.command_line:*reg\\ * AND process.command_line:*add\\ * AND process.command_line:*FailureCommand*) OR (process.command_line:*reg\\ * AND process.command_line:*add\\ * AND process.command_line:*ImagePath*)) AND (process.command_line:(*.sh* OR *.exe* OR *.dll* OR *.bin$* OR *.bat* OR *.cmd* OR *.js* OR *.msh$* OR *.reg$* OR *.scr* OR *.ps* OR *.vb* OR *.jar* OR *.pl*)))"
+}

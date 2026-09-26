@@ -1,0 +1,69 @@
+{
+  "id": "4834333c-20e0-405d-9441-d7da53387538",
+  "name": "Suspicious Program Names",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious patterns in program names or folders that are often found in malicious samples or hacktools",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate tools that accidentally match on the searched patterns"
+  ],
+  "from": "now-360s",
+  "rule_id": "fde97161-fc3b-4b12-b54e-d74a4dd508e2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1560.001/T1560.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\CVE\\-202* OR *\\\\CVE202*)) OR (process.executable:(*\\\\poc.exe OR *\\\\artifact.exe OR *\\\\artifact64.exe OR *\\\\artifact_protected.exe OR *\\\\artifact32.exe OR *\\\\artifact32big.exe OR *obfuscated.exe OR *obfusc.exe OR *\\\\meterpreter))) OR (process.command_line:(*inject.ps1* OR *Invoke\\-CVE* OR *pupy.ps1* OR *payload.ps1* OR *beacon.ps1* OR *PowerView.ps1* OR *bypass.ps1* OR *obfuscated.ps1* OR *obfusc.ps1* OR *obfus.ps1* OR *obfs.ps1* OR *evil.ps1* OR *MiniDogz.ps1* OR *_enc.ps1* OR *\\\\shell.ps1* OR *\\\\rshell.ps1* OR *revshell.ps1* OR *\\\\av.ps1* OR *\\\\av_test.ps1* OR *adrecon.ps1* OR *mimikatz.ps1* OR *\\\\PowerUp_* OR *powerup.ps1* OR *\\\\Temp\\\\a.ps1* OR *\\\\Temp\\\\p.ps1* OR *\\\\Temp\\\\1.ps1* OR *Hound.ps1* OR *encode.ps1* OR *powercat.ps1*))"
+}

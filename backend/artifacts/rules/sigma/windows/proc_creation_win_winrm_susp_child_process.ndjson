@@ -1,0 +1,71 @@
+{
+  "id": "88d46f43-683c-47b5-ac60-0e23e3282744",
+  "name": "Suspicious Processes Spawned by WinRM",
+  "tags": [
+    "attack.t1190",
+    "attack.initial-access",
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious processes including shells spawnd from WinRM host process",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate WinRM usage"
+  ],
+  "from": "now-360s",
+  "rule_id": "628953d8-a014-40e8-a5be-a061b4d305b5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "reference": "https://attack.mitre.org/techniques/T1190/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\wsmprovhost.exe AND (process.executable:(*\\\\cmd.exe OR *\\\\sh.exe OR *\\\\bash.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wsl.exe OR *\\\\schtasks.exe OR *\\\\certutil.exe OR *\\\\whoami.exe OR *\\\\bitsadmin.exe))"
+}

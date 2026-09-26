@@ -1,0 +1,73 @@
+{
+  "id": "0df17eb4-32d9-4635-accb-c0f0af5033f9",
+  "name": "Cred Dump Tools Dropped Files",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "attack.t1003.002",
+    "attack.t1003.003",
+    "attack.t1003.004",
+    "attack.t1003.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Files with well-known filenames (parts of credential dump software or files produced by them) creation",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate Administrator using tool for password recovery"
+  ],
+  "from": "now-360s",
+  "rule_id": "332ab29d-8441-4a32-a696-4ab92753ec6a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.slideshare.net/heirhabarov/hunting-for-credentials-dumping-in-windows-environment"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\fgdump\\-log* OR *\\\\kirbi* OR *\\\\pwdump* OR *\\\\pwhashes* OR *\\\\wce_ccache* OR *\\\\wce_krbtkts*)) OR (file.path:(*\\\\cachedump.exe OR *\\\\cachedump64.exe OR *\\\\DumpExt.dll OR *\\\\DumpSvc.exe OR *\\\\Dumpy.exe OR *\\\\fgexec.exe OR *\\\\lsremora.dll OR *\\\\lsremora64.dll OR *\\\\NTDS.out OR *\\\\procdump64.exe OR *\\\\pstgdump.exe OR *\\\\pwdump.exe OR *\\\\SAM.out OR *\\\\SECURITY.out OR *\\\\servpw.exe OR *\\\\servpw64.exe OR *\\\\SYSTEM.out OR *\\\\test.pwd OR *\\\\wceaux.dll))"
+}

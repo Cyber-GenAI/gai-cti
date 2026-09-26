@@ -1,0 +1,69 @@
+{
+  "id": "33ba7abb-cc97-46ca-91b5-72a5a34ce34b",
+  "name": "Periodic Backup For System Registry Hives Enabled",
+  "tags": [
+    "attack.collection",
+    "attack.t1113",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the enabling of the \"EnablePeriodicBackup\" registry value. Once enabled, The OS will backup System registry hives on restarts to the \"C:\\Windows\\System32\\config\\RegBack\" folder. Windows creates a \"RegIdleBackup\" task to manage subsequent backups.\nRegistry backup was a default behavior on Windows and was disabled as of \"Windows 10, version 1803\".\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate need for RegBack feature by administrators."
+  ],
+  "from": "now-360s",
+  "rule_id": "935c83f1-f4a6-436d-93b6-aaa5706976f8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1113",
+          "name": "Screen Capture",
+          "reference": "https://attack.mitre.org/techniques/T1113/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/troubleshoot/windows-client/installing-updates-features-roles/system-registry-no-backed-up-regback-folder"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Control\\\\Session\\ Manager\\\\Configuration\\ Manager\\\\EnablePeriodicBackup AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\)"
+}

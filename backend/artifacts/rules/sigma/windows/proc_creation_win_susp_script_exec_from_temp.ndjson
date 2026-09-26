@@ -1,0 +1,69 @@
+{
+  "id": "be00df12-eef9-494c-bedc-7f20a22ed401",
+  "name": "Suspicious Script Execution From Temp Folder",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious script executions from temporary folder",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "ac5c190a-892c-4693-8859-740f775c976b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/security/blog/2021/07/13/microsoft-discovers-threat-actor-targeting-solarwinds-serv-u-software-with-0-day-exploit/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\mshta.exe OR *\\\\wscript.exe OR *\\\\cscript.exe)) AND (process.command_line:(*\\\\Windows\\\\Temp* OR *\\\\Temporary\\ Internet* OR *\\\\AppData\\\\Local\\\\Temp* OR *\\\\AppData\\\\Roaming\\\\Temp* OR *%TEMP%* OR *%TMP%* OR *%LocalAppData%\\\\Temp*))) AND (NOT (process.command_line:(*\\ \\>* OR *Out\\-File* OR *ConvertTo\\-Json* OR *\\-WindowStyle\\ hidden\\ \\-Verb\\ runAs* OR *\\\\Windows\\\\system32\\\\config\\\\systemprofile\\\\AppData\\\\Local\\\\Temp\\\\Amazon\\\\EC2\\-Windows\\\\*)))"
+}

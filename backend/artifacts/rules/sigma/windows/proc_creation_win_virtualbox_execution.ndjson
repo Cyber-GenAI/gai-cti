@@ -1,0 +1,71 @@
+{
+  "id": "62e74690-e9bf-4d19-9c01-83b710ca5ca7",
+  "name": "Detect Virtualbox Driver Installation OR Starting Of VMs",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.006",
+    "attack.t1564",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries can carry out malicious operations using a virtual instance to avoid detection. This rule is built to detect the registration of the Virtualbox driver or start of a Virtualbox VM.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "This may have false positives on hosts where Virtualbox is legitimately being used for operations"
+  ],
+  "from": "now-360s",
+  "rule_id": "aedcc240-9cb2-4ddf-b3c6-3e462f2e6468",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://news.sophos.com/en-us/2020/05/21/ragnar-locker-ransomware-deploys-virtual-machine-to-dodge-security/",
+    "https://threatpost.com/maze-ransomware-ragnar-locker-virtual-machine/159350/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*VBoxRT.dll,RTR3Init* OR *VBoxC.dll* OR *VBoxDrv.sys*)) OR (process.command_line:(*startvm* OR *controlvm*))"
+}

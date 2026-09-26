@@ -1,0 +1,69 @@
+{
+  "id": "baf26a80-3986-4be2-a498-780f6222c584",
+  "name": "Possible Coin Miner CPU Priority Param",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1068",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command line parameter very often used with coin miners",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other tools that use a --cpu-priority flag"
+  ],
+  "from": "now-360s",
+  "rule_id": "b4a7f47e-d429-40ca-874f-4b8177f0daf9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://xmrig.com/docs/miner/command-line-options"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "a1:\\-\\-cpu\\-priority* OR a2:\\-\\-cpu\\-priority* OR a3:\\-\\-cpu\\-priority* OR a4:\\-\\-cpu\\-priority* OR a5:\\-\\-cpu\\-priority* OR a6:\\-\\-cpu\\-priority* OR a7:\\-\\-cpu\\-priority*"
+}

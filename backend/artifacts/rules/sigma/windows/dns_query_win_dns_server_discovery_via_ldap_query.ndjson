@@ -1,0 +1,70 @@
+{
+  "id": "6d13825f-5a39-4399-a198-1425ff2bee39",
+  "name": "DNS Server Discovery Via LDAP Query",
+  "tags": [
+    "attack.discovery",
+    "attack.t1482",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DNS server discovery via LDAP query requests from uncommon applications",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely"
+  ],
+  "from": "now-360s",
+  "rule_id": "f2540e57-72aa-4280-be16-57e5aaed4593",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1482",
+          "name": "Domain Trust Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1482/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/980f3f83fd81f37c1ca9c02dccfd1c3d9f9d0841/atomics/T1016/T1016.md#atomic-test-9---dns-server-discovery-using-nslookup",
+    "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/7fcdce70-5205-44d6-9c3a-260e616a2f04"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "dns.question.name:_ldap.* AND (NOT ((process.executable:(*\\:\\\\Program\\ Files\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR *\\:\\\\Windows\\\\*)) OR (process.executable:*\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\\\Platform\\\\* AND process.executable:*\\\\MsMpEng.exe) OR process.executable:\\<unknown\\ process\\> OR (NOT _exists_:process.executable))) AND (NOT (process.executable:C\\:\\\\WindowsAzure\\\\GuestAgent* OR (process.executable:(*\\\\chrome.exe OR *\\\\firefox.exe OR *\\\\opera.exe))))"
+}

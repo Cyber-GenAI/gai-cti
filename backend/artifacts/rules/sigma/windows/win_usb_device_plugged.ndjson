@@ -1,0 +1,70 @@
+{
+  "id": "87ad9ff2-b7c1-47a4-b087-db8cbb44d271",
+  "name": "USB Device Plugged",
+  "tags": [
+    "attack.initial-access",
+    "attack.t1200",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects plugged/unplugged USB devices",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "7fe9136b-37f6-4d8d-91d3-86b9dc6c5a87",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1200",
+          "name": "Hardware Additions",
+          "reference": "https://attack.mitre.org/techniques/T1200/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://df-stream.com/2014/01/the-windows-7-event-log-and-usb-device/",
+    "https://www.techrepublic.com/article/how-to-track-down-usb-flash-drive-usage-in-windows-10s-event-viewer/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-DriverFrameworks\\-UserMode\\/Operational AND (event.code:(2003 OR 2100 OR 2102))"
+}

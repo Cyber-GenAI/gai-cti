@@ -1,0 +1,51 @@
+{
+  "id": "8c1f32aa-5182-4fc9-853a-9b5a41c886c2",
+  "name": "Potentially Suspicious Call To Win32_NTEventlogFile Class",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the WMI class \"Win32_NTEventlogFile\" in a potentially suspicious way (delete, backup, change permissions, etc.) from a PowerShell script",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "27218f57-d028-4d6b-8c5c-ec5b9f0e4327",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa394225(v=vs.85)"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*Win32_NTEventlogFile* AND (process.command_line:(*.BackupEventlog\\(* OR *.ChangeSecurityPermissions\\(* OR *.ChangeSecurityPermissionsEx\\(* OR *.ClearEventLog\\(* OR *.Delete\\(* OR *.DeleteEx\\(* OR *.Rename\\(* OR *.TakeOwnerShip\\(* OR *.TakeOwnerShipEx\\(*))"
+}

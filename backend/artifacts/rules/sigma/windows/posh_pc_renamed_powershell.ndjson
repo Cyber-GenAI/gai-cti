@@ -1,0 +1,86 @@
+{
+  "id": "01115b75-a0dc-4e82-817b-6e141ca38dc3",
+  "name": "Renamed Powershell Under Powershell Channel",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a renamed Powershell execution, which is a common technique used to circumvent security controls and bypass detection logic that's dependent on process names and process paths.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "8d62ae93-6760-42ad-ba91-99f394fdb128",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-powershell-abuse"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.Data:*HostName\\=ConsoleHost* AND (NOT ((winlog.event_data.Data:(*HostApplication\\=powershell* OR *HostApplication\\=C\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell* OR *HostApplication\\=C\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell* OR *HostApplication\\=C\\:\\/Windows\\/System32\\/WindowsPowerShell\\/v1.0\\/powershell* OR *HostApplication\\=C\\:\\/Windows\\/SysWOW64\\/WindowsPowerShell\\/v1.0\\/powershell* OR *HostApplication\\=C\\:\\\\\\\\WINDOWS\\\\\\\\system32\\\\\\\\WindowsPowerShell\\\\\\\\v1.0\\\\\\\\powershell.exe* OR *HostApplication\\=C\\:\\\\\\\\WINDOWS\\\\\\\\SysWOW64\\\\\\\\WindowsPowerShell\\\\\\\\v1.0\\\\\\\\powershell.exe*)) OR winlog.event_data.Data:/HostId=[a-zA-Z0-9-]{36}\\s+EngineVersion=/))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "8cc3f9f3-996e-4c00-b884-dc25ac87bcf4",
+  "name": "Suspicious Binaries and Scripts in Public Folder",
+  "tags": [
+    "attack.execution",
+    "attack.t1204",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a file with a suspicious extension in the public folder, which could indicate potential malicious activity.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrators deploying legitimate binaries to public folders."
+  ],
+  "from": "now-360s",
+  "rule_id": "55f2b4ae-a6a3-49ae-9c07-a54fbebadf6e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://intel.thedfirreport.com/events/view/30032",
+    "https://intel.thedfirreport.com/eventReports/view/70",
+    "https://thedfirreport.com/2025/01/27/cobalt-strike-and-a-pair-of-socks-lead-to-lockbit-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\:\\\\Users\\\\Public\\\\* AND (file.path:(*.bat OR *.dll OR *.exe OR *.hta OR *.js OR *.ps1 OR *.vbe OR *.vbs))"
+}

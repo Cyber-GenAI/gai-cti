@@ -1,0 +1,55 @@
+{
+  "id": "ffdbdc86-302b-41f5-a520-9f0cd3e58da9",
+  "name": "Potential Active Directory Enumeration Using AD Module - PsScript",
+  "tags": [
+    "attack.reconnaissance",
+    "attack.discovery",
+    "attack.impact",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the \"Import-Module\" cmdlet to load the \"Microsoft.ActiveDirectory.Management.dl\" DLL. Which is often used by attackers to perform AD enumeration.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the library for administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "a498658d-deb6-49fd-8b0e-a5652bb6c3ca",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/samratashok/ADModule",
+    "https://twitter.com/cyb3rops/status/1617108657166061568?s=20",
+    "https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/active-directory-enumeration-with-ad-module-without-rsat-or-admin-privileges"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Import\\-Module\\ * AND powershell.file.script_block_text:*Microsoft.ActiveDirectory.Management.dll*) OR powershell.file.script_block_text:*ipmo\\ Microsoft.ActiveDirectory.Management.dll*"
+}

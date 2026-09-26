@@ -1,0 +1,52 @@
+{
+  "id": "920a9320-d5d6-4ab8-9cf0-00e6ba4ef6b1",
+  "name": "Potential Persistence Attempt Via ErrorHandler.Cmd",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of a file named \"ErrorHandler.cmd\" in the \"C:\\WINDOWS\\Setup\\Scripts\\\" directory which could be used as a method of persistence\nThe content of C:\\WINDOWS\\Setup\\Scripts\\ErrorHandler.cmd is read whenever some tools under C:\\WINDOWS\\System32\\oobe\\ (e.g. Setup.exe) fail to run for any reason.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d781c0d4-211a-48c6-9e03-088a5644b387",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2022/01/16/beyond-good-ol-run-key-part-135/",
+    "https://github.com/last-byte/PersistenceSniper"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\WINDOWS\\\\Setup\\\\Scripts\\\\ErrorHandler.cmd"
+}

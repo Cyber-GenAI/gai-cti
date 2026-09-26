@@ -1,0 +1,54 @@
+{
+  "id": "c4354610-0ef7-4d48-9178-fa757d6f9e03",
+  "name": "Enable BPF Kprobes Tracing",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects common command used to enable bpf kprobes tracing",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "bf38e4a2-ca4c-45a6-a030-e33ef58b65ca",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://embracethered.com/blog/posts/2021/offensive-bpf-bpftrace/",
+    "https://bpftrace.org/",
+    "https://www.kernel.org/doc/html/v5.0/trace/kprobetrace.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(CommandLine:*echo\\ 1\\ \\>* AND CommandLine:*\\/sys\\/kernel\\/debug\\/tracing\\/events\\/kprobes\\/*) AND (CommandLine:(*\\/myprobe\\/enable* OR *\\/myretprobe\\/enable*))"
+}

@@ -1,0 +1,87 @@
+{
+  "id": "de9de65b-55ad-4b0d-bb16-651485fbe230",
+  "name": "PowerShell Profile Modification",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1546.013",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation or modification of a powershell profile which could indicate suspicious activity as the profile can be used as a mean of persistence",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "System administrator creating Powershell profile manually"
+  ],
+  "from": "now-360s",
+  "rule_id": "b4498efd-29f1-4dc3-b050-23e43021b4d4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.welivesecurity.com/2019/05/29/turla-powershell-usage/",
+    "https://persistence-info.github.io/Data/powershellprofile.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:(*\\\\Microsoft.PowerShell_profile.ps1 OR *\\\\PowerShell\\\\profile.ps1 OR *\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\profile.ps1 OR *\\\\Program\\ Files\\\\PowerShell\\\\7\\\\profile.ps1 OR *\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\profile.ps1 OR *\\\\WindowsPowerShell\\\\profile.ps1)"
+}

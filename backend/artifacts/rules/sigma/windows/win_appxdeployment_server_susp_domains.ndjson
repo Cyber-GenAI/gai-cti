@@ -1,0 +1,54 @@
+{
+  "id": "da3d9cbf-4d95-4d77-84db-1eb8831dfc8b",
+  "name": "Suspicious Remote AppX Package Locations",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an appx package added to the pipeline of the \"to be processed\" packages which was downloaded from a suspicious domain.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "aa92ea37-f86e-4a31-abef-8a38cdab5d90",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://www.sentinelone.com/labs/inside-malicious-windows-apps-for-malware-deployment/",
+    "https://learn.microsoft.com/en-us/windows/win32/appxpkg/troubleshooting",
+    "https://news.sophos.com/en-us/2021/11/11/bazarloader-call-me-back-attack-abuses-windows-10-apps-mechanism/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-AppXDeploymentServer\\/Operational AND (event.code:854 AND (winlog.event_data.Path:(*.githubusercontent.com* OR *anonfiles.com* OR *cdn.discordapp.com* OR *ddns.net* OR *dl.dropboxusercontent.com* OR *ghostbin.co* OR *glitch.me* OR *gofile.io* OR *hastebin.com* OR *mediafire.com* OR *mega.nz* OR *onrender.com* OR *pages.dev* OR *paste.ee* OR *pastebin.com* OR *pastebin.pl* OR *pastetext.net* OR *privatlab.com* OR *privatlab.net* OR *send.exploit.in* OR *sendspace.com* OR *storage.googleapis.com* OR *storjshare.io* OR *supabase.co* OR *temp.sh* OR *transfer.sh* OR *trycloudflare.com* OR *ufile.io* OR *w3spaces.com* OR *workers.dev*)))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "d745be39-2d32-4265-81e2-fbd67accc6ad",
+  "name": "NTDS.DIT Creation By Uncommon Process",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.002",
+    "attack.t1003.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of a file named \"ntds.dit\" (Active Directory Database) by an uncommon process or a process located in a suspicious directory",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "657dc4a2-af04-4651-8a59-01ee23442819",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://stealthbits.com/blog/extracting-password-hashes-from-the-ntds-dit-file/",
+    "https://adsecurity.org/?p=2398"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\ntds.dit AND ((process.executable:(*\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\wscript.exe OR *\\\\wsl.exe OR *\\\\wt.exe)) OR (process.executable:(*\\\\AppData\\\\* OR *\\\\Temp\\\\* OR *\\\\Public\\\\* OR *\\\\PerfLogs\\\\*)))"
+}

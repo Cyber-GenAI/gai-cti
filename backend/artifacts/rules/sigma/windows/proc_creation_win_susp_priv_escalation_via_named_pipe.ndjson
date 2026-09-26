@@ -1,0 +1,69 @@
+{
+  "id": "cdf97df9-bcf9-49a9-bc16-f72da4f06d5c",
+  "name": "Privilege Escalation via Named Pipe Impersonation",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1021",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a remote file copy attempt to a hidden network share. This may indicate lateral movement or data staging activity.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other programs that cause these patterns (please report)"
+  ],
+  "from": "now-360s",
+  "rule_id": "388a238e-51e6-4cb2-a223-fdb51afb019e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/guide/en/security/current/privilege-escalation-via-named-pipe-impersonation.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\cmd.exe OR *\\\\powershell.exe)) OR (process.pe.original_file_name:(Cmd.Exe OR PowerShell.EXE))) AND (process.command_line:*echo* AND process.command_line:*\\>* AND process.command_line:*\\\\\\\\.\\\\pipe\\\\*)"
+}

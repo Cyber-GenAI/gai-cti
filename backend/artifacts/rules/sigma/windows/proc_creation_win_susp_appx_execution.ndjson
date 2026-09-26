@@ -1,0 +1,52 @@
+{
+  "id": "28b84e69-bd51-4f54-b717-cc2085354e89",
+  "name": "Potentially Suspicious Windows App Activity",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious child process of applications launched from inside the WindowsApps directory. This could be a sign of a rogue \".appx\" package installation/execution",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate packages that make use of external binaries such as Windows Terminal"
+  ],
+  "from": "now-360s",
+  "rule_id": "b1a1b207-49ec-46da-a249-1072691a19de",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://news.sophos.com/en-us/2021/11/11/bazarloader-call-me-back-attack-abuses-windows-10-apps-mechanism/",
+    "https://www.sentinelone.com/labs/inside-malicious-windows-apps-for-malware-deployment/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*C\\:\\\\Program\\ Files\\\\WindowsApps\\\\* AND ((process.executable:(*\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\wscript.exe)) OR (process.command_line:(*cmd\\ \\/c* OR *Invoke\\-* OR *Base64*))) AND (NOT (process.parent.executable:*\\:\\\\Program\\ Files\\\\WindowsApps\\\\Microsoft.WindowsTerminal* AND process.parent.executable:*\\\\WindowsTerminal.exe AND (process.executable:(*\\\\powershell.exe OR *\\\\cmd.exe OR *\\\\pwsh.exe))))"
+}

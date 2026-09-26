@@ -1,0 +1,53 @@
+{
+  "id": "8638c99c-aaab-427f-8da9-165e88912439",
+  "name": "CodeIntegrity - Unmet WHQL Requirements For Loaded Kernel Module",
+  "tags": [
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects loaded kernel modules that did not meet the WHQL signing requirements.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "7e3e5cad-a016-437b-9067-0a0ac5c1769e",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/operations/event-id-explanations",
+    "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/windows-defender-application-control/operations/event-tag-explanations",
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-CodeIntegrity\\/Operational AND ((event.code:(3082 OR 3083)) AND (NOT (winlog.event_data.FileNameBuffer:(system32\\\\drivers\\\\vsock.sys OR System32\\\\drivers\\\\vmci.sys))))"
+}

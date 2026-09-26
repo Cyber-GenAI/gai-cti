@@ -1,0 +1,51 @@
+{
+  "id": "2f394bbd-f4e1-4ebb-bcf5-6408ef700466",
+  "name": "PowerShell Write-EventLog Usage",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the \"Write-EventLog\" cmdlet with 'RawData' flag. The cmdlet can be levreage to write malicious payloads to the EventLog and then retrieve them later for later use",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate applications writing events via this cmdlet. Investigate alerts to determine if the action is benign"
+  ],
+  "from": "now-360s",
+  "rule_id": "a947ce8c-0834-4891-ae28-82e102593cb8",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.blackhillsinfosec.com/windows-event-logs-for-red-teams/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Write\\-EventLog* AND powershell.file.script_block_text:*\\-RawData\\ *"
+}

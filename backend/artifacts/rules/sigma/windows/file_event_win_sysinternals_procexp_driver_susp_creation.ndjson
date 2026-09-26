@@ -1,0 +1,73 @@
+{
+  "id": "553f894b-f4b1-4e0c-bf6e-949c29033824",
+  "name": "Process Explorer Driver Creation By Non-Sysinternals Binary",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1068",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of the Process Explorer drivers by processes other than Process Explorer (procexp) itself.\nHack tools or malware may use the Process Explorer driver to elevate privileges, drops it to disk for a few moments, runs a service using that driver and removes it afterwards.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives may occur with legitimate renamed process explorer binaries"
+  ],
+  "from": "now-360s",
+  "rule_id": "7357f4bf-9c4f-4af7-a1b8-d36758adadb6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer",
+    "https://github.com/Yaxser/Backstab",
+    "https://www.elastic.co/security-labs/stopping-vulnerable-driver-attacks",
+    "https://news.sophos.com/en-us/2023/04/19/aukill-edr-killer-malware-abuses-process-explorer-driver/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\\\PROCEXP* AND file.path:*.sys) AND (NOT (process.executable:(*\\\\procexp.exe OR *\\\\procexp64.exe)))"
+}

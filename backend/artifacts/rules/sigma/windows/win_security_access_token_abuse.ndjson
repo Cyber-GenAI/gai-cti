@@ -1,0 +1,88 @@
+{
+  "id": "8b40dfef-f7cf-46fc-b146-f623553c5f4b",
+  "name": "Potential Access Token Abuse",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1134.001",
+    "stp.4u",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential token impersonation and theft. Example, when using \"DuplicateToken(Ex)\" and \"ImpersonateLoggedOnUser\" with the \"LOGON32_LOGON_NEW_CREDENTIALS flag\".",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Anti-Virus"
+  ],
+  "from": "now-360s",
+  "rule_id": "1d2c42b4-7660-4e79-be8b-dd0d85bdd6a8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/fr/blog/how-attackers-abuse-access-token-manipulation",
+    "https://www.manageengine.com/log-management/cyber-security/access-token-manipulation.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4624 AND winlog.event_data.LogonType:9 AND winlog.event_data.LogonProcessName:Advapi AND winlog.event_data.AuthenticationPackageName:Negotiate AND winlog.event_data.ImpersonationLevel:%%1833)"
+}

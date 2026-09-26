@@ -1,0 +1,73 @@
+{
+  "id": "65dd5356-2215-47c8-8aaa-af97251d8bd8",
+  "name": "Whoami Utility Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1033",
+    "car.2016-03-001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of whoami, which is often used by attackers after exploitation / privilege escalation",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Admin activity",
+    "Scripts and administrative tools used in the monitored environment",
+    "Monitoring activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "11af036b-b1cf-495b-bbb8-c447e9ccfd83",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://brica.de/alerts/alert/public/1247926/agent-tesla-keylogger-delivered-inside-a-power-iso-daa-archive/",
+    "https://app.any.run/tasks/7eaba74e-c1ea-400f-9c17-5e30eee89906/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\whoami.exe OR process.pe.original_file_name:whoami.exe"
+}

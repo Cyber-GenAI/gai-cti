@@ -1,0 +1,70 @@
+{
+  "id": "a551f6f3-d4c3-42b8-ba53-b8b691c88acd",
+  "name": "New RUN Key Pointing to Suspicious Folder",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious new RUN key element pointing to an executable in a suspicious folder",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Software using weird folders for updates"
+  ],
+  "from": "now-360s",
+  "rule_id": "597d0e63-47c0-4fe7-9f95-dc9c73e53c71",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.fireeye.com/blog/threat-research/2018/08/fin7-pursuing-an-enigmatic-and-evasive-global-criminal-operation.html",
+    "https://github.com/HackTricks-wiki/hacktricks/blob/e4c7b21b8f36c97c35b7c622732b38a189ce18f7/src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-with-autorun-binaries.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run* OR *\\\\Software\\\\WOW6432Node\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run* OR *\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\Explorer\\\\Run*)) AND ((winlog.event_data.Details:(*\\:\\\\Perflogs* OR *\\:\\\\ProgramData'* OR *\\:\\\\Windows\\\\Temp* OR *\\:\\\\Temp* OR *\\\\AppData\\\\Local\\\\Temp* OR *\\\\AppData\\\\Roaming* OR *\\:\\\\$Recycle.bin* OR *\\:\\\\Users\\\\Default* OR *\\:\\\\Users\\\\public* OR *%temp%* OR *%tmp%* OR *%Public%* OR *%AppData%*)) OR (winlog.event_data.Details:*\\:\\\\Users\\\\* AND (winlog.event_data.Details:(*\\\\Favorites* OR *\\\\Favourites* OR *\\\\Contacts* OR *\\\\Music* OR *\\\\Pictures* OR *\\\\Documents* OR *\\\\Photos*)))) AND (NOT (registry.path:*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce\\\\* AND process.executable:C\\:\\\\Windows\\\\SoftwareDistribution\\\\Download\\\\* AND (winlog.event_data.Details:*rundll32.exe\\ * AND winlog.event_data.Details:*C\\:\\\\WINDOWS\\\\system32\\\\advpack.dll,DelNodeRunDLL32*) AND (winlog.event_data.Details:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *C\\:\\\\Windows\\\\Temp\\\\*))))"
+}

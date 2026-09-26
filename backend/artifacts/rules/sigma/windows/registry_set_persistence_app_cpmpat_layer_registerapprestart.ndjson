@@ -1,0 +1,69 @@
+{
+  "id": "3b2c548c-befc-4937-a9f5-234bfb0e210e",
+  "name": "Potential Persistence Via AppCompat RegisterAppRestart Layer",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the setting of the REGISTERAPPRESTART compatibility layer on an application.\nThis compatibility layer allows an application to register for restart using the \"RegisterApplicationRestart\" API.\nThis can be potentially abused as a persistence mechanism.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate applications making use of this feature for compatibility reasons"
+  ],
+  "from": "now-360s",
+  "rule_id": "342f702a-f4d6-43fe-8168-99243edb0a97",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/nasbench/Misc-Research/blob/d114d6a5e0a437d3818e492ef9864367152543e7/Other/Persistence-Via-RegisterAppRestart-Shim.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\AppCompatFlags\\\\Layers\\\\* AND winlog.event_data.Details:*REGISTERAPPRESTART*"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "1e9880de-ae3b-4212-b4ad-92fd89bc806a",
+  "name": "UAC Bypass Using Event Viewer RecentViews",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the pattern of UAC Bypass using Event Viewer RecentViews",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2f52b3eb-a842-48aa-a3ab-70392116fef1",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/orange_8361/status/1518970259868626944",
+    "https://lolbas-project.github.io/lolbas/Binaries/Eventvwr/#execute"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\\\Event\\ Viewer\\\\RecentViews* OR *\\\\EventV\\~1\\\\RecentViews*)) AND process.command_line:*\\>*"
+}

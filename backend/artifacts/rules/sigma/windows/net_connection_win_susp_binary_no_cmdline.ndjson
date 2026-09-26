@@ -1,0 +1,51 @@
+{
+  "id": "65f7f676-da95-494c-8453-6ac42c22664e",
+  "name": "Suspicious Network Connection Binary No CommandLine",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious network connections made by a well-known Windows binary run with no command line parameters",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "91927a97-cb74-4638-8b14-74785b3edb01",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/raspberry-robin/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(network.direction:true AND (process.executable:(*\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\dllhost.exe)) AND (winlog.event_data.CommandLine:(*\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\dllhost.exe))) AND (NOT (winlog.event_data.CommandLine:\"\" OR (NOT _exists_:winlog.event_data.CommandLine)))"
+}

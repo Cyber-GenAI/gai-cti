@@ -1,0 +1,89 @@
+{
+  "id": "c276d6b4-ec8d-4bed-8112-8071d9c63d67",
+  "name": "Network Communication Initiated To Portmap.IO Domain",
+  "tags": [
+    "attack.t1041",
+    "attack.command-and-control",
+    "attack.t1090.002",
+    "attack.exfiltration",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an executable accessing the portmap.io domain, which could be a sign of forbidden C2 traffic or data exfiltration by malicious actors",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of portmap.io domains"
+  ],
+  "from": "now-360s",
+  "rule_id": "2f1602bc-a7ed-4306-833b-cbaace7e3e52",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1041",
+          "name": "Exfiltration Over C2 Channel",
+          "reference": "https://attack.mitre.org/techniques/T1041/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://portmap.io/",
+    "https://github.com/rapid7/metasploit-framework/issues/11337",
+    "https://pro.twitter.com/JaromirHorejsi/status/1795001037746761892/photo/2"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "network.direction:true AND destination.domain:*.portmap.io"
+}

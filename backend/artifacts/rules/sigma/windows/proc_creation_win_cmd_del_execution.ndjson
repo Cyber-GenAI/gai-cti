@@ -1,0 +1,70 @@
+{
+  "id": "f310a154-0d82-493e-a01e-64a212745139",
+  "name": "File Deletion Via Del",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the builtin \"del\"/\"erase\" commands in order to delete files.\nAdversaries may delete files left behind by the actions of their intrusion activity.\nMalware, tools, or other non-native files dropped or created on a system by an adversary may leave traces to indicate to what was done within a network and how.\nRemoval of these files can occur during an intrusion, or as part of a post-intrusion process to minimize the adversary's footprint.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives levels will differ Depending on the environment. You can use a combination of ParentImage and other keywords from the CommandLine field to filter legitimate activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "eee07714-bcf2-4df1-a39f-dddf786ffe75",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1070.004/T1070.004.md",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/erase"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\cmd.exe OR process.pe.original_file_name:Cmd.Exe) AND (process.command_line:(*del\\ * OR *erase\\ *)) AND (process.command_line:(*\\ \\-f* OR *\\ \\/f* OR *\\ \u2013f* OR *\\ \u2014f* OR *\\ \u2015f*) OR process.command_line:(*\\ \\-s* OR *\\ \\/s* OR *\\ \u2013s* OR *\\ \u2014s* OR *\\ \u2015s*) OR process.command_line:(*\\ \\-q* OR *\\ \\/q* OR *\\ \u2013q* OR *\\ \u2014q* OR *\\ \u2015q*))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "f5a86745-a7bb-4321-9ca7-20222b09b5ea",
+  "name": "Certificate Exported From Local Certificate Store",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1649",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an application exports a certificate (and potentially the private key as well) from the local Windows certificate store.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate application requesting certificate exports will trigger this. Apply additional filters as needed"
+  ],
+  "from": "now-360s",
+  "rule_id": "8a90b37d-1c18-45b9-887d-b903bf4dc954",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1649",
+          "name": "Steal or Forge Authentication Certificates",
+          "reference": "https://attack.mitre.org/techniques/T1649/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.splunk.com/en_us/blog/security/breaking-the-chain-defending-against-certificate-services-abuse.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-CertificateServicesClient\\-Lifecycle\\-System\\/Operational AND event.code:1007"
+}

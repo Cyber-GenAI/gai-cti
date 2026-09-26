@@ -1,0 +1,69 @@
+{
+  "id": "440b0751-8043-4e76-acdc-15366799ca29",
+  "name": "LSASS Process Memory Dump Creation Via Taskmgr.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of an \"lsass.dmp\" file by the taskmgr process. This indicates a manual dumping of the LSASS.exe process memory using Windows Task Manager.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare case of troubleshooting by an administrator or support that has to be investigated regardless"
+  ],
+  "from": "now-360s",
+  "rule_id": "c3daceca-fa2c-41c1-98c5-772e173c5ecd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/987e3ca988ae3cff4b9f6e388c139c05bf44bbb8/atomics/T1003.001/T1003.001.md#L1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\:\\\\Windows\\\\system32\\\\taskmgr.exe OR *\\:\\\\Windows\\\\SysWOW64\\\\taskmgr.exe)) AND (file.path:*\\\\AppData\\\\Local\\\\Temp\\\\* AND file.path:*\\\\lsass* AND file.path:*.DMP*)"
+}

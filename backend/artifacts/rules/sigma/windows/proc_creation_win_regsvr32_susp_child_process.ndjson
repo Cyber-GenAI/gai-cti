@@ -1,0 +1,71 @@
+{
+  "id": "993a127f-f297-43a2-ad4c-ec45ae6b1d0f",
+  "name": "Potentially Suspicious Child Process Of Regsvr32",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious child processes of \"regsvr32.exe\".",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely, but can rarely occur. Apply additional filters accordingly."
+  ],
+  "from": "now-360s",
+  "rule_id": "ea252aec-0b6c-4e57-8298-11e24539dc73",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/intelligence-insights-april-2022/",
+    "https://www.echotrail.io/insights/search/regsvr32.exe",
+    "https://www.ired.team/offensive-security/code-execution/t1117-regsvr32-aka-squiblydoo"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\regsvr32.exe AND (process.executable:(*\\\\calc.exe OR *\\\\cscript.exe OR *\\\\explorer.exe OR *\\\\mshta.exe OR *\\\\net.exe OR *\\\\net1.exe OR *\\\\nltest.exe OR *\\\\notepad.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\reg.exe OR *\\\\schtasks.exe OR *\\\\werfault.exe OR *\\\\wscript.exe))) AND (NOT (process.executable:*\\\\werfault.exe AND process.command_line:*\\ \\-u\\ \\-p\\ *))"
+}

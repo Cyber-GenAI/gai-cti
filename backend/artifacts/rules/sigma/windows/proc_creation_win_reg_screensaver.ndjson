@@ -1,0 +1,70 @@
+{
+  "id": "5887208a-09e5-4cbe-934b-b8800d1ab92d",
+  "name": "Suspicious ScreenSave Change by Reg.exe",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1546.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may establish persistence by executing malicious content triggered by user inactivity.\nScreensavers are programs that execute after a configurable time of user inactivity and consist of Portable Executable (PE) files with a .scr file extension\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "GPO"
+  ],
+  "from": "now-360s",
+  "rule_id": "add16d73-2ca0-4630-88d3-a6572d391090",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1546.002/T1546.002.md",
+    "https://www.welivesecurity.com/wp-content/uploads/2017/08/eset-gazer.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\reg.exe AND (process.command_line:(*HKEY_CURRENT_USER\\\\Control\\ Panel\\\\Desktop* OR *HKCU\\\\Control\\ Panel\\\\Desktop*))) AND ((process.command_line:*\\/v\\ ScreenSaveActive* AND process.command_line:*\\/t\\ REG_SZ* AND process.command_line:*\\/d\\ 1* AND process.command_line:*\\/f*) OR (process.command_line:*\\/v\\ ScreenSaveTimeout* AND process.command_line:*\\/t\\ REG_SZ* AND process.command_line:*\\/d\\ * AND process.command_line:*\\/f*) OR (process.command_line:*\\/v\\ ScreenSaverIsSecure* AND process.command_line:*\\/t\\ REG_SZ* AND process.command_line:*\\/d\\ 0* AND process.command_line:*\\/f*) OR (process.command_line:*\\/v\\ SCRNSAVE.EXE* AND process.command_line:*\\/t\\ REG_SZ* AND process.command_line:*\\/d\\ * AND process.command_line:*.scr* AND process.command_line:*\\/f*))"
+}

@@ -1,0 +1,72 @@
+{
+  "id": "f52ec605-0b19-4a99-b668-dab60860a2df",
+  "name": "PowerView PowerShell Cmdlets - ScriptBlock",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Cmdlet names from PowerView of the PowerSploit exploitation framework.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c881da7b-33c3-4cf6-9978-3369821d5bc4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://powersploit.readthedocs.io/en/stable/Recon/README",
+    "https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon",
+    "https://thedfirreport.com/2020/10/08/ryuks-return",
+    "https://adsecurity.org/?p=2277"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*Export\\-PowerViewCSV* OR *Find\\-DomainLocalGroupMember* OR *Find\\-DomainObjectPropertyOutlier* OR *Find\\-DomainProcess* OR *Find\\-DomainShare* OR *Find\\-DomainUserEvent* OR *Find\\-DomainUserLocation* OR *Find\\-ForeignGroup* OR *Find\\-ForeignUser* OR *Find\\-GPOComputerAdmin* OR *Find\\-GPOLocation* OR *Find\\-InterestingDomain* OR *Find\\-InterestingFile* OR *Find\\-LocalAdminAccess* OR *Find\\-ManagedSecurityGroups* OR *Get\\-CachedRDPConnection* OR *Get\\-DFSshare* OR *Get\\-DomainDFSShare* OR *Get\\-DomainDNSRecord* OR *Get\\-DomainDNSZone* OR *Get\\-DomainFileServer* OR *Get\\-DomainGPOComputerLocalGroupMapping* OR *Get\\-DomainGPOLocalGroup* OR *Get\\-DomainGPOUserLocalGroupMapping* OR *Get\\-LastLoggedOn* OR *Get\\-LoggedOnLocal* OR *Get\\-NetFileServer* OR *Get\\-NetForest* OR *Get\\-NetGPOGroup* OR *Get\\-NetProcess* OR *Get\\-NetRDPSession* OR *Get\\-RegistryMountedDrive* OR *Get\\-RegLoggedOn* OR *Get\\-WMIRegCachedRDPConnection* OR *Get\\-WMIRegLastLoggedOn* OR *Get\\-WMIRegMountedDrive* OR *Get\\-WMIRegProxy* OR *Invoke\\-ACLScanner* OR *Invoke\\-CheckLocalAdminAccess* OR *Invoke\\-EnumerateLocalAdmin* OR *Invoke\\-EventHunter* OR *Invoke\\-FileFinder* OR *Invoke\\-Kerberoast* OR *Invoke\\-MapDomainTrust* OR *Invoke\\-ProcessHunter* OR *Invoke\\-RevertToSelf* OR *Invoke\\-ShareFinder* OR *Invoke\\-UserHunter* OR *Invoke\\-UserImpersonation* OR *Remove\\-RemoteConnection* OR *Request\\-SPNTicket* OR *Resolve\\-IPAddress*)"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "f3145712-af0f-4f54-8ca3-e56a4ec9c21a",
+  "name": "Driver Added To Disallowed Images In HVCI - Registry",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to the \"HVCIDisallowedImages\" registry value to potentially add a driver to the list, in order to prevent it from loading.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of this key would also trigger this. Investigate the driver being added and make sure its intended"
+  ],
+  "from": "now-360s",
+  "rule_id": "3c3f4881-e3c9-4079-954a-2990595a0020",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/yardenshafir/conference_talks/blob/3de1f5d7c02656c35117f067fbff0a219c304b09/OffensiveCon_2023_Your_Mitigations_are_My_Opportunities.pdf",
+    "https://x.com/yarden_shafir/status/1822667605175324787"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Control\\\\CI\\\\* AND registry.path:*\\\\HVCIDisallowedImages*"
+}

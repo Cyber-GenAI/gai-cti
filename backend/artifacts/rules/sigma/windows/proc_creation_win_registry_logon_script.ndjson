@@ -1,0 +1,69 @@
+{
+  "id": "87f2c6c4-aab0-4dbb-a570-492ba5f332c7",
+  "name": "Potential Persistence Via Logon Scripts - CommandLine",
+  "tags": [
+    "attack.persistence",
+    "attack.t1037.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the addition of a new LogonScript to the registry value \"UserInitMprLogonScript\" for potential persistence",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate addition of Logon Scripts via the command line by administrators or third party tools"
+  ],
+  "from": "now-360s",
+  "rule_id": "2cc3f516-e30e-4fab-a716-6cf9ea972af9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1037",
+          "name": "Boot or Logon Initialization Scripts",
+          "reference": "https://attack.mitre.org/techniques/T1037/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://cocomelonc.github.io/persistence/2022/12/09/malware-pers-20.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*UserInitMprLogonScript*"
+}

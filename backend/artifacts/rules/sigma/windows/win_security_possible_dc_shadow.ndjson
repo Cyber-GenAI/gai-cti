@@ -1,0 +1,72 @@
+{
+  "id": "01b22082-ce90-48ad-83f2-c869c1016525",
+  "name": "Possible DC Shadow Attack",
+  "tags": [
+    "attack.credential-access",
+    "attack.defense-evasion",
+    "attack.t1207",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DCShadow via create new SPN",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Valid on domain controllers; exclude known DCs"
+  ],
+  "from": "now-360s",
+  "rule_id": "33df4273-ba4d-4c7f-8f33-676bc2e9011a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1207",
+          "name": "Rogue Domain Controller",
+          "reference": "https://attack.mitre.org/techniques/T1207/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/gentilkiwi/status/1003236624925413376",
+    "https://gist.github.com/gentilkiwi/dcc132457408cf11ad2061340dcb53c2",
+    "https://web.archive.org/web/20180203014709/https://blog.alsid.eu/dcshadow-explained-4510f52fc19d?gi=c426ac876c48"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4742 AND winlog.event_data.ServicePrincipalNames:*GC\\/*) OR (event.code:5136 AND winlog.event_data.AttributeLDAPDisplayName:servicePrincipalName AND winlog.event_data.AttributeValue:GC\\/*))"
+}

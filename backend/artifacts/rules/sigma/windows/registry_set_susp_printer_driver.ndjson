@@ -1,0 +1,70 @@
+{
+  "id": "b52cc938-4ebc-41a6-816e-bddefee66785",
+  "name": "Suspicious Printer Driver Empty Manufacturer",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1574",
+    "cve.2021-1675",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious printer driver installation with an empty Manufacturer value",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Alerts on legitimate printer drivers that do not set any more details in the Manufacturer value"
+  ],
+  "from": "now-360s",
+  "rule_id": "7587d350-6700-4d86-8f12-a5dfbc73f0d2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/SBousseaden/status/1410545674773467140"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((registry.path:*\\\\Control\\\\Print\\\\Environments\\\\Windows\\ x64\\\\Drivers* AND registry.path:*\\\\Manufacturer*) AND winlog.event_data.Details:\\(Empty\\)) AND (NOT (registry.path:*\\\\CutePDF\\ Writer\\ v4.0\\\\* OR (registry.path:(*\\\\VNC\\ Printer\\ \\(PS\\)\\\\* OR *\\\\VNC\\ Printer\\ \\(UD\\)\\\\*)) OR registry.path:*\\\\Version\\-3\\\\PDF24\\\\*))"
+}

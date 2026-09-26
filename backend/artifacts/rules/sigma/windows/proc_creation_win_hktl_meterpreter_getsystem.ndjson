@@ -1,0 +1,72 @@
+{
+  "id": "7602de11-f87d-4eb2-a36e-33a618b949cf",
+  "name": "Potential Meterpreter/CobaltStrike Activity",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1134.001",
+    "attack.t1134.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service starting",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Commandlines containing components like cmd accidentally",
+    "Jobs and services started with cmd"
+  ],
+  "from": "now-360s",
+  "rule_id": "7162e5c1-efd9-4b40-b0ab-cfb47ca555b2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-privilege-escalation-in-windows-environment",
+    "https://blog.cobaltstrike.com/2014/04/02/what-happens-when-i-type-getsystem/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\services.exe AND (((process.command_line:*\\/c* AND process.command_line:*echo* AND process.command_line:*\\\\pipe\\\\*) AND (process.command_line:(*cmd* OR *%COMSPEC%*))) OR (process.command_line:*rundll32* AND process.command_line:*.dll,a* AND process.command_line:*\\/p\\:*)) AND (NOT process.command_line:*MpCmdRun*)"
+}

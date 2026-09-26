@@ -1,0 +1,69 @@
+{
+  "id": "ca0c9033-a5b8-4d16-bb18-af3c2a3e51cd",
+  "name": "Malicious PowerShell Keywords",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects keywords from well-known PowerShell exploitation frameworks",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Depending on the scripts, this rule might require some initial tuning to fit the environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "d86745e2-89fb-4691-9760-a70130e02cbd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://adsecurity.org/?p=2921"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*AdjustTokenPrivileges* OR *IMAGE_NT_OPTIONAL_HDR64_MAGIC* OR *Metasploit* OR *Microsoft.Win32.UnsafeNativeMethods* OR *Mimikatz* OR *MiniDumpWriteDump* OR *PAGE_EXECUTE_READ* OR *ReadProcessMemory.Invoke* OR *SE_PRIVILEGE_ENABLED* OR *SECURITY_DELEGATION* OR *TOKEN_ADJUST_PRIVILEGES* OR *TOKEN_ALL_ACCESS* OR *TOKEN_ASSIGN_PRIMARY* OR *TOKEN_DUPLICATE* OR *TOKEN_ELEVATION* OR *TOKEN_IMPERSONATE* OR *TOKEN_INFORMATION_CLASS* OR *TOKEN_PRIVILEGES* OR *TOKEN_QUERY*)"
+}

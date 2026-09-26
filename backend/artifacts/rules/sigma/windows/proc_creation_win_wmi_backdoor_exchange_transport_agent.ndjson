@@ -1,0 +1,70 @@
+{
+  "id": "ced4c986-85f2-41f2-8ec2-882c8e5c901c",
+  "name": "WMI Backdoor Exchange Transport Agent",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a WMI backdoor in Exchange Transport Agents via WMI event filters",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b8aa7854-594e-4249-a185-bbd1f9b94fec",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/cglyer/status/1182389676876980224",
+    "https://twitter.com/cglyer/status/1182391019633029120"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\EdgeTransport.exe AND (NOT (process.executable:C\\:\\\\Windows\\\\System32\\\\conhost.exe OR (process.executable:C\\:\\\\Program\\ Files\\\\Microsoft\\\\Exchange\\ Server\\\\* AND process.executable:*\\\\Bin\\\\OleConverter.exe)))"
+}

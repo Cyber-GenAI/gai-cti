@@ -1,0 +1,71 @@
+{
+  "id": "7c8803f1-15d2-49a0-b25e-bd26823cdfd8",
+  "name": "Potential Command Line Path Traversal Evasion Attempt",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential evasion or obfuscation attempts using bogus path traversal via the commandline",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Google Drive",
+    "Citrix"
+  ],
+  "from": "now-360s",
+  "rule_id": "77161080-68ba-4639-9e18-7d1b6205a809",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/hexacorn/status/1448037865435320323",
+    "https://twitter.com/Gal_B1t/status/1062971006078345217"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\Windows\\\\* AND (process.command_line:(*\\\\..\\\\Windows\\\\* OR *\\\\..\\\\System32\\\\* OR *\\\\..\\\\..\\\\*))) OR process.command_line:*.exe\\\\..\\\\*) AND (NOT (process.command_line:(*\\\\Google\\\\Drive\\\\googledrivesync.exe\\\\..\\\\* OR *\\\\Citrix\\\\Virtual\\ Smart\\ Card\\\\Citrix.Authentication.VirtualSmartcard.Launcher.exe\\\\..\\\\*)))"
+}

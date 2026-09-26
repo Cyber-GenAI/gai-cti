@@ -1,0 +1,72 @@
+{
+  "id": "3a2b1cd7-22f6-4a48-812e-64ae650e508c",
+  "name": "Sensitive File Recovery From Backup Via Wbadmin.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the dump of highly sensitive files such as \"NTDS.DIT\" and \"SECURITY\" hive.\nAttackers can leverage the \"wbadmin\" utility in order to dump sensitive files that might contain credential or sensitive information.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4d157351-c827-4c9d-9daf-3bd3122b5417",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/LOLBAS-Project/LOLBAS/blob/2cc01b01132b5c304027a658c698ae09dd6a92bf/yml/OSBinaries/Wbadmin.yml",
+    "https://lolbas-project.github.io/lolbas/Binaries/Wbadmin/",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wbadmin-start-recovery",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wbadmin-start-backup"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\wbadmin.exe OR process.pe.original_file_name:WBADMIN.EXE) AND ((process.command_line:*\\ recovery* AND process.command_line:*recoveryTarget* AND process.command_line:*itemtype\\:File*) AND (process.command_line:(*\\\\config\\\\SAM* OR *\\\\config\\\\SECURITY* OR *\\\\config\\\\SYSTEM* OR *\\\\Windows\\\\NTDS\\\\NTDS.dit*)))"
+}

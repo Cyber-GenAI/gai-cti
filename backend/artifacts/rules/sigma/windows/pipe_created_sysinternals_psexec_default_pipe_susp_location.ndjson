@@ -1,0 +1,71 @@
+{
+  "id": "bc2c0304-da58-40a6-9b18-b6c54391a1ea",
+  "name": "PsExec Tool Execution From Suspicious Locations - PipeName",
+  "tags": [
+    "attack.execution",
+    "attack.t1569.002",
+    "attack.s0029",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PsExec default pipe creation where the image executed is located in a suspicious location. Which could indicate that the tool is being used in an attack",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare legitimate use of psexec from the locations mentioned above. This will require initial tuning based on your environment."
+  ],
+  "from": "now-360s",
+  "rule_id": "7cd2b11b-cf3e-4e2a-b4b8-ed8d67ae8fe7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.jpcert.or.jp/english/pub/sr/ir_research.html",
+    "https://jpcertcc.github.io/ToolAnalysisResultSheet"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.name:\\\\PSEXESVC AND (process.executable:(*\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Desktop\\\\* OR *\\\\Downloads\\\\*))"
+}

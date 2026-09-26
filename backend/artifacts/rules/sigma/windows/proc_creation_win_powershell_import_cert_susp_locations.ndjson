@@ -1,0 +1,70 @@
+{
+  "id": "e1fc478b-1018-4230-bdde-7d138353807f",
+  "name": "Root Certificate Installed From Susp Locations",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1553.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may install a root certificate on a compromised system to avoid warnings when connecting to adversary controlled web servers.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "8b6b8d37-852d-45e0-8375-2afc5049b601",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1553",
+          "name": "Subvert Trust Controls",
+          "reference": "https://attack.mitre.org/techniques/T1553/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/security/blog/2022/09/07/profiling-dev-0270-phosphorus-ransomware-operations/",
+    "https://learn.microsoft.com/en-us/powershell/module/pki/import-certificate?view=windowsserver2022-ps"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*Import\\-Certificate* AND process.command_line:*\\ \\-FilePath\\ * AND process.command_line:*Cert\\:\\\\LocalMachine\\\\Root*) AND (process.command_line:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\:\\\\Windows\\\\TEMP\\\\* OR *\\\\Desktop\\\\* OR *\\\\Downloads\\\\* OR *\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\*))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "2bc1d365-7f9c-416f-bf4d-31b9d544656a",
+  "name": "Linux Command History Tampering",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.003",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects commands that try to clear or tamper with the Linux command history.\nThis technique is used by threat actors in order to evade defenses and execute commands without them being recorded in files such as \"bash_history\" or \"zsh_history\".\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "86bc55d9-4b5c-4174-9ef5-8e5e0367baf1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1070.003/T1070.003.md",
+    "https://www.hackers-arise.com/post/2016/06/20/covering-your-bash-shell-tracks-antiforensics",
+    "https://www.cadosecurity.com/spinning-yarn-a-new-linux-malware-campaign-targets-docker-apache-hadoop-redis-and-confluence/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*cat\\ \\/dev\\/null\\ \\>*sh_history* OR *cat\\ \\/dev\\/zero\\ \\>*sh_history* OR *chattr\\ \\+i*sh_history* OR *echo\\ \\\"\\\"\\ \\>*sh_history* OR *empty_bash_history* OR *export\\ HISTFILESIZE\\=0* OR *history\\ \\-c* OR *history\\ \\-w* OR *ln\\ \\-sf\\ \\/dev\\/null\\ *sh_history* OR *ln\\ \\-sf\\ \\/dev\\/zero\\ *sh_history* OR *rm\\ *sh_history* OR *shopt\\ \\-ou\\ history* OR *shopt\\ \\-uo\\ history* OR *shred\\ *sh_history* OR *truncate\\ \\-s0\\ *sh_history*"
+}

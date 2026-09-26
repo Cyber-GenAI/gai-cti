@@ -1,0 +1,71 @@
+{
+  "id": "ea82fd5c-c206-4be6-9146-4c2aa46f47d2",
+  "name": "Unauthorized System Time Modification",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect scenarios where a potentially unauthorized application or user is modifying the system time.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "HyperV or other virtualization technologies with binary not listed in filter portion of detection"
+  ],
+  "from": "now-360s",
+  "rule_id": "7f278bc3-969a-497f-bd20-78b3d9015b11",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Private Cuckoo Sandbox (from many years ago, no longer have hash, NDA as well)",
+    "Live environment caused by malware",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4616"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4616 AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\\\VMware\\\\VMware\\ Tools\\\\vmtoolsd.exe OR C\\:\\\\Windows\\\\System32\\\\VBoxService.exe OR C\\:\\\\Windows\\\\System32\\\\oobe\\\\msoobe.exe)) OR (process.executable:C\\:\\\\Windows\\\\System32\\\\svchost.exe AND user.id:S\\-1\\-5\\-19))))"
+}

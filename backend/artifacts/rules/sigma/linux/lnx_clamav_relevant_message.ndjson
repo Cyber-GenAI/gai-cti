@@ -1,0 +1,69 @@
+{
+  "id": "0550f349-57cd-438b-a108-dcdc560c6f5b",
+  "name": "Relevant ClamAV Message",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1588.001",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects relevant ClamAV messages",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2d0d9bb1-5dfb-4b3e-8fee-e15b63b38b38",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1588",
+          "name": "Obtain Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1588/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/ossec/ossec-hids/blob/1ecffb1b884607cb12e619f9ab3c04f530801083/etc/rules/clam_av_rules.xml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*Trojan*FOUND* OR *VirTool*FOUND* OR *Webshell*FOUND* OR *Rootkit*FOUND* OR *Htran*FOUND*"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "65532ac6-45e9-4b9a-8234-d305fea8c6f3",
+  "name": "Cscript/Wscript Potentially Suspicious Child Process",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious child processes of Wscript/Cscript. These include processes such as rundll32 with uncommon exports or PowerShell spawning rundll32 or regsvr32.\nMalware such as Pikabot and Qakbot were seen using similar techniques as well as many others.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives might occur with admin or third party software scripts. Investigate and apply additional filters accordingly."
+  ],
+  "from": "now-360s",
+  "rule_id": "65143f61-7f54-4fc2-b40f-c81cdcaee05b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://github.com/pr0xylife/Pikabot/blob/main/Pikabot_30.10.2023.txt",
+    "https://github.com/pr0xylife/Pikabot/blob/main/Pikabot_22.12.2023.txt"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:(*\\\\wscript.exe OR *\\\\cscript.exe)) AND (process.executable:*\\\\rundll32.exe OR ((process.executable:(*\\\\cmd.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe)) AND ((process.command_line:*mshta* AND process.command_line:*http*) OR (process.command_line:(*rundll32* OR *regsvr32* OR *msiexec*))))) AND (NOT (process.executable:*\\\\rundll32.exe AND (process.command_line:(*UpdatePerUserSystemParameters* OR *PrintUIEntry* OR *ClearMyTracksByProcess*))))"
+}

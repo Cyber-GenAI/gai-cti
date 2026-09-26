@@ -1,0 +1,70 @@
+{
+  "id": "72c337f0-e2a1-4db9-a8f0-eed2b81ea546",
+  "name": "Important Windows Event Auditing Disabled",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects scenarios where system auditing for important events such as \"Process Creation\" or \"Logon\" events is disabled.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "4aee9984-7793-49b3-9b5f-36691d4a0020",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://docs.google.com/presentation/d/1dkrldTTlN3La-OjWtkWJBb4hVk6vfsSMBFBERs6R8zA/edit",
+    "https://github.com/SigmaHQ/sigma/blob/master/documentation/logsource-guides/windows/service/security.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4719 AND (winlog.event_data.SubcategoryGuid:(\\{0CCE9210\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9211\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9212\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9215\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE921B\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE922B\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE922F\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9230\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9235\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9236\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9237\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE923F\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9240\\-69AE\\-11D9\\-BED3\\-505054503030\\} OR \\{0CCE9242\\-69AE\\-11D9\\-BED3\\-505054503030\\})) AND (winlog.event_data.AuditPolicyChanges:(*%%8448* OR *%%8450*))) OR (event.code:4719 AND winlog.event_data.SubcategoryGuid:\\{0CCE9217\\-69AE\\-11D9\\-BED3\\-505054503030\\} AND winlog.event_data.AuditPolicyChanges:*%%8448*))"
+}

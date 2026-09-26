@@ -1,0 +1,51 @@
+{
+  "id": "8d8ef8fb-63e1-440b-a449-de01163cdc14",
+  "name": "Sysmon Blocked Executable",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Triggers on any Sysmon \"FileBlockExecutable\" event, which indicates a violation of the configured block policy",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "e5368c43-e4e2-4cc2-a6c5-f35cb1d6de68",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://medium.com/@olafhartong/sysmon-14-0-fileblockexecutable-13d7ba3dff3e"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Sysmon\\/Operational AND event.code:27"
+}

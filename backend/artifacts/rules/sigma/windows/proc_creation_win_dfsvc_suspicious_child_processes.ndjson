@@ -1,0 +1,52 @@
+{
+  "id": "92265b82-239c-4d57-a8a9-86fb43bd9d1e",
+  "name": "Potentially Suspicious Child Process Of ClickOnce Application",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious child processes of a ClickOnce deployment application",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "730f301c-2ea1-4726-a2ae-4019bb2b6d77",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://posts.specterops.io/less-smartscreen-more-caffeine-ab-using-clickonce-for-trusted-code-execution-1446ea8051c5"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\AppData\\\\Local\\\\Apps\\\\2.0\\\\* AND (process.executable:(*\\\\calc.exe OR *\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\explorer.exe OR *\\\\mshta.exe OR *\\\\net.exe OR *\\\\net1.exe OR *\\\\nltest.exe OR *\\\\notepad.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\reg.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\schtasks.exe OR *\\\\werfault.exe OR *\\\\wscript.exe))"
+}

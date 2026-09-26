@@ -1,0 +1,70 @@
+{
+  "id": "40d530c3-1eba-472a-8272-74d8ce14ad48",
+  "name": "Potential Crypto Mining Activity",
+  "tags": [
+    "attack.impact",
+    "attack.t1496",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command line parameters or strings often used by crypto miners",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of crypto miners",
+    "Some build frameworks"
+  ],
+  "from": "now-360s",
+  "rule_id": "981dab1f-57e9-439c-8894-0b159c49c640",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "reference": "https://attack.mitre.org/techniques/T1496/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.poolwatch.io/coin/monero"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\ \\-\\-cpu\\-priority\\=* OR *\\-\\-donate\\-level\\=0* OR *\\ \\-o\\ pool.* OR *\\ \\-\\-nicehash* OR *\\ \\-\\-algo\\=rx\\/0\\ * OR *stratum\\+tcp\\:\\/\\/* OR *stratum\\+udp\\:\\/\\/* OR *LS1kb25hdGUtbGV2ZWw9* OR *0tZG9uYXRlLWxldmVsP* OR *tLWRvbmF0ZS1sZXZlbD* OR *c3RyYXR1bSt0Y3A6Ly* OR *N0cmF0dW0rdGNwOi8v* OR *zdHJhdHVtK3RjcDovL* OR *c3RyYXR1bSt1ZHA6Ly* OR *N0cmF0dW0rdWRwOi8v* OR *zdHJhdHVtK3VkcDovL*)) AND (NOT (process.command_line:(*\\ pool.c\\ * OR *\\ pool.o\\ * OR *gcc\\ \\-*)))"
+}

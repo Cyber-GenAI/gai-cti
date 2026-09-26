@@ -1,0 +1,84 @@
+{
+  "id": "91c81160-ad56-4b8b-87b6-d6964f9d79ca",
+  "name": "Communication To LocaltoNet Tunneling Service Initiated - Linux",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1572",
+    "attack.t1090",
+    "attack.t1102",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an executable initiating a network connection to \"LocaltoNet\" tunneling sub-domains.\nLocaltoNet is a reverse proxy that enables localhost services to be exposed to the Internet.\nAttackers have been seen to use this service for command-and-control activities to bypass MFA and perimeter controls.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the LocaltoNet service."
+  ],
+  "from": "now-360s",
+  "rule_id": "3cccc4c8-8023-4140-ba89-b7c5406382de",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1572",
+          "name": "Protocol Tunneling",
+          "reference": "https://attack.mitre.org/techniques/T1572/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://localtonet.com/documents/supported-tunnels",
+    "https://cloud.google.com/blog/topics/threat-intelligence/unc3944-targets-saas-applications"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(DestinationHostname:(*.localto.net OR *.localtonet.com)) AND Initiated:true"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "4b9529ba-eafc-4413-bbc3-784893e74861",
+  "name": "Potential Defense Evasion Via Raw Disk Access By Uncommon Tools",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects raw disk access using uncommon tools or tools that are located in suspicious locations (heavy filtering is required), which could indicate possible defense evasion attempts",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely"
+  ],
+  "from": "now-360s",
+  "rule_id": "6a8a54b2-6d1f-4053-8102-bd327a67720c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1006",
+          "name": "Direct Volume Access",
+          "reference": "https://attack.mitre.org/techniques/T1006/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.slideshare.net/heirhabarov/hunting-for-credentials-dumping-in-windows-environment"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(NOT (file.path:*floppy* OR (process.executable:(*\\:\\\\$WINDOWS.\\~BT\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR *\\:\\\\Program\\ Files\\\\* OR *\\:\\\\Windows\\\\CCM\\\\* OR *\\:\\\\Windows\\\\explorer.exe* OR *\\:\\\\Windows\\\\servicing\\\\* OR *\\:\\\\Windows\\\\SoftwareDistribution\\\\* OR *\\:\\\\Windows\\\\System32\\\\* OR *\\:\\\\Windows\\\\SystemApps\\\\* OR *\\:\\\\Windows\\\\uus\\\\* OR *\\:\\\\Windows\\\\WinSxS\\\\*)) OR (process.executable:(Registry OR System)) OR (process.executable:*\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\\\Platform\\\\* AND process.executable:*\\\\MsMpEng.exe) OR (process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\AppData\\\\* AND process.executable:*\\\\Microsoft\\\\*) OR (process.executable:*\\:\\\\Windows\\\\Temp\\\\* AND (process.executable:(*\\\\Executables\\\\SSDUpdate.exe OR *\\\\HostMetadata\\\\NVMEHostmetadata.exe))) OR (NOT _exists_:process.executable) OR process.executable:*\\:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe)) AND (NOT ((process.executable:*\\\\AppData\\\\Local\\\\GitHubDesktop\\\\app\\-* AND process.executable:*\\\\resources\\\\app\\\\git\\\\mingw64\\\\bin\\\\git.exe) OR (process.executable:*\\:\\\\Windows\\\\Temp\\\\asgard2\\-agent\\\\* AND process.executable:*\\\\thor.exe) OR process.executable:*\\\\AppData\\\\Local\\\\Keybase\\\\upd.exe*))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "ad8f3821-4b1d-4b38-ae97-4a815000b797",
+  "name": "Scanner PoC for CVE-2019-0708 RDP RCE Vuln",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1210",
+    "car.2013-07-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of a scanner by zerosum0x0 that discovers targets vulnerable to  CVE-2019-0708 RDP RCE aka BlueKeep",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "99da1d6b-a96b-407f-b99b-b35a6f1a73dc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1210",
+          "name": "Exploitation of Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1210/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/AdamTheAnalyst/status/1134394070045003776",
+    "https://web.archive.org/web/20190710034152/https://github.com/zerosum0x0/CVE-2019-0708"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4625 AND winlog.event_data.TargetUserName:AAAAAAA)"
+}

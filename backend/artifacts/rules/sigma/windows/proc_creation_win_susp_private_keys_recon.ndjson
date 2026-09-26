@@ -1,0 +1,69 @@
+{
+  "id": "569bfe85-4c29-4b3d-a410-cd0f7e5e9a69",
+  "name": "Private Keys Reconnaissance Via CommandLine Tools",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1552.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may search for private key certificate files on compromised systems for insecurely stored credential",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "41f8683d-ab20-46fa-aca0-f48be999f512",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1552.004/T1552.004.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*.key* OR *.pgp* OR *.gpg* OR *.ppk* OR *.p12* OR *.pem* OR *.pfx* OR *.cer* OR *.p7b* OR *.asc*)) AND (((process.executable:*\\\\cmd.exe OR process.pe.original_file_name:Cmd.Exe) AND process.command_line:*dir\\ *) OR (((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND process.command_line:*Get\\-ChildItem\\ *) OR (process.executable:*\\\\findstr.exe OR process.pe.original_file_name:FINDSTR.EXE))"
+}

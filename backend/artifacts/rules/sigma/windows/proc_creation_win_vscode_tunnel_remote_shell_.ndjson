@@ -1,0 +1,71 @@
+{
+  "id": "f6150185-c237-4621-a742-dcf6ffe544da",
+  "name": "Visual Studio Code Tunnel Shell Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1071.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a shell (powershell, bash, wsl...) via Visual Studio Code tunnel. Attackers can abuse this functionality to establish a C2 channel and execute arbitrary commands on the system.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of Visual Studio Code tunnel and running code from there"
+  ],
+  "from": "now-360s",
+  "rule_id": "2f3bc757-4fca-4d69-be97-5941d0b5414d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1071/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://ipfyx.fr/post/visual-studio-code-tunnel/",
+    "https://badoption.eu/blog/2023/01/31/code_c2.html",
+    "https://code.visualstudio.com/docs/remote/tunnels"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\servers\\\\Stable\\-* AND process.parent.executable:*\\\\server\\\\node.exe AND process.parent.command_line:*.vscode\\-server*) AND (((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) AND process.command_line:*\\\\terminal\\\\browser\\\\media\\\\shellIntegration.ps1*) OR (process.executable:(*\\\\wsl.exe OR *\\\\bash.exe)))"
+}

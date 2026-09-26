@@ -1,0 +1,74 @@
+{
+  "id": "96f44e2e-15d5-487f-a47b-f24ad901aee4",
+  "name": "Suspicious Eventlog Clear",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of known powershell cmdlets such as \"Clear-EventLog\" to clear the Windows event logs",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare need to clear logs before doing something. Sometimes used by installers or cleaner scripts. The script should be investigated to determine if it's legitimate"
+  ],
+  "from": "now-360s",
+  "rule_id": "bf74e177-395b-4ecf-bfc8-97de28742bc9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/oroneequalsone/status/1568432028361830402",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1070.001/T1070.001.md",
+    "https://eqllib.readthedocs.io/en/latest/analytics/5b223758-07d6-4100-9e11-238cfdd0fe97.html",
+    "https://stackoverflow.com/questions/66011412/how-to-clear-a-event-log-in-powershell-7",
+    "https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.eventing.reader.eventlogsession.clearlog?view=windowsdesktop-9.0&viewFallbackFrom=dotnet-plat-ext-5.0#System_Diagnostics_Eventing_Reader_EventLogSession_ClearLog_System_String_",
+    "https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.eventlog.clear"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*Clear\\-EventLog\\ * OR *Remove\\-EventLog\\ * OR *Limit\\-EventLog\\ * OR *Clear\\-WinEvent\\ *)) OR (powershell.file.script_block_text:*Eventing.Reader.EventLogSession* AND powershell.file.script_block_text:*ClearLog*) OR (powershell.file.script_block_text:(*Diagnostics.EventLog* OR *Clear*))"
+}

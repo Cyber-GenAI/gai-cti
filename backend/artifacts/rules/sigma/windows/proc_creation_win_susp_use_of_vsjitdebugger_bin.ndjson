@@ -1,0 +1,71 @@
+{
+  "id": "8e71b5d9-4476-4334-862d-6710d745ad18",
+  "name": "Malicious PE Execution by Microsoft Visual Studio Debugger",
+  "tags": [
+    "attack.t1218",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "There is an option for a MS VS Just-In-Time Debugger \"vsjitdebugger.exe\" to launch specified executable and attach a debugger.\nThis option may be used adversaries to execute malicious code by signed verified binary.\nThe debugger is installed alongside with Microsoft Visual Studio package.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "The process spawned by vsjitdebugger.exe is uncommon."
+  ],
+  "from": "now-360s",
+  "rule_id": "16e25b25-7832-408b-b936-99e35153f42a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/pabraeken/status/990758590020452353",
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Vsjitdebugger/",
+    "https://learn.microsoft.com/en-us/visualstudio/debugger/debug-using-the-just-in-time-debugger?view=vs-2019"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\vsjitdebugger.exe AND (NOT (process.executable:(*\\\\vsimmersiveactivatehelper*.exe OR *\\\\devenv.exe)))"
+}

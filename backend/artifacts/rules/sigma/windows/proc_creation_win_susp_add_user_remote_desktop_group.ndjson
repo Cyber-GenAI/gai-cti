@@ -1,0 +1,94 @@
+{
+  "id": "fc6fd296-f0ec-44c4-b073-bf08c42160a0",
+  "name": "User Added to Remote Desktop Users Group",
+  "tags": [
+    "attack.persistence",
+    "attack.lateral-movement",
+    "attack.t1133",
+    "attack.t1136.001",
+    "attack.t1021.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects addition of users to the local Remote Desktop Users group via \"Net\" or \"Add-LocalGroupMember\".",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "ce900b36-9653-4feb-b7a8-24153a5e67a3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1133",
+          "name": "External Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1133/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1136",
+          "name": "Create Account",
+          "reference": "https://attack.mitre.org/techniques/T1136/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/security/blog/2021/11/16/evolving-trends-in-iranian-threat-actor-activity-mstic-presentation-at-cyberwarcon-2021/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:*localgroup\\ * AND process.command_line:*\\ \\/add*) OR (process.command_line:*Add\\-LocalGroupMember\\ * AND process.command_line:*\\ \\-Group\\ *)) AND (process.command_line:(*Remote\\ Desktop\\ Users* OR *Utilisateurs\\ du\\ Bureau\\ \u00e0\\ distance* OR *Usuarios\\ de\\ escritorio\\ remoto*))"
+}

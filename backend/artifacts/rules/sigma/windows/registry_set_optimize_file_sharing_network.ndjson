@@ -1,0 +1,72 @@
+{
+  "id": "c347ec2c-e239-4574-b6ff-778036775deb",
+  "name": "MaxMpxCt Registry Value Changed",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to the \"MaxMpxCt\" registry value.\nMaxMpxCt specifies the maximum outstanding network requests for the server per client, which is used when negotiating a Server Message Block (SMB) connection with a client. Note if the value is set beyond 125 older Windows 9x clients will fail to negotiate.\nRansomware threat actors and operators (specifically BlackCat) were seen increasing this value in order to handle a higher volume of traffic.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "95cc9d53-592b-4192-a855-bc565ac95cdb",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.huntress.com/blog/blackcat-ransomware-affiliate-ttps",
+    "https://securityscorecard.com/research/deep-dive-into-alphv-blackcat-ransomware",
+    "https://www.intrinsec.com/alphv-ransomware-gang-analysis/?cn-reloaded=1",
+    "https://www.sentinelone.com/labs/blackcat-ransomware-highly-configurable-rust-driven-raas-on-the-prowl-for-victims/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Services\\\\LanmanServer\\\\Parameters\\\\MaxMpxCt"
+}

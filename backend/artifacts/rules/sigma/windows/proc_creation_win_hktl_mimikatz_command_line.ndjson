@@ -1,0 +1,74 @@
+{
+  "id": "24d717e2-c330-4662-b4cd-e238cf1c50e7",
+  "name": "HackTool - Mimikatz Execution",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "attack.t1003.002",
+    "attack.t1003.004",
+    "attack.t1003.005",
+    "attack.t1003.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detection well-known mimikatz command line arguments",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "4ca1c4fa-83a5-4eef-9bbd-1dbd726408ed",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.slideshare.net/heirhabarov/hunting-for-credentials-dumping-in-windows-environment",
+    "https://tools.thehacker.recipes/mimikatz/modules"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*DumpCreds* OR *mimikatz*)) OR (process.command_line:(*\\:\\:aadcookie* OR *\\:\\:detours* OR *\\:\\:memssp* OR *\\:\\:mflt* OR *\\:\\:ncroutemon* OR *\\:\\:ngcsign* OR *\\:\\:printnightmare* OR *\\:\\:skeleton* OR *\\:\\:preshutdown* OR *\\:\\:mstsc* OR *\\:\\:multirdp*)) OR (process.command_line:(*rpc\\:\\:* OR *token\\:\\:* OR *crypto\\:\\:* OR *dpapi\\:\\:* OR *sekurlsa\\:\\:* OR *kerberos\\:\\:* OR *lsadump\\:\\:* OR *privilege\\:\\:* OR *process\\:\\:* OR *vault\\:\\:*))"
+}

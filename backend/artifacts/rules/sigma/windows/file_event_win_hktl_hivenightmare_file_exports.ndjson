@@ -1,0 +1,73 @@
+{
+  "id": "adcdef8c-cdfb-40c3-8f1f-ffd52d43a642",
+  "name": "HackTool - Typical HiveNightmare SAM File Export",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1552.001",
+    "cve.2021-36934",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects files written by the different tools that exploit HiveNightmare",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Files that accidentally contain these strings"
+  ],
+  "from": "now-360s",
+  "rule_id": "4700097b-b3e5-455b-8ec6-2263bf41bd25",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/GossiTheDog/HiveNightmare",
+    "https://github.com/FireFart/hivenightmare/",
+    "https://github.com/WiredPulse/Invoke-HiveNightmare",
+    "https://twitter.com/cube0x0/status/1418920190759378944"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\hive_sam_* OR *\\\\SAM\\-2021\\-* OR *\\\\SAM\\-2022\\-* OR *\\\\SAM\\-2023\\-* OR *\\\\SAM\\-haxx* OR *\\\\Sam.save*)) OR file.path:C\\:\\\\windows\\\\temp\\\\sam"
+}

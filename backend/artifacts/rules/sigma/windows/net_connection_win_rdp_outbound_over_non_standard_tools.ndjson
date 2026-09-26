@@ -1,0 +1,70 @@
+{
+  "id": "4edb100c-795c-4e22-b22e-f8ab7641dfa3",
+  "name": "Outbound RDP Connections Over Non-Standard Tools",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1021.001",
+    "car.2013-07-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Non-Standard tools initiating a connection over port 3389 indicating possible lateral movement.\nAn initial baseline is required before using this utility to exclude third party RDP tooling that you might use.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Third party RDP tools"
+  ],
+  "from": "now-360s",
+  "rule_id": "6a709dcd-aea9-45bf-92c0-a32d03d7b976",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2019-0708"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(destination.port:3389 AND network.direction:true) AND (NOT (process.executable:(C\\:\\\\Windows\\\\System32\\\\mstsc.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\mstsc.exe))) AND (NOT ((process.executable:C\\:\\\\Windows\\\\System32\\\\dns.exe AND source.port:53 AND network.transport:udp) OR (process.executable:(*\\\\Avast\\ Software\\\\Avast\\\\AvastSvc.exe OR *\\\\Avast\\\\AvastSvc.exe)) OR process.executable:*\\\\RDCMan.exe OR process.executable:C\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR (process.executable:(*\\\\FSAssessment.exe OR *\\\\FSDiscovery.exe OR *\\\\MobaRTE.exe OR *\\\\mRemote.exe OR *\\\\mRemoteNG.exe OR *\\\\Passwordstate.exe OR *\\\\RemoteDesktopManager.exe OR *\\\\RemoteDesktopManager64.exe OR *\\\\RemoteDesktopManagerFree.exe OR *\\\\RSSensor.exe OR *\\\\RTS2App.exe OR *\\\\RTSApp.exe OR *\\\\spiceworks\\-finder.exe OR *\\\\Terminals.exe OR *\\\\ws_TunnelService.exe)) OR (process.executable:(*\\\\thor.exe OR *\\\\thor64.exe)) OR process.executable:C\\:\\\\Program\\ Files\\\\SplunkUniversalForwarder\\\\bin\\\\* OR process.executable:*\\\\Ranger\\\\SentinelRanger.exe OR process.executable:C\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe OR (process.executable:(C\\:\\\\Program\\ Files\\\\TSplus\\\\Java\\\\bin\\\\HTML5service.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\TSplus\\\\Java\\\\bin\\\\HTML5service.exe)) OR (NOT _exists_:process.executable) OR process.executable:\"\" OR process.executable:\\<unknown\\ process\\>))"
+}

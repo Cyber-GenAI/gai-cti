@@ -1,0 +1,70 @@
+{
+  "id": "de9a8ac8-5fb8-457d-a90b-e082c1c82353",
+  "name": "Potential Registry Persistence Attempt Via DbgManagedDebugger",
+  "tags": [
+    "attack.persistence",
+    "attack.t1574",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the addition of the \"Debugger\" value to the \"DbgManagedDebugger\" key in order to achieve persistence. Which will get invoked when an application crashes",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the key to setup a debugger. Which is often the case on developers machines"
+  ],
+  "from": "now-360s",
+  "rule_id": "1e658f00-95cf-4b4e-a0cd-edeb8898af25",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2013/09/19/beyond-good-ol-run-key-part-4/",
+    "https://github.com/last-byte/PersistenceSniper"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Microsoft\\\\.NETFramework\\\\DbgManagedDebugger AND (NOT winlog.event_data.Details:\\\"C\\:\\\\Windows\\\\system32\\\\vsjitdebugger.exe\\\"\\ PID\\ %d\\ APPDOM\\ %d\\ EXTEXT\\ \\\"%s\\\"\\ EVTHDL\\ %d)"
+}

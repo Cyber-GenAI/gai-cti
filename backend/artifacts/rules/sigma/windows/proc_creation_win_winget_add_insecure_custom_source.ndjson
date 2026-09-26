@@ -1,0 +1,71 @@
+{
+  "id": "fc3a9ceb-3950-4e46-ae50-9aadbc74a6e8",
+  "name": "Add Insecure Download Source To Winget",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of winget to add a new insecure (http) download source.\nWinget will not allow the addition of insecure sources, hence this could indicate potential suspicious activity (or typos)\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives might occur if the users are unaware of such control checks"
+  ],
+  "from": "now-360s",
+  "rule_id": "3ba9364b-4fd1-40f6-a6d5-913ae9fb64d4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/package-manager/winget/source",
+    "https://github.com/nasbench/Misc-Research/tree/b9596e8109dcdb16ec353f316678927e507a5b8d/LOLBINs/Winget"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\winget.exe OR process.pe.original_file_name:winget.exe) AND (process.command_line:*source\\ * AND process.command_line:*add\\ * AND process.command_line:*http\\:\\/\\/*)"
+}

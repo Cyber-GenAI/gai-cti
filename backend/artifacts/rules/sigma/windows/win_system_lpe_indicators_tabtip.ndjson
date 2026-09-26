@@ -1,0 +1,70 @@
+{
+  "id": "a47680fb-e4c4-48dc-ab71-09520c0d1167",
+  "name": "Local Privilege Escalation Indicator TabTip",
+  "tags": [
+    "attack.execution",
+    "attack.credential-access",
+    "attack.t1557.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the invocation of TabTip via CLSID as seen when JuicyPotatoNG is used on a system in brute force mode",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a09dcdfc-93c0-4b2d-9990-d0d219a1814e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1557",
+          "name": "Adversary-in-the-Middle",
+          "reference": "https://attack.mitre.org/techniques/T1557/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/antonioCoco/JuicyPotatoNG"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND (winlog.provider_name:Microsoft\\-Windows\\-DistributedCOM AND event.code:10001 AND winlog.event_data.param1:C\\:\\\\Program\\ Files\\\\Common\\ Files\\\\microsoft\\ shared\\\\ink\\\\TabTip.exe AND winlog.event_data.param2:2147943140 AND winlog.event_data.param3:\\{054AAE20\\-4BEA\\-4347\\-8A35\\-64A533254A9D\\})"
+}

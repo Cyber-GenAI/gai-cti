@@ -1,0 +1,53 @@
+{
+  "id": "3b31b554-1301-4aab-ab41-a982d9d4088e",
+  "name": "User Added To Root/Sudoers Group Using Usermod",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the \"usermod\" binary to add users add users to the root or suoders groups",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrator activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "c508a55b-e699-44c6-8cc6-1d633e8f2329",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://pberba.github.io/security/2021/11/23/linux-threat-hunting-for-persistence-account-creation-manipulation/",
+    "https://www.configserverfirewall.com/ubuntu-linux/ubuntu-add-user-to-root-group/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/usermod AND (CommandLine:(*\\-aG\\ root* OR *\\-aG\\ sudoers*))"
+}

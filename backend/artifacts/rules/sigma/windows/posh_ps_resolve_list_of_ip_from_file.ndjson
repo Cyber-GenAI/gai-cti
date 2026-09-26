@@ -1,0 +1,70 @@
+{
+  "id": "f9c939bd-986e-4bc1-aa2f-87646cc47be9",
+  "name": "PowerShell Script With File Hostname Resolving Capabilities",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1020",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell scripts that have capabilities to read files, loop through them and resolve DNS host entries.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "The same functionality can be implemented by admin scripts, correlate with name and creator"
+  ],
+  "from": "now-360s",
+  "rule_id": "83fde21b-d021-4ed0-a804-5b8d5d8b7fb0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1020",
+          "name": "Automated Exfiltration",
+          "reference": "https://attack.mitre.org/techniques/T1020/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.fortypoundhead.com/showcontent.asp?artid=24022",
+    "https://labs.withsecure.com/publications/fin7-target-veeam-servers"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Get\\-content\\ * AND powershell.file.script_block_text:*foreach* AND powershell.file.script_block_text:*\\[System.Net.Dns\\]\\:\\:GetHostEntry* AND powershell.file.script_block_text:*Out\\-File*"
+}

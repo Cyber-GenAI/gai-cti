@@ -1,0 +1,52 @@
+{
+  "id": "df44760f-bba8-4c56-abe5-5eb4ba50903c",
+  "name": "Anydesk Remote Access Software Service Installation",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the installation of the anydesk software service. Which could be an indication of anydesk abuse if you the software isn't already used.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the anydesk tool"
+  ],
+  "from": "now-360s",
+  "rule_id": "57f71411-aa18-432c-bae3-ccceee56046b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/08/08/bumblebee-roasts-its-way-to-domain-admin/",
+    "https://thedfirreport.com/2025/02/24/confluence-exploit-leads-to-lockbit-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045) AND ((winlog.event_data.ServiceName:*AnyDesk* AND winlog.event_data.ServiceName:*Service*) OR winlog.event_data.ImagePath:*AnyDesk*))"
+}

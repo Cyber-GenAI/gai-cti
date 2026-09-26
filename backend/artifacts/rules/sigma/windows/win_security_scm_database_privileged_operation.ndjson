@@ -1,0 +1,69 @@
+{
+  "id": "04205d89-630c-4c1a-9c95-9d4f1766afea",
+  "name": "SCM Database Privileged Operation",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1548",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects non-system users performing privileged operation os the SCM database",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "78ac08a2-6b9d-45ad-8b32-d2094628a0d2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://threathunterplaybook.com/hunts/windows/190826-RemoteSCMHandle/notebook.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4674 AND winlog.event_data.ObjectType:SC_MANAGER\\ OBJECT AND winlog.event_data.ObjectName:servicesactive AND winlog.event_data.PrivilegeList:SeTakeOwnershipPrivilege) AND (NOT (winlog.logon.id:0x3e4 AND process.executable:*\\:\\\\Windows\\\\System32\\\\services.exe)))"
+}

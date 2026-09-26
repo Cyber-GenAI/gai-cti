@@ -1,0 +1,79 @@
+{
+  "id": "5920c22c-d261-46a8-a8a8-d892ecbd301d",
+  "name": "Linux Keylogging with Pam.d",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003",
+    "attack.t1056.001",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect attempt to enable auditing of TTY input",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative work"
+  ],
+  "from": "now-360s",
+  "rule_id": "f0a7c3b6-b6bb-4875-9e6f-e395f22f9bcf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1056",
+          "name": "Input Capture",
+          "reference": "https://attack.mitre.org/techniques/T1056/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1056.001/T1056.001.md",
+    "https://linux.die.net/man/8/pam_tty_audit",
+    "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security_guide/sec-configuring_pam_for_auditing",
+    "https://access.redhat.com/articles/4409591#audit-record-types-2"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(type:PATH AND (name:(\\/etc\\/pam.d\\/system\\-auth OR \\/etc\\/pam.d\\/password\\-auth))) OR (type:(TTY OR USER_TTY))"
+}

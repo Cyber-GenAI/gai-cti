@@ -1,0 +1,69 @@
+{
+  "id": "bf315074-3b32-4854-ab51-8cca3e374141",
+  "name": "VBScript Payload Stored in Registry",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects VBScript content stored into registry keys as seen being used by UNC2452 group",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "77e713a7-f4c9-454e-8052-e014be4081b7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/security/blog/2021/03/04/goldmax-goldfinder-sibot-analyzing-nobelium-malware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*Software\\\\Microsoft\\\\Windows\\\\CurrentVersion* AND (winlog.event_data.Details:(*vbscript\\:* OR *jscript\\:* OR *mshtml,* OR *RunHTMLApplication* OR *Execute\\(* OR *CreateObject* OR *window.close*))) AND (NOT (registry.path:*Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run* OR (process.executable:*\\\\msiexec.exe AND registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Installer\\\\UserData\\\\* AND (winlog.event_data.Details:(*\\\\Microsoft.NET\\\\Primary\\ Interop\\ Assemblies\\\\Microsoft.mshtml.dll* OR *\\<\\\\Microsoft.mshtml,fileVersion\\=* OR *_mshtml_dll_* OR *\\<\\\\Microsoft.mshtml,culture\\=*)))))"
+}

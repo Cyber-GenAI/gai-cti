@@ -1,0 +1,70 @@
+{
+  "id": "61eee095-eb7d-47a6-abba-d4dc572adc95",
+  "name": "Suspicious CustomShellHost Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1216",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of CustomShellHost binary where the child isn't located in 'C:\\Windows\\explorer.exe'",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "fc9bf5db-de40-4372-bbec-17d65e0b7126",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1216",
+          "name": "System Script Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1216/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/LOLBAS-Project/LOLBAS/pull/180",
+    "https://lolbas-project.github.io/lolbas/Binaries/CustomShellHost/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\CustomShellHost.exe AND (NOT process.executable:C\\:\\\\Windows\\\\explorer.exe)"
+}

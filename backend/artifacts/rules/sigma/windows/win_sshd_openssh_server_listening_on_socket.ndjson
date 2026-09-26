@@ -1,0 +1,73 @@
+{
+  "id": "3e507a1e-b0c0-428e-840e-570597b290d1",
+  "name": "OpenSSH Server Listening On Socket",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1021.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects scenarios where an attacker enables the OpenSSH server and server starts to listening on SSH socket.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrator activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "1e6f05ad-e38c-4b5e-b13b-3aaa853010cd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/mdecrevoisier/EVTX-to-MITRE-Attack/tree/master/TA0008-Lateral%20Movement/T1021.004-Remote%20Service%20SSH",
+    "https://winaero.com/enable-openssh-server-windows-10/",
+    "https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse",
+    "https://virtualizationreview.com/articles/2020/05/21/ssh-server-on-windows-10.aspx",
+    "https://medium.com/threatpunter/detecting-adversary-tradecraft-with-image-load-event-logging-and-eql-8de93338c16"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:OpenSSH\\/Operational AND (event.code:4 AND winlog.event_data.process:sshd AND winlog.event_data.payload:Server\\ listening\\ on\\ *)"
+}

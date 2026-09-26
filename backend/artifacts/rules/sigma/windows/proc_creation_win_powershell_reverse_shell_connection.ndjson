@@ -1,0 +1,71 @@
+{
+  "id": "806949f1-dbae-4194-a609-e77bfac9a737",
+  "name": "Potential Powershell ReverseShell Connection",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the \"TcpClient\" class. Which can be abused to establish remote connections and reverse-shells. As seen used by the Nishang \"Invoke-PowerShellTcpOneLine\" reverse shell and other.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "In rare administrative cases, this function might be used to check network connectivity"
+  ],
+  "from": "now-360s",
+  "rule_id": "c8962462-2b06-4f66-bd23-0a43ac3d02e3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.volexity.com/blog/2021/03/02/active-exploitation-of-microsoft-exchange-zero-day-vulnerabilities/",
+    "https://www.microsoft.com/security/blog/2021/03/02/hafnium-targeting-exchange-servers/",
+    "https://github.com/samratashok/nishang/blob/414ee1104526d7057f9adaeee196d91ae447283e/Shells/Invoke-PowerShellTcpOneLine.ps1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll)) OR (process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe))) AND (process.command_line:*\\ Net.Sockets.TCPClient* AND process.command_line:*.GetStream\\(* AND process.command_line:*.Write\\(*)"
+}

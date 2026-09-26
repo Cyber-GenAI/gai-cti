@@ -1,0 +1,70 @@
+{
+  "id": "4047b2c7-7dd2-4cbf-8958-7f70c901f7b7",
+  "name": "EVTX Created In Uncommon Location",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of new files with the \".evtx\" extension in non-common or non-standard location.\nThis could indicate tampering with default EVTX locations in order to evade security controls or simply exfiltration of event log to search for sensitive information within.\nNote that backup software and legitimate administrator might perform similar actions during troubleshooting.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator or backup activity",
+    "An unknown bug seems to trigger the Windows \"svchost\" process to drop EVTX files in the \"C:\\Windows\\Temp\" directory in the form \"<log_name\">_<uuid>.evtx\". See https://superuser.com/questions/1371229/low-disk-space-after-filling-up-c-windows-temp-with-evtx-and-txt-files"
+  ],
+  "from": "now-360s",
+  "rule_id": "01dac964-5fe8-4abc-a0ca-faa1c6a6c975",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/eventlog/eventlog-key"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*.evtx AND (NOT (file.path:C\\:\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\* OR (file.path:C\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\\\Containers\\\\BaseImages\\\\* AND file.path:*\\\\Windows\\\\System32\\\\winevt\\\\Logs\\\\)))"
+}

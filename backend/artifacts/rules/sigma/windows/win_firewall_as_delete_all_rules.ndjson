@@ -1,0 +1,67 @@
+{
+  "id": "94cab277-62b0-45ee-90ee-00bb081a2280",
+  "name": "All Rules Have Been Deleted From The Windows Firewall Configuration",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when a all the rules have been deleted from the Windows Defender Firewall configuration",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [],
+  "from": "now-360s",
+  "rule_id": "4ab69609-df8e-4e42-8980-e9af50fc32fb",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/dd364427(v=ws.10)"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Windows\\ Firewall\\ With\\ Advanced\\ Security\\/Firewall AND ((event.code:(2033 OR 2059)) AND (NOT winlog.event_data.ModifyingApplication:*\\:\\\\Windows\\\\System32\\\\svchost.exe) AND (NOT (winlog.event_data.ModifyingApplication:*\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\\\Platform\\\\* AND winlog.event_data.ModifyingApplication:*\\\\MsMpEng.exe*)))"
+}

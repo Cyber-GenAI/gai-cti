@@ -1,0 +1,87 @@
+{
+  "id": "34cfa8b9-9bdb-4fb3-98ba-04fe759c68c6",
+  "name": "Remote Thread Creation By Uncommon Source Image",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.defense-evasion",
+    "attack.t1055",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uncommon processes creating remote threads.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "This rule is best put in testing first in order to create a baseline that reflects the data in your environment."
+  ],
+  "from": "now-360s",
+  "rule_id": "50fac1de-1ec8-43f6-8026-9e17e750f199",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Personal research, statistical analysis",
+    "https://lolbas-project.github.io"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\explorer.exe OR *\\\\iexplore.exe OR *\\\\msiexec.exe OR *\\\\powerpnt.exe OR *\\\\schtasks.exe OR *\\\\winlogon.exe)) AND (NOT ((process.executable:C\\:\\\\Windows\\\\System32\\\\winlogon.exe AND (winlog.event_data.TargetImage:(C\\:\\\\Windows\\\\System32\\\\services.exe OR C\\:\\\\Windows\\\\System32\\\\wininit.exe OR C\\:\\\\Windows\\\\System32\\\\csrss.exe OR C\\:\\\\Windows\\\\System32\\\\LogonUI.exe))) OR (process.executable:C\\:\\\\Windows\\\\System32\\\\winlogon.exe AND winlog.event_data.TargetParentProcessId:4) OR ((process.executable:(C\\:\\\\Windows\\\\System32\\\\schtasks.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\schtasks.exe)) AND winlog.event_data.TargetImage:C\\:\\\\Windows\\\\System32\\\\conhost.exe) OR (process.executable:C\\:\\\\Windows\\\\explorer.exe AND (winlog.event_data.TargetImage:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\*))) OR winlog.event_data.TargetImage:System OR (process.executable:*\\\\msiexec.exe AND (winlog.event_data.TargetImage:(*\\\\AppData\\\\Local\\\\* OR *C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR *C\\:\\\\Program\\ Files\\\\*))) OR (NOT _exists_:winlog.event_data.TargetImage) OR winlog.event_data.TargetImage:\"\")) AND (NOT ((process.executable:C\\:\\\\Program\\ Files\\\\internet\\ explorer\\\\iexplore.exe AND (winlog.event_data.SourceCommandLine:*https\\:\\/\\/* AND winlog.event_data.SourceCommandLine:*.checkpoint.com\\/documents\\/* AND winlog.event_data.SourceCommandLine:*SmartConsole_OLH\\/* AND winlog.event_data.SourceCommandLine:*default.htm#cshid\\=*)) OR (process.executable:C\\:\\\\Program\\ Files\\\\internet\\ explorer\\\\iexplore.exe AND (winlog.event_data.SourceParentImage:(C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\*)) AND (winlog.event_data.SourceParentImage:*\\\\CheckPoint\\\\SmartConsole\\\\* AND winlog.event_data.SourceParentImage:*\\\\SmartConsole.exe*)) OR (process.executable:*\\\\Microsoft\\ Office\\\\* AND process.executable:*\\\\POWERPNT.EXE AND winlog.event_data.TargetImage:C\\:\\\\Windows\\\\System32\\\\csrss.exe)))"
+}

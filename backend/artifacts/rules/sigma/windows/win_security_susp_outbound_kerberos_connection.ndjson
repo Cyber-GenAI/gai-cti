@@ -1,0 +1,70 @@
+{
+  "id": "e35bcd0d-50a7-4759-b37e-9ea260930d0f",
+  "name": "Uncommon Outbound Kerberos Connection - Security",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.credential-access",
+    "attack.t1558.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uncommon outbound network activity via Kerberos default port indicating possible lateral movement or first stage PrivEsc via delegation.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Web Browsers and third party application might generate similar activity. An initial baseline is required."
+  ],
+  "from": "now-360s",
+  "rule_id": "51c73c95-e5d3-437f-9f86-f87f367076d1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1558",
+          "name": "Steal or Forge Kerberos Tickets",
+          "reference": "https://attack.mitre.org/techniques/T1558/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/GhostPack/Rubeus"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:5156 AND destination.port:88) AND (NOT ((process.executable:(\\\\device\\\\harddiskvolume* OR C\\:*)) AND process.executable:*\\\\Windows\\\\System32\\\\lsass.exe)) AND (NOT (((process.executable:(\\\\device\\\\harddiskvolume* OR C\\:*)) AND (process.executable:(*\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR *\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe))) OR ((process.executable:(\\\\device\\\\harddiskvolume* OR C\\:*)) AND (process.executable:(*\\\\Program\\ Files\\ \\(x86\\)\\\\Mozilla\\ Firefox\\\\firefox.exe OR *\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe))) OR process.executable:*\\\\tomcat\\\\bin\\\\tomcat8.exe)))"
+}

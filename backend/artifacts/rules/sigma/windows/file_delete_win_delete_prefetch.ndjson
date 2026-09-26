@@ -1,0 +1,70 @@
+{
+  "id": "3e62732d-199f-4746-a739-e1e89e40e0b3",
+  "name": "Prefetch File Deleted",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the deletion of a prefetch file which may indicate an attempt to destroy forensic evidence",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7bf67585-7a15-4488-b26b-a025cfe5d8c6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://www.group-ib.com/blog/hunting-for-ttps-with-prefetch-files/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\:\\\\Windows\\\\Prefetch\\\\* AND file.path:*.pf) AND (NOT (process.executable:*\\:\\\\windows\\\\system32\\\\svchost.exe AND (user.name:(*AUTHORI* OR *AUTORI*))))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "03bc9f45-b98f-4ad5-a098-950d2024474a",
+  "name": "Suspicious Parent Double Extension File Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect execution of suspicious double extension files in ParentCommandLine",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9b5f3f59-6a01-4329-94e1-3b3014516345",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.virustotal.com/gui/file/7872d8845a332dce517adae9c3389fde5313ff2fed38c2577f3b498da786db68/behavior",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/bluebottle-banks-targeted-africa"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:(*.doc.lnk OR *.docx.lnk OR *.xls.lnk OR *.xlsx.lnk OR *.ppt.lnk OR *.pptx.lnk OR *.rtf.lnk OR *.pdf.lnk OR *.txt.lnk OR *.doc.js OR *.docx.js OR *.xls.js OR *.xlsx.js OR *.ppt.js OR *.pptx.js OR *.rtf.js OR *.pdf.js OR *.txt.js)) OR (process.parent.command_line:(*.doc.lnk* OR *.docx.lnk* OR *.xls.lnk* OR *.xlsx.lnk* OR *.ppt.lnk* OR *.pptx.lnk* OR *.rtf.lnk* OR *.pdf.lnk* OR *.txt.lnk* OR *.doc.js* OR *.docx.js* OR *.xls.js* OR *.xlsx.js* OR *.ppt.js* OR *.pptx.js* OR *.rtf.js* OR *.pdf.js* OR *.txt.js*))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "09a69165-7ff9-4208-b8b3-3ad73f4b46d0",
+  "name": "Potential Invoke-Mimikatz PowerShell Script",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Invoke-Mimikatz PowerShell script and alike. Mimikatz is a credential dumper capable of obtaining plaintext Windows account logins and passwords.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Mimikatz can be useful for testing the security of networks"
+  ],
+  "from": "now-360s",
+  "rule_id": "a774f2a0-9750-4ae5-84d2-4154ef9732bd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/guide/en/security/current/potential-invoke-mimikatz-powershell-script.html#potential-invoke-mimikatz-powershell-script"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*DumpCreds* AND powershell.file.script_block_text:*DumpCerts*) OR powershell.file.script_block_text:*sekurlsa\\:\\:logonpasswords* OR (powershell.file.script_block_text:*crypto\\:\\:certificates* AND powershell.file.script_block_text:*CERT_SYSTEM_STORE_LOCAL_MACHINE*)"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "01646426-b8b4-48d0-8e60-9b85b78b1838",
+  "name": "Exports Registry Key To a File",
+  "tags": [
+    "attack.exfiltration",
+    "attack.discovery",
+    "attack.t1012",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the export of the target Registry key to a file.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate export of keys"
+  ],
+  "from": "now-360s",
+  "rule_id": "43c41244-9004-4897-84f7-af4c6e092cbb",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1012",
+          "name": "Query Registry",
+          "reference": "https://attack.mitre.org/techniques/T1012/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Regedit/",
+    "https://gist.github.com/api0cradle/cdd2d0d0ec9abb686f0e89306e277b8f"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\regedit.exe OR process.pe.original_file_name:REGEDIT.EXE) AND process.command_line:(*\\ \\-E\\ * OR *\\ \\/E\\ * OR *\\ \u2013E\\ * OR *\\ \u2014E\\ * OR *\\ \u2015E\\ *)) AND (NOT ((process.command_line:(*hklm* OR *hkey_local_machine*)) AND (process.command_line:(*\\\\system OR *\\\\sam OR *\\\\security))))"
+}

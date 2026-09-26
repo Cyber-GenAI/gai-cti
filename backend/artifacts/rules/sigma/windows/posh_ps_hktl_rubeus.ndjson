@@ -1,0 +1,96 @@
+{
+  "id": "3a20abf0-850f-403d-9e4a-5ece5df91aa6",
+  "name": "HackTool - Rubeus Execution - ScriptBlock",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003",
+    "attack.t1558.003",
+    "attack.lateral-movement",
+    "attack.t1550.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the hacktool Rubeus using specific command line flags",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "988a11b5-4f92-4f28-9064-f7d840fc86f5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1558",
+          "name": "Steal or Forge Kerberos Tickets",
+          "reference": "https://attack.mitre.org/techniques/T1558/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1550",
+          "name": "Use Alternate Authentication Material",
+          "reference": "https://attack.mitre.org/techniques/T1550/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.harmj0y.net/redteaming/from-kekeo-to-rubeus",
+    "https://m0chan.github.io/2019/07/31/How-To-Attack-Kerberos-101.html",
+    "https://github.com/GhostPack/Rubeus"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*asreproast\\ * OR *dump\\ \\/service\\:krbtgt\\ * OR *dump\\ \\/luid\\:0x* OR *kerberoast\\ * OR *createnetonly\\ \\/program\\:* OR *ptt\\ \\/ticket\\:* OR *\\/impersonateuser\\:* OR *renew\\ \\/ticket\\:* OR *asktgt\\ \\/user\\:* OR *harvest\\ \\/interval\\:* OR *s4u\\ \\/user\\:* OR *s4u\\ \\/ticket\\:* OR *hash\\ \\/password\\:* OR *golden\\ \\/aes256\\:* OR *silver\\ \\/user\\:*)"
+}

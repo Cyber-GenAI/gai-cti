@@ -1,0 +1,69 @@
+{
+  "id": "ec87d776-7f17-4c0f-b028-9af425501648",
+  "name": "Suspicious Execution Of Renamed Sysinternals Tools - Registry",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1588.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of the \"accepteula\" key related to the Sysinternals tools being created from executables with the wrong name (e.g. a renamed Sysinternals tool)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "6759135d-5264-43b0-b9c6-c6a6ddb25b20",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1588",
+          "name": "Obtain Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1588/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:CreateKey AND (registry.path:(*\\\\Active\\ Directory\\ Explorer* OR *\\\\Handle* OR *\\\\LiveKd* OR *\\\\ProcDump* OR *\\\\Process\\ Explorer* OR *\\\\PsExec* OR *\\\\PsLoggedon* OR *\\\\PsLoglist* OR *\\\\PsPasswd* OR *\\\\PsPing* OR *\\\\PsService* OR *\\\\SDelete*)) AND registry.path:*\\\\EulaAccepted) AND (NOT (process.executable:(*\\\\ADExplorer.exe OR *\\\\ADExplorer64.exe OR *\\\\handle.exe OR *\\\\handle64.exe OR *\\\\livekd.exe OR *\\\\livekd64.exe OR *\\\\procdump.exe OR *\\\\procdump64.exe OR *\\\\procexp.exe OR *\\\\procexp64.exe OR *\\\\PsExec.exe OR *\\\\PsExec64.exe OR *\\\\PsLoggedon.exe OR *\\\\PsLoggedon64.exe OR *\\\\psloglist.exe OR *\\\\psloglist64.exe OR *\\\\pspasswd.exe OR *\\\\pspasswd64.exe OR *\\\\PsPing.exe OR *\\\\PsPing64.exe OR *\\\\PsService.exe OR *\\\\PsService64.exe OR *\\\\sdelete.exe)))"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "e18f3d34-c792-4de9-9ac3-8e3e0280e665",
+  "name": "Potential Perl Reverse Shell Execution",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the perl binary with the \"-e\" flag and common strings related to potential reverse shell activity",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "b6a7c171-b67b-4057-928b-a466b4631452",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet",
+    "https://www.revshells.com/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:*\\/perl AND CommandLine:*\\ \\-e\\ *) AND ((CommandLine:*fdopen\\(* AND CommandLine:*\\:\\:Socket\\:\\:INET*) OR (CommandLine:*Socket* AND CommandLine:*connect* AND CommandLine:*open* AND CommandLine:*exec*))"
+}

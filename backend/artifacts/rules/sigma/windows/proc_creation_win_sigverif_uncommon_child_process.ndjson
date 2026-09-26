@@ -1,0 +1,70 @@
+{
+  "id": "cf99b241-d789-4a94-a59a-fb2546ae55b8",
+  "name": "Uncommon Sigverif.EXE Child Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1216",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uncommon child processes spawning from \"sigverif.exe\", which could indicate potential abuse of the latter as a living of the land binary in order to proxy execution.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "57834a32-b177-4f0c-a719-c557159da881",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1216",
+          "name": "System Script Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1216/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2018/04/27/i-shot-the-sigverif-exe-the-gui-based-lolbin/",
+    "https://twitter.com/0gtweet/status/1457676633809330184"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\sigverif.exe AND (NOT (process.executable:(C\\:\\\\Windows\\\\System32\\\\WerFault.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\WerFault.exe)))"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "2b678d42-4560-4db9-b779-d0431cfe2748",
+  "name": "Important Windows Service Terminated With Error",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects important or interesting Windows services that got terminated for whatever reason",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare false positives could occur since service termination could happen due to multiple reasons"
+  ],
+  "from": "now-360s",
+  "rule_id": "25c942fc-c49b-44a8-8633-d85f22301c1a",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/en-us/security/blog/2023/04/11/guidance-for-investigating-attacks-using-cve-2022-21894-the-blacklotus-campaign/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7023) AND ((winlog.event_data.param1:(*\\ Antivirus* OR *\\ Firewall* OR *Application\\ Guard* OR *BitLocker\\ Drive\\ Encryption\\ Service* OR *Encrypting\\ File\\ System* OR *Microsoft\\ Defender* OR *Threat\\ Protection* OR *Windows\\ Event\\ Log*)) OR (winlog.event_data.Binary:(*770069006e0064006500660065006e006400* OR *4500760065006e0074004c006f006700* OR *6d0070007300730076006300* OR *530065006e0073006500* OR *450046005300* OR *420044004500530056004300*))))"
+}

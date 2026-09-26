@@ -1,0 +1,51 @@
+{
+  "id": "9247acc1-ae62-4825-8974-6acbeb15bd2e",
+  "name": "Arbitrary Binary Execution Using GUP Utility",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the Notepad++ updater (gup) to launch other commands or executables",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other parent binaries using GUP not currently identified"
+  ],
+  "from": "now-360s",
+  "rule_id": "0502afc7-1b34-4bae-912c-e2700b006553",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/nas_bench/status/1535322445439180803"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\gup.exe AND process.executable:*\\\\explorer.exe) AND (NOT ((process.executable:*\\\\explorer.exe AND process.command_line:*\\\\Notepad\\+\\+\\\\notepad\\+\\+.exe*) OR process.parent.executable:*\\\\Notepad\\+\\+\\\\updater\\\\* OR (NOT _exists_:process.command_line)))"
+}

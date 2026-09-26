@@ -1,0 +1,72 @@
+{
+  "id": "6863a1a8-a1bb-488e-8492-b7e338926dfd",
+  "name": "PUA - NirCmd Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1569.002",
+    "attack.s0029",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of NirCmd tool for command execution, which could be the result of legitimate administrative activity",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use by administrators"
+  ],
+  "from": "now-360s",
+  "rule_id": "5833227d-fdc2-416c-a62f-13046e8e81d9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.nirsoft.net/utils/nircmd.html",
+    "https://www.winhelponline.com/blog/run-program-as-system-localsystem-account-windows/",
+    "https://www.nirsoft.net/utils/nircmd2.html#using"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\NirCmd.exe OR process.pe.original_file_name:NirCmd.exe) OR (process.command_line:(*\\ execmd\\ * OR *.exe\\ script\\ * OR *.exe\\ shexec\\ * OR *\\ runinteractive\\ *))) OR ((process.command_line:(*\\ exec\\ * OR *\\ exec2\\ *)) AND (process.command_line:(*\\ show\\ * OR *\\ hide\\ *)))"
+}

@@ -1,0 +1,87 @@
+{
+  "id": "00be4b4d-2413-447c-8314-80fac0271c19",
+  "name": "WMI Persistence",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1546.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious WMI event filter and command line event consumer based on WMI and Security Logs.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown (data set is too small; further testing needed)"
+  ],
+  "from": "now-360s",
+  "rule_id": "19cce924-b83b-42ad-a6ea-e765e2a3bc98",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/mattifestation/status/899646620148539397",
+    "https://www.eideon.com/2018-03-02-THL03-WMIBackdoors/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-WMI\\-Activity\\/Operational AND (((event.code:5861 AND (*ActiveScriptEventConsumer* OR *CommandLineEventConsumer* OR *CommandLineTemplate*)) OR event.code:5859) AND (NOT (winlog.event_data.Provider:SCM\\ Event\\ Provider AND winlog.event_data.Query:select\\ *\\ from\\ MSFT_SCMEventLogEvent AND user.name:S\\-1\\-5\\-32\\-544 AND winlog.event_data.PossibleCause:Permanent)))"
+}

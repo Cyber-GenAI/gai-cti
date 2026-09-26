@@ -1,0 +1,70 @@
+{
+  "id": "c2bf6dd8-fb9f-4f98-936a-aa8cccac4cd7",
+  "name": "PUA - Sysinternal Tool Execution - Registry",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1588.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a Sysinternals Tool via the creation of the \"accepteula\" registry key",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of SysInternals tools",
+    "Programs that use the same Registry Key"
+  ],
+  "from": "now-360s",
+  "rule_id": "5cb754f2-7354-467a-b523-ac5fe4a3f14f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1588",
+          "name": "Obtain Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1588/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Moti_B/status/1008587936735035392"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.EventType:CreateKey AND registry.path:*\\\\EulaAccepted"
+}

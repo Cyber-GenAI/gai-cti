@@ -1,0 +1,100 @@
+{
+  "id": "948834ac-751a-47a2-9565-91bfcc17f15e",
+  "name": "HackTool - PCHunter Execution",
+  "tags": [
+    "attack.execution",
+    "attack.discovery",
+    "attack.t1082",
+    "attack.t1057",
+    "attack.t1012",
+    "attack.t1083",
+    "attack.t1007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious use of PCHunter, a tool like Process Hacker to view and manipulate processes, kernel options and other low level stuff",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "4551a0c3-f7bd-410a-af4a-6525af0fd04b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1057",
+          "name": "Process Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1057/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1007",
+          "name": "System Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1007/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1012",
+          "name": "Query Registry",
+          "reference": "https://attack.mitre.org/techniques/T1012/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20231210115125/http://www.xuetr.com/",
+    "https://www.crowdstrike.com/blog/falcon-overwatch-report-finds-increase-in-ecrime/",
+    "https://www.hexacorn.com/blog/2018/04/20/kernel-hacking-tool-you-might-have-never-heard-of-xuetr-pchunter/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\PCHunter64.exe OR *\\\\PCHunter32.exe)) OR (process.pe.original_file_name:PCHunter.exe OR process.pe.description:Epoolsoft\\ Windows\\ Information\\ View\\ Tools) OR (winlog.event_data.Hashes:(*SHA1\\=5F1CBC3D99558307BC1250D084FA968521482025* OR *MD5\\=987B65CD9B9F4E9A1AFD8F8B48CF64A7* OR *SHA256\\=2B214BDDAAB130C274DE6204AF6DBA5AEEC7433DA99AA950022FA306421A6D32* OR *IMPHASH\\=444D210CEA1FF8112F256A4997EED7FF* OR *SHA1\\=3FB89787CB97D902780DA080545584D97FB1C2EB* OR *MD5\\=228DD0C2E6287547E26FFBD973A40F14* OR *SHA256\\=55F041BF4E78E9BFA6D4EE68BE40E496CE3A1353E1CA4306598589E19802522C* OR *IMPHASH\\=0479F44DF47CFA2EF1CCC4416A538663*))"
+}

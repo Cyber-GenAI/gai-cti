@@ -1,0 +1,52 @@
+{
+  "id": "324212af-86a6-4dbf-a081-8137f87d9995",
+  "name": "Rundll32 Spawned Via Explorer.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"rundll32.exe\" with a parent process of Explorer.exe. This has been observed by variants of Raspberry Robin, as first reported by Red Canary.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "04603054-d0f5-4beb-8543-1508aeb0f7b9",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/raspberry-robin/",
+    "https://thedfirreport.com/2022/09/26/bumblebee-round-two/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\explorer.exe AND (process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE)) AND (NOT (process.command_line:(*\\ C\\:\\\\Windows\\\\System32\\\\* OR *\\ \\-localserver\\ 22d8c27b\\-47a1\\-48d1\\-ad08\\-7da7abd79617)))"
+}

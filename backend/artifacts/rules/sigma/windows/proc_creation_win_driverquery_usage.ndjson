@@ -1,0 +1,53 @@
+{
+  "id": "88d1d534-da7c-4449-bf3e-da4ea6d1073a",
+  "name": "DriverQuery.EXE Execution",
+  "tags": [
+    "attack.discovery",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect usage of the \"driverquery\" utility. Which can be used to perform reconnaissance on installed drivers",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use by third party tools in order to investigate installed drivers"
+  ],
+  "from": "now-360s",
+  "rule_id": "bdd9e19f-5395-4aee-bfef-1257e7de2ba9",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2023/01/09/unwrapping-ursnifs-gifts/",
+    "https://www.vmray.com/cyber-security-blog/analyzing-ursnif-behavior-malware-sandbox/",
+    "https://www.fireeye.com/blog/threat-research/2020/01/saigon-mysterious-ursnif-fork.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*driverquery.exe OR process.pe.original_file_name:drvqry.exe) AND (NOT ((process.parent.executable:(*\\\\cscript.exe OR *\\\\mshta.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\wscript.exe)) OR (process.parent.executable:(*\\\\AppData\\\\Local\\\\* OR *\\\\Users\\\\Public\\\\* OR *\\\\Windows\\\\Temp\\\\*))))"
+}

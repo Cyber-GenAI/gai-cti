@@ -1,0 +1,57 @@
+{
+  "id": "dae0fab0-3c7a-4992-8301-a8cb8d2fcdcd",
+  "name": "Suspicious File Created Via OneNote Application",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious files created via the OneNote application. This could indicate a potential malicious \".one\"/\".onepkg\" file was executed as seen being used in malware activity in the wild",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives should be very low with the extensions list cited. Especially if you don't heavily utilize OneNote.",
+    "Occasional FPs might occur if OneNote is used internally to share different embedded documents"
+  ],
+  "from": "now-360s",
+  "rule_id": "b5cd31fb-84d4-4f90-a6d1-405a916e8c91",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.bleepingcomputer.com/news/security/hackers-now-use-microsoft-onenote-attachments-to-spread-malware/",
+    "https://blog.osarmor.com/319/onenote-attachment-delivers-asyncrat-malware/",
+    "https://twitter.com/MaD_c4t/status/1623414582382567424",
+    "https://labs.withsecure.com/publications/detecting-onenote-abuse",
+    "https://www.trustedsec.com/blog/new-attacks-old-tricks-how-onenote-malware-is-evolving/",
+    "https://app.any.run/tasks/17f2d378-6d11-4d6f-8340-954b04f35e83/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\onenote.exe OR *\\\\onenotem.exe OR *\\\\onenoteim.exe)) AND file.path:*\\\\AppData\\\\Local\\\\Temp\\\\OneNote\\\\* AND (file.path:(*.bat OR *.chm OR *.cmd OR *.dll OR *.exe OR *.hta OR *.htm OR *.html OR *.js OR *.lnk OR *.ps1 OR *.vbe OR *.vbs OR *.wsf))"
+}

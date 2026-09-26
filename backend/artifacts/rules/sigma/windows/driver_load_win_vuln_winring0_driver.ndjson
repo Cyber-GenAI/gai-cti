@@ -1,0 +1,70 @@
+{
+  "id": "8153cb24-ce16-4c64-a7dc-2c12392b0708",
+  "name": "Vulnerable WinRing0 Driver Load",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1543.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the load of a signed WinRing0 driver often used by threat actors, crypto miners (XMRIG) or malware for privilege escalation",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "eb68f758-6fae-4398-8e34-dcaeff1d67aa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/xmrig/xmrig/tree/master/bin/WinRing0",
+    "https://www.rapid7.com/blog/post/2021/12/13/driver-based-attacks-past-and-present/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.Hashes:*IMPHASH\\=D41FA95D4642DC981F10DE36F4DC8CD7* OR (file.path:(*\\\\WinRing0x64.sys OR *\\\\WinRing0.sys OR *\\\\WinRing0.dll OR *\\\\WinRing0x64.dll OR *\\\\winring00x64.sys))"
+}

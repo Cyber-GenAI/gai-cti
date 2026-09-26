@@ -1,0 +1,70 @@
+{
+  "id": "0c232ab7-93b8-45dd-962f-98a89b018fd9",
+  "name": "Testing Usage of Uncommonly Used Port",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1571",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may communicate using a protocol and port paring that are typically not associated.\nFor example, HTTPS over port 8088(Citation: Symantec Elfin Mar 2019) or port 587(Citation: Fortinet Agent Tesla April 2018) as opposed to the traditional port 443.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative script"
+  ],
+  "from": "now-360s",
+  "rule_id": "c424ef8a-5638-400d-bd94-db06957d2aab",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1571",
+          "name": "Non-Standard Port",
+          "reference": "https://attack.mitre.org/techniques/T1571/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1571/T1571.md#atomic-test-1---testing-usage-of-uncommonly-used-port-with-powershell",
+    "https://learn.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection?view=windowsserver2022-ps"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Test\\-NetConnection* AND powershell.file.script_block_text:*\\-ComputerName\\ * AND powershell.file.script_block_text:*\\-port\\ *) AND (NOT (powershell.file.script_block_text:(*\\ 443\\ * OR *\\ 80\\ *)))"
+}

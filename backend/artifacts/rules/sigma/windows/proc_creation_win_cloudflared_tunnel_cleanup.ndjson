@@ -1,0 +1,84 @@
+{
+  "id": "9b970a67-29ae-4d01-867c-5e07dce35433",
+  "name": "Cloudflared Tunnel Connections Cleanup",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1102",
+    "attack.t1090",
+    "attack.t1572",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the \"cloudflared\" tool with the tunnel \"cleanup\" flag in order to cleanup tunnel connections.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of Cloudflared."
+  ],
+  "from": "now-360s",
+  "rule_id": "16891079-ad32-4e30-acc9-45f46c9b3170",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1572",
+          "name": "Protocol Tunneling",
+          "reference": "https://attack.mitre.org/techniques/T1572/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/cloudflare/cloudflared",
+    "https://developers.cloudflare.com/cloudflare-one/connections/connect-apps"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*\\ tunnel\\ * AND process.command_line:*cleanup\\ *) AND (process.command_line:(*\\-config\\ * OR *\\-connector\\-id\\ *))"
+}

@@ -1,0 +1,96 @@
+{
+  "id": "0842093c-461f-4adc-9d35-2a80ccf29ce1",
+  "name": "Shadow Copies Deletion Using Operating Systems Utilities",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.impact",
+    "attack.t1070",
+    "attack.t1490",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Shadow Copies deletion using operating systems utilities",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate Administrator deletes Shadow Copies using operating systems utilities for legitimate reason",
+    "LANDesk LDClient Ivanti-PSModule (PS EncodedCommand)"
+  ],
+  "from": "now-360s",
+  "rule_id": "6fa8d63c-9127-431c-b009-e8747750ea44",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1490",
+          "name": "Inhibit System Recovery",
+          "reference": "https://attack.mitre.org/techniques/T1490/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.slideshare.net/heirhabarov/hunting-for-credentials-dumping-in-windows-environment",
+    "https://blog.talosintelligence.com/2017/05/wannacry.html",
+    "https://securingtomorrow.mcafee.com/other-blogs/mcafee-labs/new-teslacrypt-ransomware-arrives-via-spam/",
+    "https://www.bleepingcomputer.com/news/security/why-everyone-should-disable-vssadmin-exe-now/",
+    "https://www.hybrid-analysis.com/sample/ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa?environmentId=100",
+    "https://github.com/Neo23x0/Raccine#the-process",
+    "https://github.com/Neo23x0/Raccine/blob/20a569fa21625086433dcce8bb2765d0ea08dcb6/yara/gen_ransomware_command_lines.yar",
+    "https://redcanary.com/blog/intelligence-insights-october-2021/",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/blackbyte-exbyte-ransomware"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wmic.exe OR *\\\\vssadmin.exe OR *\\\\diskshadow.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll OR wmic.exe OR VSSADMIN.EXE OR diskshadow.exe))) AND (process.command_line:*shadow* AND process.command_line:*delete*)) OR ((process.executable:*\\\\wbadmin.exe OR process.pe.original_file_name:WBADMIN.EXE) AND (process.command_line:*delete* AND process.command_line:*catalog* AND process.command_line:*quiet*)) OR ((process.executable:*\\\\vssadmin.exe OR process.pe.original_file_name:VSSADMIN.EXE) AND ((process.command_line:*resize* AND process.command_line:*shadowstorage*) AND (process.command_line:(*unbounded* OR *\\/MaxSize\\=*))))"
+}

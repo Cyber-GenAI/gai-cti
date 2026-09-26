@@ -1,0 +1,69 @@
+{
+  "id": "2b60e581-cac0-4a5a-9512-258cb1f08dba",
+  "name": "Potential Suspicious Change To Sensitive/Critical Files",
+  "tags": [
+    "attack.impact",
+    "attack.t1565.001",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes of sensitive and critical files. Monitors files that you don't expect to change without planning on Linux system.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives are to be expected on user or administrator machines. Apply additional filters as needed."
+  ],
+  "from": "now-360s",
+  "rule_id": "e1a2273c-bb9e-47ca-a7ac-4333749f3ca4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1565",
+          "name": "Data Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1565/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/azure/defender-for-cloud/file-integrity-monitoring-overview#which-files-should-i-monitor"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((Image:(*\\/cat OR *\\/echo OR *\\/grep OR *\\/head OR *\\/more OR *\\/tail)) AND CommandLine:*\\>*) OR (Image:(*\\/emacs OR *\\/nano OR *\\/sed OR *\\/vi OR *\\/vim))) AND (CommandLine:(*\\/bin\\/login* OR *\\/bin\\/passwd* OR *\\/boot\\/* OR *\\/etc\\/*.conf* OR *\\/etc\\/cron.* OR *\\/etc\\/crontab* OR *\\/etc\\/hosts* OR *\\/etc\\/init.d* OR *\\/etc\\/sudoers* OR *\\/opt\\/bin\\/* OR *\\/sbin* OR *\\/usr\\/bin\\/* OR *\\/usr\\/local\\/bin\\/*))"
+}

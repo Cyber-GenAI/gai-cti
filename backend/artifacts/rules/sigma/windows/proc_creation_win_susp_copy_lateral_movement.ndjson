@@ -1,0 +1,108 @@
+{
+  "id": "7a41acd3-ad90-4d17-940e-88d3332bf78e",
+  "name": "Copy From Or To Admin Share Or Sysvol Folder",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.collection",
+    "attack.exfiltration",
+    "attack.t1039",
+    "attack.t1048",
+    "attack.t1021.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a copy command or a copy utility execution to or from an Admin share or remote",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "380f14c2-0c9f-4ca9-aecf-39d0421f908f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1039",
+          "name": "Data from Network Shared Drive",
+          "reference": "https://attack.mitre.org/techniques/T1039/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1048",
+          "name": "Exfiltration Over Alternative Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1048/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/SBousseaden/status/1211636381086339073",
+    "https://drive.google.com/file/d/1lKya3_mLnR3UQuCoiYruO3qgu052_iS_/view",
+    "https://www.elastic.co/guide/en/security/current/remote-file-copy-to-a-hidden-share.html",
+    "https://www.microsoft.com/en-us/security/blog/2022/10/18/defenders-beware-a-case-for-post-ransomware-investigations/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\\\\\\\*$* OR *\\\\Sysvol\\\\*)) AND (((process.executable:(*\\\\robocopy.exe OR *\\\\xcopy.exe)) OR (process.pe.original_file_name:(robocopy.exe OR XCOPY.EXE))) OR ((process.executable:*\\\\cmd.exe OR process.pe.original_file_name:Cmd.Exe) AND process.command_line:*copy*) OR (((process.executable:(*\\\\powershell.exe* OR *\\\\pwsh.exe*)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND (process.command_line:(*copy\\-item* OR *copy\\ * OR *cpi\\ * OR *\\ cp\\ * OR *move\\ * OR *move\\-item* OR *\\ mi\\ * OR *\\ mv\\ *))))"
+}

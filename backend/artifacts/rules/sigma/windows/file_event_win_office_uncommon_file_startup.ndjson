@@ -1,0 +1,72 @@
+{
+  "id": "2a5ba5f8-720d-4653-8a3c-5dd5f8a0076f",
+  "name": "Uncommon File Created In Office Startup Folder",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1587.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a file with an uncommon extension in an Office application startup folder",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positive might stem from rare extensions used by other Office utilities."
+  ],
+  "from": "now-360s",
+  "rule_id": "c399e865-b510-45ad-b21f-570c4099661d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1587",
+          "name": "Develop Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1587/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/d6fe6624-6ef8-485d-aa75-3d1bdda2a08c/",
+    "http://addbalance.com/word/startup.htm",
+    "https://answers.microsoft.com/en-us/msoffice/forum/all/document-in-word-startup-folder-doesnt-open-when/44ab0932-2917-4150-8cdc-2f2cf39e86f3",
+    "https://en.wikipedia.org/wiki/List_of_Microsoft_Office_filename_extensions"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((file.path:*\\\\Microsoft\\\\Word\\\\STARTUP* OR (file.path:*\\\\Office* AND file.path:*\\\\Program\\ Files* AND file.path:*\\\\STARTUP*)) AND (NOT (file.path:(*.docb OR *.docm OR *.docx OR *.dotm OR *.mdb OR *.mdw OR *.pdf OR *.wll OR *.wwl)))) OR ((file.path:*\\\\Microsoft\\\\Excel\\\\XLSTART* OR (file.path:*\\\\Office* AND file.path:*\\\\Program\\ Files* AND file.path:*\\\\XLSTART*)) AND (NOT (file.path:(*.xll OR *.xls OR *.xlsm OR *.xlsx OR *.xlt OR *.xltm OR *.xlw))))) AND (NOT ((process.executable:*\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\ClickToRun\\\\* AND process.executable:*\\\\OfficeClickToRun.exe) OR ((process.executable:(*\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\*)) AND (process.executable:(*\\\\winword.exe OR *\\\\excel.exe)))))"
+}

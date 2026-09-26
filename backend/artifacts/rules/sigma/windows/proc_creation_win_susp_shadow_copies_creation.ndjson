@@ -1,0 +1,72 @@
+{
+  "id": "d109a3b2-49ba-4ad1-a93f-e67e2bfb8d5c",
+  "name": "Shadow Copies Creation Using Operating Systems Utilities",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003",
+    "attack.t1003.002",
+    "attack.t1003.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Shadow Copies creation using operating systems utilities, possible credential access",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrator working with shadow copies, access for backup purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "51111270-cebd-41ef-8984-0348b04c5f64",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.slideshare.net/heirhabarov/hunting-for-credentials-dumping-in-windows-environment",
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/tutorial-for-ntds-goodness-vssadmin-wmis-ntdsdit-system/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wmic.exe OR *\\\\vssadmin.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll OR wmic.exe OR VSSADMIN.EXE))) AND (process.command_line:*shadow* AND process.command_line:*create*)"
+}

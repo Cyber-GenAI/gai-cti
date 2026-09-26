@@ -1,0 +1,72 @@
+{
+  "id": "55247c73-7bc6-40de-96b3-4b8cac696f29",
+  "name": "Suspicious Activity in Shell Commands",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious shell commands used in various exploit codes (see references)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "70361957-f17d-47ad-96c9-b8aaf67eaf14",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20170319121015/http://www.threatgeek.com/2017/03/widespread-exploitation-attempts-using-cve-2017-5638.html",
+    "https://github.com/rapid7/metasploit-framework/blob/eb6535009f5fdafa954525687f09294918b5398d/modules/exploits/multi/http/struts_code_exec_exception_delegator.rb",
+    "http://pastebin.com/FtygZ1cg",
+    "https://artkond.com/2017/03/23/pivoting-guide/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*wget\\ *\\ \\-\\ http*\\ \\|\\ perl* OR *wget\\ *\\ \\-\\ http*\\ \\|\\ sh* OR *wget\\ *\\ \\-\\ http*\\ \\|\\ bash* OR *python\\ \\-m\\ SimpleHTTPServer* OR *\\-m\\ http.server* OR *import\\ pty;\\ pty.spawn** OR *socat\\ exec\\:** OR *socat\\ \\-O\\ \\/tmp\\/** OR *socat\\ tcp\\-connect** OR **echo\\ binary\\ \\>\\>** OR **wget\\ *;\\ chmod\\ \\+x** OR **wget\\ *;\\ chmod\\ 777\\ ** OR **cd\\ \\/tmp\\ \\|\\|\\ cd\\ \\/var\\/run\\ \\|\\|\\ cd\\ \\/mnt** OR **stop;service\\ iptables\\ stop;** OR **stop;SuSEfirewall2\\ stop;** OR *chmod\\ 777\\ 2020** OR **\\>\\>\\/etc\\/rc.local* OR **base64\\ \\-d\\ \\/tmp\\/** OR **\\ \\|\\ base64\\ \\-d\\ ** OR **\\/chmod\\ u\\+s\\ ** OR **chmod\\ \\+s\\ \\/tmp\\/** OR **chmod\\ u\\+s\\ \\/tmp\\/** OR **\\ \\/tmp\\/haxhax** OR **\\ \\/tmp\\/ns_sploit** OR *nc\\ \\-l\\ \\-p\\ ** OR *cp\\ \\/bin\\/ksh\\ ** OR *cp\\ \\/bin\\/sh\\ ** OR **\\ \\/tmp\\/*.b64\\ ** OR **\\/tmp\\/ysocereal.jar** OR **\\/tmp\\/x\\ ** OR **;\\ chmod\\ \\+x\\ \\/tmp\\/** OR **;chmod\\ \\+x\\ \\/tmp\\/**"
+}

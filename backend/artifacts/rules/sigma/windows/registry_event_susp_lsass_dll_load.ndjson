@@ -1,0 +1,71 @@
+{
+  "id": "c199e0f2-7c00-4c3e-86f0-6aaf713f055a",
+  "name": "DLL Load via LSASS",
+  "tags": [
+    "attack.execution",
+    "attack.persistence",
+    "attack.t1547.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a method to load DLL via LSASS process using an undocumented Registry key",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3410df9a-2c7f-49f7-9e41-4679e0694afc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.xpnsec.com/exploring-mimikatz-part-1/",
+    "https://twitter.com/SBousseaden/status/1183745981189427200"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\CurrentControlSet\\\\Services\\\\NTDS\\\\DirectoryServiceExtPt* OR *\\\\CurrentControlSet\\\\Services\\\\NTDS\\\\LsaDbExtPt*)) AND (NOT (process.executable:C\\:\\\\Windows\\\\system32\\\\lsass.exe AND (winlog.event_data.Details:(%%systemroot%%\\\\system32\\\\ntdsa.dll OR %%systemroot%%\\\\system32\\\\lsadb.dll))))"
+}

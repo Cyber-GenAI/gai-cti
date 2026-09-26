@@ -1,0 +1,73 @@
+{
+  "id": "04434ecc-d90b-4ad0-9c94-608b709fff0f",
+  "name": "Potential SAM Database Dump",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of files that look like exports of the local SAM (Security Account Manager)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare cases of administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "bb985004-f319-4f5f-aad0-b17f4f1a2da3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/search?q=CVE-2021-36934",
+    "https://web.archive.org/web/20210725081645/https://github.com/cube0x0/CVE-2021-36934",
+    "https://www.google.com/search?q=%22reg.exe+save%22+sam",
+    "https://github.com/HuskyHacks/ShadowSteal",
+    "https://github.com/FireFart/hivenightmare"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\Temp\\\\sam OR *\\\\sam.sav OR *\\\\Intel\\\\sam OR *\\\\sam.hive OR *\\\\Perflogs\\\\sam OR *\\\\ProgramData\\\\sam OR *\\\\Users\\\\Public\\\\sam OR *\\\\AppData\\\\Local\\\\sam OR *\\\\AppData\\\\Roaming\\\\sam OR *_ShadowSteal.zip OR *\\\\Documents\\\\SAM.export OR *\\:\\\\sam)) OR (file.path:(*\\\\hive_sam_* OR *\\\\sam.save* OR *\\\\sam.export* OR *\\\\\\~reg_sam.save* OR *\\\\sam_backup* OR *\\\\sam.bck* OR *\\\\sam.backup*))"
+}

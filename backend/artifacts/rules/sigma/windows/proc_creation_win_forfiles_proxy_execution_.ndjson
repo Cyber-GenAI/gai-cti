@@ -1,0 +1,70 @@
+{
+  "id": "f1976913-35e1-436f-98fa-cb31646a8ecc",
+  "name": "Forfiles Command Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"forfiles\" with the \"/c\" flag.\nWhile this is an expected behavior of the tool, it can be abused in order to proxy execution through it with any binary.\nCan be used to bypass application whitelisting.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use via a batch script or by an administrator."
+  ],
+  "from": "now-360s",
+  "rule_id": "3780d39c-2e6b-44a8-bae9-4b6272bf6595",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Forfiles/",
+    "https://pentestlab.blog/2020/07/06/indirect-command-execution/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\forfiles.exe OR process.pe.original_file_name:forfiles.exe) AND process.command_line:(*\\ \\-c\\ * OR *\\ \\/c\\ * OR *\\ \u2013c\\ * OR *\\ \u2014c\\ * OR *\\ \u2015c\\ *)"
+}

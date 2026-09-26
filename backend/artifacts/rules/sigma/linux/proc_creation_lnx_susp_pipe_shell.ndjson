@@ -1,0 +1,69 @@
+{
+  "id": "dcd5840a-5ab7-4b3f-8d3e-db97b66d65b0",
+  "name": "Linux Shell Pipe to Shell",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1140",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious process command line that starts with a shell that executes something and finally gets piped into another shell",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate software that uses these patterns"
+  ],
+  "from": "now-360s",
+  "rule_id": "750916f2-124a-44f7-9820-3fee57661797",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1140",
+          "name": "Deobfuscate/Decode Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1140/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(CommandLine:(sh\\ \\-c\\ * OR bash\\ \\-c\\ *)) AND ((CommandLine:(*\\|\\ bash\\ * OR *\\|\\ sh\\ * OR *\\|bash\\ * OR *\\|sh\\ *)) OR (CommandLine:(*\\|\\ bash OR *\\|\\ sh OR *\\|bash OR *\\ \\|sh)))"
+}

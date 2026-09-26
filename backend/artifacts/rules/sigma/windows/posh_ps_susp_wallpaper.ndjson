@@ -1,0 +1,69 @@
+{
+  "id": "f55637ce-68ab-4adb-b1ce-4b1318091eaf",
+  "name": "Replace Desktop Wallpaper by Powershell",
+  "tags": [
+    "attack.impact",
+    "attack.t1491.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "An adversary may deface systems internal to an organization in an attempt to intimidate or mislead users.\nThis may take the form of modifications to internal websites, or directly to user systems with the replacement of the desktop wallpaper\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b46ff219-d7f2-487d-975d-c9eb62cfe41e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1491",
+          "name": "Defacement",
+          "reference": "https://attack.mitre.org/techniques/T1491/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1491.001/T1491.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Get\\-ItemProperty* AND powershell.file.script_block_text:*Registry\\:\\:* AND powershell.file.script_block_text:*HKEY_CURRENT_USER\\\\Control\\ Panel\\\\Desktop\\\\* AND powershell.file.script_block_text:*WallPaper*) OR powershell.file.script_block_text:*SystemParametersInfo\\(20,0,*,3\\)*"
+}

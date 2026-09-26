@@ -1,0 +1,87 @@
+{
+  "id": "6b2f7443-2893-4f21-a085-7188c699dfb4",
+  "name": "Remote Access Tool Services Have Been Installed - System",
+  "tags": [
+    "attack.persistence",
+    "attack.execution",
+    "attack.t1543.003",
+    "attack.t1569.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects service installation of different remote access tools software. These software are often abused by threat actors to perform",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "06deb999-7b50-41e6-883c-9509402e041d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1569",
+          "name": "System Services",
+          "reference": "https://attack.mitre.org/techniques/T1569/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/misbehaving-rats/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND (winlog.provider_name:Service\\ Control\\ Manager AND (event.code:(7045 OR 7036)) AND (winlog.event_data.ServiceName:(*AmmyyAdmin* OR *Atera* OR *BASupportExpressSrvcUpdater* OR *BASupportExpressStandaloneService* OR *chromoting* OR *GoToAssist* OR *GoToMyPC* OR *jumpcloud* OR *LMIGuardianSvc* OR *LogMeIn* OR *monblanking* OR *Parsec* OR *RManService* OR *RPCPerformanceService* OR *RPCService* OR *SplashtopRemoteService* OR *SSUService* OR *TeamViewer* OR *TightVNC* OR *vncserver* OR *Zoho*)))"
+}

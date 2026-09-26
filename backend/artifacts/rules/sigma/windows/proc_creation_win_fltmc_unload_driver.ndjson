@@ -1,0 +1,78 @@
+{
+  "id": "4e9ad441-6565-4bec-ace1-9159fc3471ef",
+  "name": "Filter Driver Unloaded Via Fltmc.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070",
+    "attack.t1562",
+    "attack.t1562.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect filter driver unloading activity via fltmc.exe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "dd74e39d-c9be-46ea-bfef-f9c6c1c3d9b3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.darkoperator.com/blog/2018/10/5/operating-offensively-against-sysmon",
+    "https://www.cybereason.com/blog/threat-analysis-report-lockbit-2.0-all-paths-lead-to-ransom"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\fltMC.exe OR process.pe.original_file_name:fltMC.exe) AND process.command_line:*unload*) AND (NOT ((process.parent.executable:C\\:\\\\Users\\\\* AND process.parent.executable:*\\\\AppData\\\\Local\\\\Temp\\\\* AND process.parent.executable:*\\\\endpoint\\-protection\\-installer\\-x64.tmp AND process.command_line:*unload\\ rtp_filesystem_filter) OR (process.parent.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\ManageEngine\\\\uems_agent\\\\bin\\\\dcfaservice64.exe AND process.command_line:*unload\\ DFMFilter)))"
+}

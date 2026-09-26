@@ -1,0 +1,73 @@
+{
+  "id": "52483513-d26c-4cb7-89f0-2696c7e5856f",
+  "name": "Suspicious LNK Double Extension File Created",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of files with an \"LNK\" as a second extension. This is sometimes used by malware as a method to abuse the fact that Windows hides the \"LNK\" extension by default.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some tuning is required for other general purpose directories of third party apps"
+  ],
+  "from": "now-360s",
+  "rule_id": "9cd05548-02f0-44e9-81c7-a2fb558635bf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.crowdstrike.com/blog/meet-crowdstrikes-adversary-of-the-month-for-june-mustang-panda/",
+    "https://www.anomali.com/blog/china-based-apt-mustang-panda-targets-minority-groups-public-and-private-sector-organizations",
+    "https://www.cybereason.com/blog/research/a-bazar-of-tricks-following-team9s-development-cycles",
+    "https://twitter.com/malwrhunterteam/status/1235135745611960321",
+    "https://twitter.com/luc4m/status/1073181154126254080"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*.lnk AND (file.path:(*.doc.* OR *.docx.* OR *.jpg.* OR *.pdf.* OR *.ppt.* OR *.pptx.* OR *.xls.* OR *.xlsx.*))) AND (NOT file.path:*\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\Recent\\\\*) AND (NOT (((process.executable:(*\\\\excel.exe OR *\\\\powerpnt.exe OR *\\\\winword.exe)) AND file.path:*\\\\AppData\\\\Roaming\\\\Microsoft\\\\Office\\\\Recent\\\\*) OR (process.executable:*\\\\excel.exe AND file.path:*\\\\AppData\\\\Roaming\\\\Microsoft\\\\Excel*) OR (process.executable:*\\\\powerpnt.exe AND file.path:*\\\\AppData\\\\Roaming\\\\Microsoft\\\\PowerPoint*) OR (process.executable:*\\\\winword.exe AND file.path:*\\\\AppData\\\\Roaming\\\\Microsoft\\\\Word*)))"
+}

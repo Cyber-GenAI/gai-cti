@@ -1,0 +1,70 @@
+{
+  "id": "35b4a0a1-f872-4afa-8128-56e3f84012ed",
+  "name": "Abusable DLL Potential Sideloading From Suspicious Location",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL sideloading of DLLs that are known to be abused from suspicious locations",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "62cf95d0-763c-48ce-9499-a5d07742a33f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trendmicro.com/en_us/research/23/f/behind-the-scenes-unveiling-the-hidden-workings-of-earth-preta.html",
+    "https://research.checkpoint.com/2023/beyond-the-horizon-traveling-the-world-on-camaro-dragons-usb-flash-drives/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\coreclr.dll OR *\\\\facesdk.dll OR *\\\\HPCustPartUI.dll OR *\\\\libcef.dll OR *\\\\ZIPDLL.dll)) AND ((file.path:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\\\Temporary\\ Internet* OR *\\\\Windows\\\\Temp\\\\*)) OR ((file.path:*\\:\\\\Users\\\\* AND file.path:*\\\\Favorites\\\\*) OR (file.path:*\\:\\\\Users\\\\* AND file.path:*\\\\Favourites\\\\*) OR (file.path:*\\:\\\\Users\\\\* AND file.path:*\\\\Contacts\\\\*) OR (file.path:*\\:\\\\Users\\\\* AND file.path:*\\\\Pictures\\\\*)))"
+}

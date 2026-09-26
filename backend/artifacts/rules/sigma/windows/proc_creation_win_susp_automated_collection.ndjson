@@ -1,0 +1,88 @@
+{
+  "id": "1cc28e92-e4fd-4d48-bffd-21bd05c349c4",
+  "name": "Automated Collection Command Prompt",
+  "tags": [
+    "attack.collection",
+    "attack.t1119",
+    "attack.credential-access",
+    "attack.t1552.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Once established within a system or network, an adversary may use automated techniques for collecting internal data.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4d686f89-952a-4236-bf43-e9faada38a60",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1119",
+          "name": "Automated Collection",
+          "reference": "https://attack.mitre.org/techniques/T1119/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1119/T1119.md",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1552.001/T1552.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*.doc* OR *.docx* OR *.xls* OR *.xlsx* OR *.ppt* OR *.pptx* OR *.rtf* OR *.pdf* OR *.txt*)) AND ((process.command_line:*dir\\ * AND process.command_line:*\\ \\/b\\ * AND process.command_line:*\\ \\/s\\ *) OR (process.pe.original_file_name:FINDSTR.EXE AND (process.command_line:(*\\ \\/e\\ * OR *\\ \\/si\\ *))))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "e7ad4330-0b8b-45c7-b246-55428c12ba6d",
+  "name": "XSL Script Execution Via WMIC.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1220",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of WMIC with the \"format\" flag to potentially load XSL files.\nAdversaries abuse this functionality to execute arbitrary files while potentially bypassing application whitelisting defenses.\nExtensible Stylesheet Language (XSL) files are commonly used to describe the processing and rendering of data within XML files.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "WMIC.exe FP depend on scripts and administrative methods used in the monitored environment.",
+    "Static format arguments - https://petri.com/command-line-wmi-part-3"
+  ],
+  "from": "now-360s",
+  "rule_id": "7d6cb468-7b72-4472-9774-7f4809083389",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1220",
+          "name": "XSL Script Processing",
+          "reference": "https://attack.mitre.org/techniques/T1220/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1220/T1220.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\wmic.exe AND process.command_line:(*\\-format* OR *\\/format* OR *\u2013format* OR *\u2014format* OR *\u2015format*)) AND (NOT (process.command_line:(*Format\\:List* OR *Format\\:htable* OR *Format\\:hform* OR *Format\\:table* OR *Format\\:mof* OR *Format\\:value* OR *Format\\:rawxml* OR *Format\\:xml* OR *Format\\:csv*)))"
+}

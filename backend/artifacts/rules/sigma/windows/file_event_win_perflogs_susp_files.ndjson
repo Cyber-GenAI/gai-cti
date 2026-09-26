@@ -1,0 +1,70 @@
+{
+  "id": "c7232f56-20d8-4997-bf19-573acfd1455a",
+  "name": "Suspicious File Created In PerfLogs",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious file based on their extension being created in \"C:\\PerfLogs\\\". Note that this directory mostly contains \".etl\" files",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "42a40c54-6ca6-44af-8b87-d930c9518cf1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://labs.withsecure.com/publications/fin7-target-veeam-servers"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:C\\:\\\\PerfLogs\\\\* AND (file.path:(*.7z OR *.bat OR *.bin OR *.chm OR *.dll OR *.exe OR *.hta OR *.lnk OR *.ps1 OR *.psm1 OR *.py OR *.scr OR *.sys OR *.vbe OR *.vbs OR *.zip))"
+}

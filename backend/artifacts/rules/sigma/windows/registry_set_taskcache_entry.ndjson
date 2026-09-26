@@ -1,0 +1,71 @@
+{
+  "id": "1f650994-4e7b-4e10-9269-63023e490cc6",
+  "name": "Scheduled TaskCache Change by Uncommon Program",
+  "tags": [
+    "attack.persistence",
+    "attack.t1053",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Monitor the creation of a new key under 'TaskCache' when a new scheduled task is registered by a process that is not svchost.exe, which is suspicious",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "959baa25-5b2c-4811-82f0-3667a23d8d42",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/03/29/sodinokibi-aka-revil-ransomware/",
+    "https://labs.f-secure.com/blog/scheduled-task-tampering/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*SOFTWARE\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\* AND (NOT ((registry.path:(*Microsoft\\\\Windows\\\\UpdateOrchestrator* OR *Microsoft\\\\Windows\\\\SoftwareProtectionPlatform\\\\SvcRestartTask\\\\Index* OR *Microsoft\\\\Windows\\\\Flighting\\\\OneSettings\\\\RefreshCache\\\\Index*)) OR (process.executable:C\\:\\\\Windows\\\\* AND process.executable:*\\\\TiWorker.exe) OR process.executable:C\\:\\\\WINDOWS\\\\system32\\\\svchost.exe OR (process.executable:C\\:\\\\Windows\\\\Microsoft.NET\\\\Framework* AND process.executable:*\\\\ngen.exe AND (registry.path:(*\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tasks\\\\\\{B66B135D\\-DA06\\-4FC4\\-95F8\\-7458E1D10129\\}* OR *\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\.NET\\ Framework\\\\.NET\\ Framework\\ NGEN*))) OR (process.executable:(C\\:\\\\Program\\ Files\\\\Microsoft\\ Office\\\\root\\\\Integration\\\\Integrator.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\root\\\\Integration\\\\Integrator.exe)) OR process.executable:C\\:\\\\Windows\\\\System32\\\\msiexec.exe OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe OR C\\:\\\\Program\\ Files\\\\Dropbox\\\\Update\\\\DropboxUpdate.exe)) OR (process.executable:C\\:\\\\Windows\\\\explorer.exe AND registry.path:*\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\Schedule\\\\TaskCache\\\\Tree\\\\Microsoft\\\\Windows\\\\PLA\\\\Server\\ Manager\\ Performance\\ Monitor\\\\*) OR process.executable:System))"
+}

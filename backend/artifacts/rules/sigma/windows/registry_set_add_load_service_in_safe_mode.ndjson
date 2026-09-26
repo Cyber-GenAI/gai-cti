@@ -1,0 +1,70 @@
+{
+  "id": "b14e02c8-dd09-4cdc-8edd-5e5ca34f246a",
+  "name": "Registry Persistence via Service in Safe Mode",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the modification of the registry to allow a driver or service to persist in Safe Mode.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "27c0f86e-115e-4469-8fd9-c13c7bb25b5b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1112/T1112.md#atomic-test-33---windows-add-registry-value-to-load-service-in-safe-mode-without-network",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1112/T1112.md#atomic-test-34---windows-add-registry-value-to-load-service-in-safe-mode-with-network"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((registry.path:(*\\\\Control\\\\SafeBoot\\\\Minimal\\\\* OR *\\\\Control\\\\SafeBoot\\\\Network\\\\*)) AND registry.path:*\\\\\\(Default\\) AND winlog.event_data.Details:Service) AND (NOT (process.executable:C\\:\\\\WINDOWS\\\\system32\\\\msiexec.exe AND (registry.path:(*\\\\Control\\\\SafeBoot\\\\Minimal\\\\SAVService\\\\\\(Default\\) OR *\\\\Control\\\\SafeBoot\\\\Network\\\\SAVService\\\\\\(Default\\)))))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "1ed4c131-9c6b-4d62-a5d1-0c499eb0e986",
+  "name": "Screen Capture with Import Tool",
+  "tags": [
+    "attack.collection",
+    "attack.t1113",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects adversary creating screen capture of a desktop with Import Tool.\nHighly recommended using rule on servers, due to high usage of screenshot utilities on user workstations.\nImageMagick must be installed.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of screenshot utility"
+  ],
+  "from": "now-360s",
+  "rule_id": "40e9f86d-e4b1-46ad-a44d-bdef53165051",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1113",
+          "name": "Screen Capture",
+          "reference": "https://attack.mitre.org/techniques/T1113/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1113/T1113.md",
+    "https://linux.die.net/man/1/import",
+    "https://imagemagick.org/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(type:EXECVE AND a0:import) AND ((a1:\\-window AND a2:root AND (a3:(*.png OR *.jpg OR *.jpeg))) OR (a1:(*.png OR *.jpg OR *.jpeg)))"
+}

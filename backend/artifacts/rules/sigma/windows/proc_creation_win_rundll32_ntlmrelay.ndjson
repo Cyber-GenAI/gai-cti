@@ -1,0 +1,71 @@
+{
+  "id": "9a217812-783b-4424-88f7-3319fbf03c95",
+  "name": "Suspicious NTLM Authentication on the Printer Spooler Service",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.credential-access",
+    "attack.t1212",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a privilege elevation attempt by coercing NTLM authentication on the Printer Spooler service",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d87786e3-832f-43fc-9915-9683e035a835",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1212",
+          "name": "Exploitation for Credential Access",
+          "reference": "https://attack.mitre.org/techniques/T1212/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/med0x2e/status/1520402518685200384",
+    "https://github.com/elastic/detection-rules/blob/dd224fb3f81d0b4bf8593c5f02a029d647ba2b2d/rules/windows/credential_access_relay_ntlm_auth_via_http_spoolss.toml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE) AND ((process.command_line:*C\\:\\\\windows\\\\system32\\\\davclnt.dll,DavSetCookie* AND process.command_line:*http*) AND (process.command_line:(*spoolss* OR *srvsvc* OR *\\/print\\/pipe\\/*)))"
+}

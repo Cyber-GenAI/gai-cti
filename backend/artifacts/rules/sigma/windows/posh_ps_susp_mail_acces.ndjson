@@ -1,0 +1,69 @@
+{
+  "id": "f4776750-a34c-4b7f-8e6c-8435c02c85b4",
+  "name": "Powershell Local Email Collection",
+  "tags": [
+    "attack.collection",
+    "attack.t1114.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may target user email on local systems to collect sensitive information.\nFiles containing email data can be acquired from a users local system, such as Outlook storage or cache files.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d9af6db9-fa4c-4925-a3b4-bf45e5647dcd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1114",
+          "name": "Email Collection",
+          "reference": "https://attack.mitre.org/techniques/T1114/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1114.001/T1114.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*Get\\-Inbox.ps1* OR *Microsoft.Office.Interop.Outlook* OR *Microsoft.Office.Interop.Outlook.olDefaultFolders* OR *\\-comobject\\ outlook.application*)"
+}

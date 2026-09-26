@@ -1,0 +1,70 @@
+{
+  "id": "e13a5240-7583-4693-a709-d4f68e474d94",
+  "name": "Rundll32 Execution Without CommandLine Parameters",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious start of rundll32.exe without any parameters as found in CobaltStrike beacon activity",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Possible but rare"
+  ],
+  "from": "now-360s",
+  "rule_id": "1e8ff47d-cda6-44ed-8a35-2af846a935d7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.cobaltstrike.com/help-opsec",
+    "https://twitter.com/ber_m1ng/status/1397948048135778309"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\\\rundll32.exe OR *\\\\rundll32.exe\\\" OR *\\\\rundll32)) AND (NOT (process.parent.executable:(*\\\\AppData\\\\Local\\\\* OR *\\\\Microsoft\\\\Edge\\\\*)))"
+}

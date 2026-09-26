@@ -1,0 +1,69 @@
+{
+  "id": "aaf79bdc-9a5e-4ca8-8d1b-9e83038d7e69",
+  "name": "Potential COM Object Hijacking Via TreatAs Subkey - Registry",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.015",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects COM object hijacking via TreatAs subkey",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Maybe some system utilities in rare cases use linking keys for backward compatibility"
+  ],
+  "from": "now-360s",
+  "rule_id": "d6af6f6e-622c-41d5-8165-953ebd279f09",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://bohops.com/2018/08/18/abusing-the-com-registry-structure-part-2-loading-techniques-for-evasion-and-persistence/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:CreateKey AND (registry.path:*HKU\\\\* AND registry.path:*Classes\\\\CLSID\\\\* AND registry.path:*\\\\TreatAs*)) AND (NOT process.executable:C\\:\\\\WINDOWS\\\\system32\\\\svchost.exe)"
+}

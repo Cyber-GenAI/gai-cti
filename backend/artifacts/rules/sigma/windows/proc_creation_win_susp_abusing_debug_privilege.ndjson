@@ -1,0 +1,69 @@
+{
+  "id": "1eba0e98-43a7-4640-a4dc-bb1a9805be3c",
+  "name": "Abused Debug Privilege by Arbitrary Parent Processes",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1548",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detection of unusual child processes by different system processes",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7e9dab15-cb54-4b56-ae49-364810d42313",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1548",
+          "name": "Abuse Elevation Control Mechanism",
+          "reference": "https://attack.mitre.org/techniques/T1548/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://image.slidesharecdn.com/kheirkhabarovoffzonefinal-181117201458/95/hunting-for-privilege-escalation-in-windows-environment-74-638.jpg"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.parent.executable:(*\\\\winlogon.exe OR *\\\\services.exe OR *\\\\lsass.exe OR *\\\\csrss.exe OR *\\\\smss.exe OR *\\\\wininit.exe OR *\\\\spoolsv.exe OR *\\\\searchindexer.exe)) AND (user.name:(*AUTHORI* OR *AUTORI*))) AND ((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\cmd.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll OR Cmd.Exe)))) AND (NOT (process.command_line:*\\ route\\ * AND process.command_line:*\\ ADD\\ *))"
+}

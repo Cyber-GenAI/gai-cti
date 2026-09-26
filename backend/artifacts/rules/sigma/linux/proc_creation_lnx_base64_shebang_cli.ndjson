@@ -1,0 +1,70 @@
+{
+  "id": "d0ab0503-0741-4896-8b9d-c6e20ebf431a",
+  "name": "Linux Base64 Encoded Shebang In CLI",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1140",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the presence of a base64 version of the shebang in the commandline, which could indicate a malicious payload about to be decoded",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "eefac86e-eda3-4e0b-b613-63e500346d6b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1140",
+          "name": "Deobfuscate/Decode Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1140/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trendmicro.com/pl_pl/research/20/i/the-evolution-of-malicious-shell-scripts.html",
+    "https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "CommandLine:(*IyEvYmluL2Jhc2* OR *IyEvYmluL2Rhc2* OR *IyEvYmluL3pza* OR *IyEvYmluL2Zpc2* OR *IyEvYmluL3No*)"
+}

@@ -1,0 +1,90 @@
+{
+  "id": "c46bcfb2-0168-4fb9-846c-cbadad3588b6",
+  "name": "Suspicious Csi.exe Usage",
+  "tags": [
+    "attack.execution",
+    "attack.t1072",
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Csi.exe is a signed binary from Microsoft that comes with Visual Studio and provides C# interactive capabilities. It can be used to run C# code from a file passed as a parameter in command line. Early version of this utility provided with Microsoft \u201cRoslyn\u201d Community Technology Preview was named 'rcsi.exe'",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage by software developers"
+  ],
+  "from": "now-360s",
+  "rule_id": "0431efdd-ca99-463e-bde7-2529efd17b23",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1072",
+          "name": "Software Deployment Tools",
+          "reference": "https://attack.mitre.org/techniques/T1072/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Csi/",
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Rcsi/",
+    "https://enigma0x3.net/2016/11/21/bypassing-application-whitelisting-by-using-rcsi-exe/",
+    "https://twitter.com/Z3Jpa29z/status/1317545798981324801"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\csi.exe OR *\\\\rcsi.exe)) OR (process.pe.original_file_name:(csi.exe OR rcsi.exe))) AND process.pe.company:Microsoft\\ Corporation"
+}

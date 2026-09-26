@@ -1,0 +1,86 @@
+{
+  "id": "45d4ec14-21b7-4175-a2ef-7dcaaa899829",
+  "name": "Potential Azure Browser SSO Abuse",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects abusing Azure Browser SSO by requesting OAuth 2.0 refresh tokens for an Azure-AD-authenticated Windows user (i.e. the machine is joined to Azure AD and a user logs in with their Azure AD account) wanting to perform SSO authentication in the browser.\nAn attacker can use this to authenticate to Azure AD in a browser as that user.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives are expected since this rules is only looking for the DLL load event. This rule is better used in correlation with related activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "8388efb0-45f6-4f21-a7dd-88a78f3af090",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://posts.specterops.io/requesting-azure-ad-request-tokens-on-azure-ad-joined-machines-for-browser-sso-2b0409caad30"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:C\\:\\\\Windows\\\\System32\\\\MicrosoftAccountTokenProvider.dll AND (NOT ((process.executable:(C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\*)) AND process.executable:*\\\\BackgroundTaskHost.exe)) AND (NOT (((process.executable:(C\\:\\\\Program\\ Files\\\\Microsoft\\ Visual\\ Studio\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Visual\\ Studio\\\\*)) AND process.executable:*\\\\IDE\\\\devenv.exe) OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Internet\\ Explorer\\\\iexplore.exe OR C\\:\\\\Program\\ Files\\\\Internet\\ Explorer\\\\iexplore.exe)) OR (process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\* OR process.executable:*\\\\WindowsApps\\\\MicrosoftEdge.exe OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe))) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeCore\\\\* OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\EdgeCore\\\\*)) AND (process.executable:(*\\\\msedge.exe OR *\\\\msedgewebview2.exe))) OR process.executable:*\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\OneDrive.exe OR (NOT _exists_:process.executable)))"
+}

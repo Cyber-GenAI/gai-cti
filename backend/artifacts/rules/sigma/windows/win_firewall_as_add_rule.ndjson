@@ -1,0 +1,67 @@
+{
+  "id": "c4923634-62af-4bf0-8426-8dc7614499a8",
+  "name": "Uncommon New Firewall Rule Added In Windows Firewall Exception List",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when a rule has been added to the Windows Firewall exception list",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [],
+  "from": "now-360s",
+  "rule_id": "37ffed81-dcb8-4bbb-af54-3272222dd199",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/dd364427(v=ws.10)"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Windows\\ Firewall\\ With\\ Advanced\\ Security\\/Firewall AND ((event.code:(2004 OR 2071 OR 2097)) AND (NOT (winlog.event_data.Action:2 OR (winlog.event_data.ApplicationPath:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\* OR C\\:\\\\Windows\\\\WinSxS\\\\*)) OR (winlog.event_data.ApplicationPath:(*C\\:\\\\PerfLogs\\\\* OR *C\\:\\\\Temp\\\\* OR *C\\:\\\\Tmp\\\\* OR *C\\:\\\\Users\\\\Public\\\\* OR *C\\:\\\\Windows\\\\Tasks\\\\* OR *C\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\*)) OR (NOT _exists_:winlog.event_data.ApplicationPath))) AND (NOT ((winlog.event_data.ModifyingApplication:C\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\\\Platform\\\\* AND winlog.event_data.ModifyingApplication:*\\\\MsMpEng.exe) OR ((winlog.event_data.ModifyingApplication:(C\\:\\\\Windows\\\\System32\\\\svchost.exe OR C\\:\\\\Windows\\\\System32\\\\dllhost.exe)) AND winlog.event_data.ApplicationPath:\"\"))))"
+}

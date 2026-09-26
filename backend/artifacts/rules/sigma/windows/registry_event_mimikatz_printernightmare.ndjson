@@ -1,0 +1,75 @@
+{
+  "id": "e7658584-2e50-476b-a78d-f6ecf073cb72",
+  "name": "PrinterNightmare Mimikatz Driver Name",
+  "tags": [
+    "attack.execution",
+    "attack.t1204",
+    "cve.2021-1675",
+    "cve.2021-34527",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects static QMS 810 and mimikatz driver name used by Mimikatz as exploited in CVE-2021-1675 and CVE-2021-34527",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate installation of printer driver QMS 810, Texas Instruments microLaser printer (unlikely)"
+  ],
+  "from": "now-360s",
+  "rule_id": "83847af6-589d-4e59-87ea-34813c6672c0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/gentilkiwi/mimikatz/commit/c21276072b3f2a47a21e215a46962a17d54b3760",
+    "https://www.lexjansen.com/sesug/1993/SESUG93035.pdf",
+    "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rprn/4464eaf0-f34f-40d5-b970-736437a21913",
+    "https://nvd.nist.gov/vuln/detail/cve-2021-1675",
+    "https://nvd.nist.gov/vuln/detail/cve-2021-34527"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\Control\\\\Print\\\\Environments\\\\Windows\\ x64\\\\Drivers\\\\Version\\-3\\\\QMS\\ 810\\\\* OR *\\\\Control\\\\Print\\\\Environments\\\\Windows\\ x64\\\\Drivers\\\\Version\\-3\\\\mimikatz*)) OR (registry.path:*legitprinter* AND registry.path:*\\\\Control\\\\Print\\\\Environments\\\\Windows*) OR ((registry.path:(*\\\\Control\\\\Print\\\\Environments* OR *\\\\CurrentVersion\\\\Print\\\\Printers*)) AND (registry.path:(*Gentil\\ Kiwi* OR *mimikatz\\ printer* OR *Kiwi\\ Legit\\ Printer*)))"
+}

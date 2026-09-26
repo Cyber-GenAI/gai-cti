@@ -1,0 +1,70 @@
+{
+  "id": "77410062-7f7f-4b8c-9871-8421f9b7b0be",
+  "name": "Mstsc.EXE Execution With Local RDP File",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1219",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential RDP connection via Mstsc using a local \".rdp\" file",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely with legitimate usage of \".rdp\" files"
+  ],
+  "from": "now-360s",
+  "rule_id": "dd8217a6-ffce-43e8-b36c-9c9823d409b4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1219",
+          "name": "Remote Access Tools",
+          "reference": "https://attack.mitre.org/techniques/T1219/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.blackhillsinfosec.com/rogue-rdp-revisiting-initial-access-methods/",
+    "https://web.archive.org/web/20230726144748/https://blog.thickmints.dev/mintsights/detecting-rogue-rdp/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\mstsc.exe OR process.pe.original_file_name:mstsc.exe) AND (process.command_line:(*.rdp OR *.rdp\\\"))) AND (NOT (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\lxss\\\\wslhost.exe AND process.command_line:*C\\:\\\\ProgramData\\\\Microsoft\\\\WSL\\\\wslg.rdp*))"
+}

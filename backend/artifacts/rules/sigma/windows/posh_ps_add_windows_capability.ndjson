@@ -1,0 +1,52 @@
+{
+  "id": "9ac936f5-7969-4543-a49e-5a14beee237d",
+  "name": "Add Windows Capability Via PowerShell Script",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the \"Add-WindowsCapability\" cmdlet to add Windows capabilities. Notable capabilities could be \"OpenSSH\" and others.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the capabilities by administrators or users. Add additional filters accordingly."
+  ],
+  "from": "now-360s",
+  "rule_id": "fb4f8fb7-519f-4b5f-be3c-6915fe2fa1a1",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell",
+    "https://www.virustotal.com/gui/file/af1c82237b6e5a3a7cdbad82cc498d298c67845d92971bada450023d1335e267/content"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Add\\-WindowsCapability\\ * AND powershell.file.script_block_text:*\\-Name\\ OpenSSH.*"
+}

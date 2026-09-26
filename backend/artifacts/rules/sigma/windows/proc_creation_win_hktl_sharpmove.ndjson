@@ -1,0 +1,70 @@
+{
+  "id": "0d409786-de77-412e-b71c-f288b6574541",
+  "name": "HackTool - SharpMove Tool Execution",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1021.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of SharpMove, a .NET utility performing multiple tasks such as \"Task Creation\", \"SCM\" query, VBScript execution using WMI via its PE metadata and command line options.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f4af061a-83b8-4718-a105-0688a6e742f7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/0xthirteen/SharpMove/",
+    "https://pentestlab.blog/tag/sharpmove/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\SharpMove.exe OR process.pe.original_file_name:SharpMove.exe) OR (process.command_line:*computername\\=* AND (process.command_line:(*action\\=create* OR *action\\=dcom* OR *action\\=executevbs* OR *action\\=hijackdcom* OR *action\\=modschtask* OR *action\\=modsvc* OR *action\\=query* OR *action\\=scm* OR *action\\=startservice* OR *action\\=taskscheduler*)))"
+}

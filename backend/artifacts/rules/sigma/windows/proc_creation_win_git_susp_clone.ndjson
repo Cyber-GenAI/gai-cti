@@ -1,0 +1,69 @@
+{
+  "id": "c3e3d75c-164d-499d-9f48-c0434846a0c7",
+  "name": "Suspicious Git Clone",
+  "tags": [
+    "attack.reconnaissance",
+    "attack.t1593.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"git\" in order to clone a remote repository that contain suspicious keywords which might be suspicious",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "177b0eae-922c-4da3-8480-eaee847bfd05",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0043",
+        "name": "Reconnaissance",
+        "reference": "https://attack.mitre.org/tactics/TA0043/"
+      },
+      "technique": [
+        {
+          "id": "T1593",
+          "name": "Search Open Websites/Domains",
+          "reference": "https://attack.mitre.org/techniques/T1593/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://gist.githubusercontent.com/MichaelKoczwara/12faba9c061c12b5814b711166de8c2f/raw/e2068486692897b620c25fde1ea258c8218fe3d3/history.txt"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\git.exe OR *\\\\git\\-remote\\-https.exe)) OR process.pe.original_file_name:git.exe) AND (process.command_line:(*\\ clone\\ * OR *git\\-remote\\-https\\ *)) AND (process.command_line:(*exploit* OR *Vulns* OR *vulnerability* OR *RemoteCodeExecution* OR *Invoke\\-* OR *CVE\\-* OR *poc\\-* OR *ProofOfConcept* OR *proxyshell* OR *log4shell* OR *eternalblue* OR *eternal\\-blue* OR *MS17\\-*))"
+}

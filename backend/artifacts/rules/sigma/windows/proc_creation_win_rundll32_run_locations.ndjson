@@ -1,0 +1,70 @@
+{
+  "id": "02e55c25-f433-4cfd-b071-2aeb9a5b966d",
+  "name": "Suspicious Process Start Locations",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "car.2013-05-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious process run from unusual locations",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives depend on scripts and administrative tools used in the monitored environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "9a2ebe03-bb2c-4973-91e5-0f1a46be9e46",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://car.mitre.org/wiki/CAR-2013-05-002"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\:\\\\RECYCLER\\\\* OR *\\:\\\\SystemVolumeInformation\\\\*)) OR (process.executable:(C\\:\\\\Windows\\\\Tasks\\\\* OR C\\:\\\\Windows\\\\debug\\\\* OR C\\:\\\\Windows\\\\fonts\\\\* OR C\\:\\\\Windows\\\\help\\\\* OR C\\:\\\\Windows\\\\drivers\\\\* OR C\\:\\\\Windows\\\\addins\\\\* OR C\\:\\\\Windows\\\\cursors\\\\* OR C\\:\\\\Windows\\\\system32\\\\tasks\\\\*))"
+}

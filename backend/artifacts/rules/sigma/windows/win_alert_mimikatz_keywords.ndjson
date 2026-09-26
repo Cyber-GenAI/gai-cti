@@ -1,0 +1,78 @@
+{
+  "id": "7fb5db90-072e-41ba-9a47-720066830966",
+  "name": "Mimikatz Use",
+  "tags": [
+    "attack.s0002",
+    "attack.lateral-movement",
+    "attack.credential-access",
+    "car.2013-07-001",
+    "car.2019-04-004",
+    "attack.t1003.002",
+    "attack.t1003.004",
+    "attack.t1003.001",
+    "attack.t1003.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "This method detects mimikatz keywords in different Eventlogs (some of them only appear in older Mimikatz version that are however still used by different threat groups)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Naughty administrators",
+    "AV Signature updates",
+    "Files with Mimikatz in their filename"
+  ],
+  "from": "now-360s",
+  "rule_id": "6f36fef7-fd99-446d-a6f5-c7b00100b763",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://tools.thehacker.recipes/mimikatz/modules"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(*dpapi\\:\\:masterkey* OR *eo.oe.kiwi* OR *event\\:\\:clear* OR *event\\:\\:drop* OR *gentilkiwi.com* OR *kerberos\\:\\:golden* OR *kerberos\\:\\:ptc* OR *kerberos\\:\\:ptt* OR *kerberos\\:\\:tgt* OR *Kiwi\\ Legit\\ Printer* OR *lsadump\\:\\:* OR *mimidrv.sys* OR *\\\\mimilib.dll* OR *misc\\:\\:printnightmare* OR *misc\\:\\:shadowcopies* OR *misc\\:\\:skeleton* OR *privilege\\:\\:backup* OR *privilege\\:\\:debug* OR *privilege\\:\\:driver* OR *sekurlsa\\:\\:*) AND (NOT event.code:15)"
+}

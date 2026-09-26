@@ -1,0 +1,69 @@
+{
+  "id": "6b9f47ca-d22a-4465-9fe4-df25359b11b9",
+  "name": "Potential Binary Proxy Execution Via VSDiagnostics.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"VSDiagnostics.exe\" with the \"start\" command in order to launch and proxy arbitrary binaries.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage for tracing and diagnostics purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "8672be18-3867-49e7-9b9f-e09761c57600",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/0xBoku/status/1679200664013135872"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\VSDiagnostics.exe OR process.pe.original_file_name:VSDiagnostics.exe) AND process.command_line:*start* AND (process.command_line:(*\\ \\/launch\\:* OR *\\ \\-launch\\:*))"
+}

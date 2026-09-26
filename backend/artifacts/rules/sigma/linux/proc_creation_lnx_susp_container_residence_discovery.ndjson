@@ -1,0 +1,71 @@
+{
+  "id": "1e4fc63c-6d53-4e79-850b-0ee838b1d9cf",
+  "name": "Container Residence Discovery Via Proc Virtual FS",
+  "tags": [
+    "attack.discovery",
+    "attack.t1082",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential container discovery via listing of certain kernel features in the \"/proc\" virtual filesystem",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate system administrator usage of these commands",
+    "Some container tools or deployments may use these techniques natively to determine how they proceed with execution, and will need to be filtered"
+  ],
+  "from": "now-360s",
+  "rule_id": "b9fc19b4-8fd1-4794-a136-d9f884f24ede",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.skyplabs.net/posts/container-detection/",
+    "https://stackoverflow.com/questions/20010199/how-to-determine-if-a-process-runs-inside-lxc-docker"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*awk OR *\\/cat OR *grep OR *\\/head OR *\\/less OR *\\/more OR *\\/nl OR *\\/tail)) AND (CommandLine:*\\/proc\\/2\\/* OR (CommandLine:*\\/proc\\/* AND (CommandLine:(*\\/cgroup OR *\\/sched))))"
+}

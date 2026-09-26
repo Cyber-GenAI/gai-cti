@@ -1,0 +1,73 @@
+{
+  "id": "190d85cc-a746-42b9-ba4b-5dbc4db053dc",
+  "name": "Suspicious MSHTA Child Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.005",
+    "car.2013-02-003",
+    "car.2013-03-001",
+    "car.2014-04-003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious process spawning from an \"mshta.exe\" process, which could be indicative of a malicious HTA script execution",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Printer software / driver installations",
+    "HP software"
+  ],
+  "from": "now-360s",
+  "rule_id": "f699c4e5-7ee3-4139-b4ba-d944ea1d6db2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trustedsec.com/july-2015/malicious-htas/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\mshta.exe AND ((process.executable:(*\\\\cmd.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\wscript.exe OR *\\\\cscript.exe OR *\\\\sh.exe OR *\\\\bash.exe OR *\\\\reg.exe OR *\\\\regsvr32.exe OR *\\\\bitsadmin.exe)) OR (process.pe.original_file_name:(Cmd.Exe OR PowerShell.EXE OR pwsh.dll OR wscript.exe OR cscript.exe OR Bash.exe OR reg.exe OR REGSVR32.EXE OR bitsadmin.exe)))"
+}

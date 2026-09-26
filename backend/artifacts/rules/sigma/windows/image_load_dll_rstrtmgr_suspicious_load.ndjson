@@ -1,0 +1,90 @@
+{
+  "id": "7c44c67f-05c7-4da1-8411-a23f56781c88",
+  "name": "Load Of RstrtMgr.DLL By A Suspicious Process",
+  "tags": [
+    "attack.impact",
+    "attack.defense-evasion",
+    "attack.t1486",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the load of RstrtMgr DLL (Restart Manager) by a suspicious process.\nThis library has been used during ransomware campaigns to kill processes that would prevent file encryption by locking them (e.g. Conti ransomware, Cactus ransomware). It has also recently been seen used by the BiBi wiper for Windows.\nIt could also be used for anti-analysis purposes by shut downing specific processes.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Processes related to software installation"
+  ],
+  "from": "now-360s",
+  "rule_id": "d470aaa0-bdfe-4b7f-b406-9685fc72cc0f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1486",
+          "name": "Data Encrypted for Impact",
+          "reference": "https://attack.mitre.org/techniques/T1486/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.crowdstrike.com/blog/windows-restart-manager-part-1/",
+    "https://www.crowdstrike.com/blog/windows-restart-manager-part-2/",
+    "https://web.archive.org/web/20231221193106/https://www.swascan.com/cactus-ransomware-malware-analysis/",
+    "https://taiwan.postsen.com/business/88601/Hamas-hackers-use-data-destruction-software-BiBi-which-consumes-a-lot-of-processor-resources-to-wipe-Windows-computer-data--iThome.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\\\RstrtMgr.dll OR file.pe.original_file_name:RstrtMgr.dll) AND ((process.executable:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\\\Temporary\\ Internet*)) OR ((process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\Favorites\\\\*) OR (process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\Favourites\\\\*) OR (process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\Contacts\\\\*)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "507530bc-9651-4596-80f8-99606ad861f6",
+  "name": "Clfs.SYS Loaded By Process Located In a Potential Suspicious Location",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Clfs.sys being loaded by a process running from a potentially suspicious location. Clfs.sys is loaded as part of many CVEs exploits that targets Common Log File.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "63eaffd5-8a1e-4333-832a-dce8c5b51dda",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://ssd-disclosure.com/ssd-advisory-common-log-file-system-clfs-driver-pe/",
+    "https://x.com/Threatlabz/status/1879956781360976155"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\clfs.sys AND ((process.executable:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\\\Temporary\\ Internet* OR *\\\\Windows\\\\Temp\\\\*)) OR ((process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\Favorites\\\\*) OR (process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\Favourites\\\\*) OR (process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\Contacts\\\\*) OR (process.executable:*\\:\\\\Users\\\\* AND process.executable:*\\\\Pictures\\\\*)))"
+}

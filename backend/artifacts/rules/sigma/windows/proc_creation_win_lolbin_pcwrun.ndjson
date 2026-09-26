@@ -1,0 +1,72 @@
+{
+  "id": "0b9da957-4314-4b57-b426-a9ed3f44dea3",
+  "name": "Indirect Command Execution By Program Compatibility Wizard",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect indirect command execution via Program Compatibility Assistant pcwrun.exe",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Need to use extra processing with 'unique_count' / 'filter' to focus on outliers as opposed to commonly seen artifacts",
+    "Legit usage of scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "19de029f-0a4d-452d-8176-c190b444ddf9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/pabraeken/status/991335019833708544",
+    "https://lolbas-project.github.io/lolbas/Binaries/Pcwrun/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\pcwrun.exe"
+}

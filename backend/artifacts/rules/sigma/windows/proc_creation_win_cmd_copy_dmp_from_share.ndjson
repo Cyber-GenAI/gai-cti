@@ -1,0 +1,51 @@
+{
+  "id": "34e110a8-85fb-45dc-8b02-4577bc0cd1f3",
+  "name": "Copy .DMP/.DUMP Files From Remote Share Via Cmd.EXE",
+  "tags": [
+    "attack.credential-access",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the copy builtin cmd command to copy files with the \".dmp\"/\".dump\" extension from a remote share",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0253abb2-d69b-49ce-965b-6b0afa66c572",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/09/26/bumblebee-round-two/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\cmd.exe OR process.pe.original_file_name:Cmd.Exe) AND ((process.command_line:*copy\\ * AND process.command_line:*\\ \\\\\\\\*) AND (process.command_line:(*.dmp* OR *.dump* OR *.hdmp*)))"
+}

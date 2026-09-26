@@ -1,0 +1,70 @@
+{
+  "id": "4f680a7f-971e-4ec1-97a3-06782b77a0eb",
+  "name": "Suspicious Appended Extension",
+  "tags": [
+    "attack.impact",
+    "attack.t1486",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects file renames where the target filename uses an uncommon double extension. Could indicate potential ransomware activity renaming files and adding a custom extension to the encrypted files, such as \".jpg.crypted\", \".docx.locky\", etc.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Backup software"
+  ],
+  "from": "now-360s",
+  "rule_id": "3e4abece-7f88-472d-8620-41ebba0a0cb0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1486",
+          "name": "Data Encrypted for Impact",
+          "reference": "https://attack.mitre.org/techniques/T1486/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/d66ead5a-faf4-4437-93aa-65785afaf9e5/",
+    "https://blog.cyble.com/2022/08/10/onyx-ransomware-renames-its-leak-site-to-vsop/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((winlog.event_data.SourceFilename:(*.doc OR *.docx OR *.jpeg OR *.jpg OR *.lnk OR *.pdf OR *.png OR *.pst OR *.rtf OR *.xls OR *.xlsx)) AND (file.path:(*.doc.* OR *.docx.* OR *.jpeg.* OR *.jpg.* OR *.lnk.* OR *.pdf.* OR *.png.* OR *.pst.* OR *.rtf.* OR *.xls.* OR *.xlsx.*))) AND (NOT (file.path:(*.backup OR *.bak OR *.old OR *.orig OR *.temp OR *.tmp))) AND (NOT (file.path:*\\:\\\\ProgramData\\\\Anaconda3\\\\* AND file.path:*.c\\~))"
+}

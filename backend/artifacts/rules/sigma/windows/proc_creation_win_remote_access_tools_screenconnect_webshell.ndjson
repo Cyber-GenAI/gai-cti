@@ -1,0 +1,70 @@
+{
+  "id": "41e2f8ac-75ce-486b-8bd4-9c5f35afebaa",
+  "name": "Remote Access Tool - ScreenConnect Server Web Shell Execution",
+  "tags": [
+    "attack.initial-access",
+    "attack.t1190",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential web shell execution from the ScreenConnect server process.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "b6df7ea1-9c71-4fa1-a62a-86c8075cf8e7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "reference": "https://attack.mitre.org/techniques/T1190/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blackpointcyber.com/resources/blog/breaking-through-the-screen/",
+    "https://www.connectwise.com/company/trust/security-bulletins/connectwise-screenconnect-23.9.8"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\ScreenConnect.Service.exe AND (process.executable:(*\\\\cmd.exe OR *\\\\csc.exe))"
+}

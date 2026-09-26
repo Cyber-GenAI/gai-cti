@@ -1,0 +1,70 @@
+{
+  "id": "9adadcf3-7e31-4ec4-9127-95654e6cfc9b",
+  "name": "Troubleshooting Pack Cmdlet Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"TroubleshootingPack\" cmdlets to leverage CVE-2022-30190 or action similar to \"msdt\" lolbin (as described in LOLBAS)",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of \"TroubleshootingPack\" cmdlet for troubleshooting purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "eb46aa53-84ce-469a-a3d3-4a14a572bf6c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/nas_bench/status/1537919885031772161",
+    "https://lolbas-project.github.io/lolbas/Binaries/Msdt/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Invoke\\-TroubleshootingPack* AND powershell.file.script_block_text:*C\\:\\\\Windows\\\\Diagnostics\\\\System\\\\PCW* AND powershell.file.script_block_text:*\\-AnswerFile* AND powershell.file.script_block_text:*\\-Unattended*"
+}

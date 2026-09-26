@@ -1,0 +1,51 @@
+{
+  "id": "86ccc78a-d9bf-4f2b-a48c-1f8f5ec970d6",
+  "name": "New Virtual Smart Card Created Via TpmVscMgr.EXE",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"Tpmvscmgr.exe\" to create a new virtual smart card.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage by an administrator"
+  ],
+  "from": "now-360s",
+  "rule_id": "6329c936-1efc-4555-a4e4-41dd6601fe0c",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/security/identity-protection/virtual-smart-cards/virtual-smart-card-tpmvscmgr"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\tpmvscmgr.exe AND process.pe.original_file_name:TpmVscMgr.exe) AND process.command_line:*create*"
+}

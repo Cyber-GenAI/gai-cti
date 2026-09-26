@@ -1,0 +1,74 @@
+{
+  "id": "51cb5c23-13e0-4f78-a59c-a819f150f6e0",
+  "name": "Mimikatz DC Sync",
+  "tags": [
+    "attack.credential-access",
+    "attack.s0002",
+    "attack.t1003.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Mimikatz DC sync security events",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Valid DC Sync that is not covered by the filters; please report",
+    "Local Domain Admin account used for Azure AD Connect"
+  ],
+  "from": "now-360s",
+  "rule_id": "b4979d7b-1525-4b43-b0ed-f6451ca73d5a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/gentilkiwi/status/1003236624925413376",
+    "https://gist.github.com/gentilkiwi/dcc132457408cf11ad2061340dcb53c2",
+    "https://blog.blacklanternsecurity.com/p/detecting-dcsync?s=r",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4662"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4662 AND (winlog.event_data.Properties:(*Replicating\\ Directory\\ Changes\\ All* OR *1131f6ad\\-9c07\\-11d1\\-f79f\\-00c04fc2dcd2* OR *1131f6aa\\-9c07\\-11d1\\-f79f\\-00c04fc2dcd2* OR *9923a32a\\-3607\\-11d2\\-b9be\\-0000f87a36b2* OR *89e95b76\\-444d\\-4c62\\-991a\\-0facbeda640c*)) AND winlog.event_data.AccessMask:0x100) AND (NOT (user.domain:Window\\ Manager OR (user.name:(NT\\ AUT* OR MSOL_*)) OR user.name:*$)))"
+}

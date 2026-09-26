@@ -1,0 +1,103 @@
+{
+  "id": "c1d50c79-4fa5-4151-80a0-3fa86c321a8d",
+  "name": "Suspicious Scheduled Task Creation",
+  "tags": [
+    "attack.execution",
+    "attack.privilege-escalation",
+    "attack.persistence",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious scheduled task creation events. Based on attributes such as paths, commands line flags, etc.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7790d517-6ea1-400d-a9d9-e97de6be664e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4698"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4698 AND (winlog.event_data.TaskContent:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Roaming\\\\* OR *\\\\Users\\\\Public\\\\* OR *\\\\WINDOWS\\\\Temp\\\\* OR *C\\:\\\\Temp\\\\* OR *\\\\Desktop\\\\* OR *\\\\Downloads\\\\* OR *\\\\Temporary\\ Internet* OR *C\\:\\\\ProgramData\\\\* OR *C\\:\\\\Perflogs\\\\*)) AND (winlog.event_data.TaskContent:(*regsvr32* OR *rundll32* OR *cmd.exe\\<\\/Command\\>* OR *cmd\\<\\/Command\\>* OR *\\<Arguments\\>\\/c\\ * OR *\\<Arguments\\>\\/k\\ * OR *\\<Arguments\\>\\/r\\ * OR *powershell* OR *pwsh* OR *mshta* OR *wscript* OR *cscript* OR *certutil* OR *bitsadmin* OR *bash.exe* OR *bash\\ * OR *scrcons* OR *wmic\\ * OR *wmic.exe* OR *forfiles* OR *scriptrunner* OR *hh.exe*)))"
+}

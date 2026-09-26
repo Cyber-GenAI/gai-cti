@@ -1,0 +1,70 @@
+{
+  "id": "9e2f61a6-279a-4455-81f0-b69586385148",
+  "name": "Gpscript Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the LOLBIN gpscript, which executes logon or startup scripts configured in Group Policy",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate uses of logon scripts distributed via group policy"
+  ],
+  "from": "now-360s",
+  "rule_id": "41056f4d-965f-464e-bdd2-a00dcf12a083",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://oddvar.moe/2018/04/27/gpscript-exe-another-lolbin-to-the-list/",
+    "https://lolbas-project.github.io/lolbas/Binaries/Gpscript/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\gpscript.exe OR process.pe.original_file_name:GPSCRIPT.EXE) AND (process.command_line:(*\\ \\/logon* OR *\\ \\/startup*))) AND (NOT process.parent.command_line:C\\:\\\\windows\\\\system32\\\\svchost.exe\\ \\-k\\ netsvcs\\ \\-p\\ \\-s\\ gpsvc)"
+}

@@ -1,0 +1,76 @@
+{
+  "id": "eab0c2aa-08f4-42e9-8ae2-f265d7583231",
+  "name": "Suspicious Camera and Microphone Access",
+  "tags": [
+    "attack.collection",
+    "attack.t1125",
+    "attack.t1123",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Processes accessing the camera and microphone from suspicious folder",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely, there could be conferencing software running from a Temp folder accessing the devices"
+  ],
+  "from": "now-360s",
+  "rule_id": "726ac528-613b-4b77-a4aa-a6fc95d2f7dc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1125",
+          "name": "Video Capture",
+          "reference": "https://attack.mitre.org/techniques/T1125/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1123",
+          "name": "Audio Capture",
+          "reference": "https://attack.mitre.org/techniques/T1123/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/@7a616368/can-you-track-processes-accessing-the-camera-and-microphone-7e6885b37072"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\CapabilityAccessManager\\\\ConsentStore\\\\* AND registry.path:*\\\\NonPackaged*) AND (registry.path:(*microphone* OR *webcam*)) AND (registry.path:(*\\:#Windows#Temp#* OR *\\:#$Recycle.bin#* OR *\\:#Temp#* OR *\\:#Users#Public#* OR *\\:#Users#Default#* OR *\\:#Users#Desktop#*))"
+}

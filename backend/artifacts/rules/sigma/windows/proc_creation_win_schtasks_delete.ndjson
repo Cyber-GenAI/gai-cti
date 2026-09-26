@@ -1,0 +1,69 @@
+{
+  "id": "eaa84060-7ce8-4fbc-bbcc-c9ab7b93a148",
+  "name": "Delete Important Scheduled Task",
+  "tags": [
+    "attack.impact",
+    "attack.t1489",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when adversaries stop services or processes by deleting their respective scheduled tasks in order to conduct data destructive activities",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "d94c5637-b849-4454-bdbd-20041d3dfa27",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1489",
+          "name": "Service Stop",
+          "reference": "https://attack.mitre.org/techniques/T1489/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\schtasks.exe AND (process.command_line:*\\/delete* AND process.command_line:*\\/tn*) AND (process.command_line:(*\\\\Windows\\\\BitLocker* OR *\\\\Windows\\\\ExploitGuard* OR *\\\\Windows\\\\SystemRestore\\\\SR* OR *\\\\Windows\\\\UpdateOrchestrator\\\\* OR *\\\\Windows\\\\Windows\\ Defender\\\\* OR *\\\\Windows\\\\WindowsBackup\\\\* OR *\\\\Windows\\\\WindowsUpdate\\\\*))"
+}

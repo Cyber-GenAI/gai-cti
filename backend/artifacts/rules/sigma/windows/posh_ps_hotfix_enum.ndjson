@@ -1,0 +1,51 @@
+{
+  "id": "bf8a89d8-e1f5-4431-9b5f-3cb24aa9c211",
+  "name": "PowerShell Hotfix Enumeration",
+  "tags": [
+    "attack.discovery",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects call to \"Win32_QuickFixEngineering\" in order to enumerate installed hotfixes often used in \"enum\" scripts by attackers",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "55d329b0-6639-4ade-a1cc-4e45205f8d45",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/411Hall/JAWS/blob/233f142fcb1488172aa74228a666f6b3c5c48f1d/jaws-enum.ps1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Win32_QuickFixEngineering* AND powershell.file.script_block_text:*HotFixID*"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "74f48ec3-60b1-4aee-80bd-8f2f7ac5f939",
+  "name": "Launch-VsDevShell.PS1 Proxy Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1216.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the 'Launch-VsDevShell.ps1' Microsoft signed script to execute commands.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the script by a developer"
+  ],
+  "from": "now-360s",
+  "rule_id": "79649eeb-67db-4642-8619-91a66f0da8ad",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1216",
+          "name": "System Script Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1216/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/nas_bench/status/1535981653239255040"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*Launch\\-VsDevShell.ps1* AND (process.command_line:(*VsWherePath\\ * OR *VsInstallationPath\\ *))"
+}

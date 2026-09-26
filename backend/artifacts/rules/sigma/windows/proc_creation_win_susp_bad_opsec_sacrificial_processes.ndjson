@@ -1,0 +1,75 @@
+{
+  "id": "b195b028-be19-478c-8cfa-6b3438b01e92",
+  "name": "Bad Opsec Defaults Sacrificial Processes With Improper Arguments",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects attackers using tooling with bad opsec defaults.\nE.g. spawning a sacrificial process to inject a capability into the process without taking into account how the process is normally run.\nOne trivial example of this is using rundll32.exe without arguments as a sacrificial process (default in CS, now highlighted by c2lint), running WerFault without arguments (Kraken - credit am0nsec), and other examples.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "e4c2dbc4-3601-4d97-b3d1-a4049f08d9a5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.malwarebytes.com/malwarebytes-news/2020/10/kraken-attack-abuses-wer-service/",
+    "https://www.cobaltstrike.com/help-opsec",
+    "https://twitter.com/CyberRaiju/status/1251492025678983169",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/regsvr32",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/rundll32",
+    "https://learn.microsoft.com/en-us/dotnet/framework/tools/regasm-exe-assembly-registration-tool",
+    "https://learn.microsoft.com/en-us/dotnet/framework/tools/regsvcs-exe-net-services-installation-tool"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\WerFault.exe AND process.command_line:*WerFault.exe) OR (process.executable:*\\\\rundll32.exe AND process.command_line:*rundll32.exe) OR (process.executable:*\\\\regsvcs.exe AND process.command_line:*regsvcs.exe) OR (process.executable:*\\\\regasm.exe AND process.command_line:*regasm.exe) OR (process.executable:*\\\\regsvr32.exe AND process.command_line:*regsvr32.exe)) AND (NOT ((process.parent.executable:*\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\Install\\\\\\{* AND process.executable:*\\\\rundll32.exe AND process.command_line:*rundll32.exe) OR ((process.parent.executable:(*\\\\AppData\\\\Local\\\\BraveSoftware\\\\Brave\\-Browser\\\\Application\\\\* OR *\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\Application\\\\*)) AND process.parent.executable:*\\\\Installer\\\\setup.exe AND process.parent.command_line:*\\-\\-uninstall\\ * AND process.executable:*\\\\rundll32.exe AND process.command_line:*rundll32.exe)))"
+}

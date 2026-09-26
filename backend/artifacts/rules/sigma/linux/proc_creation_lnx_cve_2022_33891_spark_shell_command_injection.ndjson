@@ -1,0 +1,72 @@
+{
+  "id": "8e1b92ad-6f6d-409d-a0ec-11e8e79cc3cf",
+  "name": "Apache Spark Shell Command Injection - ProcessCreation",
+  "tags": [
+    "attack.initial-access",
+    "attack.t1190",
+    "cve.2022-33891",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects attempts to exploit an apache spark server via CVE-2014-6287 from a commandline perspective",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "133662be-b7f3-40f9-8a1f-6fe0fd8bf297",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1190",
+          "name": "Exploit Public-Facing Application",
+          "reference": "https://attack.mitre.org/techniques/T1190/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/W01fh4cker/cve-2022-33891/blob/fd973b56e78bca8822caa3a2e3cf1b5aff5d0950/cve_2022_33891_poc.py",
+    "https://sumsec.me/2022/CVE-2022-33891%20Apache%20Spark%20shell%20command%20injection.html",
+    "https://github.com/apache/spark/pull/36315/files"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "ParentImage:*\\\\bash AND (CommandLine:(*id\\ \\-Gn\\ `* OR *id\\ \\-Gn\\ '*))"
+}

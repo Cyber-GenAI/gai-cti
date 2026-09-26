@@ -1,0 +1,88 @@
+{
+  "id": "e8969c35-44b6-4415-9ed7-e2ef6f8cf94b",
+  "name": "HackTool - CobaltStrike BOF Injection Pattern",
+  "tags": [
+    "attack.execution",
+    "attack.t1106",
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a typical pattern of a CobaltStrike BOF which inject into other processes",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "513da31d-fdf7-4ec9-a32f-e5abb810e17a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1106",
+          "name": "Native API",
+          "reference": "https://attack.mitre.org/techniques/T1106/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/boku7/injectAmsiBypass",
+    "https://github.com/boku7/spawn"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.CallTrace:/^C:\\\\Windows\\\\SYSTEM32\\\\ntdll\\.dll\\+[a-z0-9]{4,6}\\|C:\\\\Windows\\\\System32\\\\KERNELBASE\\.dll\\+[a-z0-9]{4,6}\\|UNKNOWN\\([A-Z0-9]{16}\\)$/ AND (winlog.event_data.GrantedAccess:(0x1028 OR 0x1fffff))"
+}

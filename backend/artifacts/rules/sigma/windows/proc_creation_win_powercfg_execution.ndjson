@@ -1,0 +1,52 @@
+{
+  "id": "a88a773c-3668-4b2e-ac23-5b855eb382a7",
+  "name": "Suspicious Powercfg Execution To Change Lock Screen Timeout",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious execution of 'Powercfg.exe' to change lock screen timeout",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "73c8b36e-1297-4a9b-91cb-4acab4dac6d8",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://blogs.vmware.com/security/2022/11/batloader-the-evasive-downloader-malware.html",
+    "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\powercfg.exe OR process.pe.original_file_name:PowerCfg.exe) AND ((process.command_line:*\\/setacvalueindex\\ * AND process.command_line:*SCHEME_CURRENT* AND process.command_line:*SUB_VIDEO* AND process.command_line:*VIDEOCONLOCK*) OR (process.command_line:*\\-change\\ * AND process.command_line:*\\-standby\\-timeout\\-*))"
+}

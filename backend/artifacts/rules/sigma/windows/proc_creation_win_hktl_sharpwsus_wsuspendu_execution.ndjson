@@ -1,0 +1,72 @@
+{
+  "id": "613ba400-ffaf-48f4-9b73-8a0596d571c6",
+  "name": "HackTool - SharpWSUS/WSUSpendu Execution",
+  "tags": [
+    "attack.execution",
+    "attack.lateral-movement",
+    "attack.t1210",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of SharpWSUS or WSUSpendu, utilities that allow for lateral movement through WSUS.\nWindows Server Update Services (WSUS) is a critical component of Windows systems and is frequently configured in a way that allows an attacker to circumvent internal networking limitations.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "32603831-a8b2-4cc0-8f25-90e6993c99cb",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1210",
+          "name": "Exploitation of Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1210/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://labs.nettitude.com/blog/introducing-sharpwsus/",
+    "https://github.com/nettitude/SharpWSUS",
+    "https://web.archive.org/web/20210512154016/https://github.com/AlsidOfficial/WSUSpendu/blob/master/WSUSpendu.ps1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*\\ \\-Inject\\ * AND (process.command_line:(*\\ \\-PayloadArgs\\ * OR *\\ \\-PayloadFile\\ *))) OR ((process.command_line:(*\\ approve\\ * OR *\\ create\\ * OR *\\ check\\ * OR *\\ delete\\ *)) AND (process.command_line:(*\\ \\/payload\\:* OR *\\ \\/payload\\=* OR *\\ \\/updateid\\:* OR *\\ \\/updateid\\=*)))"
+}

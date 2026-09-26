@@ -1,0 +1,71 @@
+{
+  "id": "272ebaee-2d3b-41c1-916b-2cad7c600dea",
+  "name": "Suspicious High IntegrityLevel Conhost Legacy Option",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "ForceV1 asks for information directly from the kernel space. Conhost connects to the console application. High IntegrityLevel means the process is running with elevated privileges, such as an Administrator context.",
+  "risk_score": 20,
+  "severity": "informational",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Very Likely, including launching cmd.exe via Run As Administrator"
+  ],
+  "from": "now-360s",
+  "rule_id": "a076d780-5d94-48ac-ab37-9af57ec9327a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://cybercryptosec.medium.com/covid-19-cyber-infection-c615ead7c29",
+    "https://thedfirreport.com/2022/04/04/stolen-images-campaign-ends-in-conti-ransomware/",
+    "https://learn.microsoft.com/en-us/windows/win32/secauthz/mandatory-integrity-control"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.IntegrityLevel:(High OR S\\-1\\-16\\-12288)) AND (process.command_line:*conhost.exe* AND process.command_line:*0xffffffff* AND process.command_line:*\\-ForceV1*)"
+}

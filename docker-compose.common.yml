@@ -1,0 +1,71 @@
+services:
+  redis-backend:
+    image: docker.arvancloud.ir/redis/redis-stack-server:7.4.0-v6-x86_64
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+  redis-auth:
+    image: docker.arvancloud.ir/redis:7.4.1
+    restart: always
+    volumes:
+      - redis_auth_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  geo-ip:
+    build:
+      context: ./geo_ip
+      dockerfile: Dockerfile
+      args:
+        PIP_MIRROR_HOST: ${GAI_CTI_PIP_MIRROR_HOST:-https://pypi.org}
+
+    restart: always
+    expose:
+      - "8000"
+    healthcheck:
+      test: >
+        curl -f http://localhost:8000/ip-info
+        -H "Content-Type: application/json"
+        -d '{"ips":["127.0.0.1"]}'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    command: ["fastapi", "run", "--port", "8000"]
+
+
+  celery_worker:
+      build:
+        context: ./backend
+        dockerfile: Dockerfile
+        args:
+          PIP_MIRROR_HOST: ${GAI_CTI_PIP_MIRROR_HOST:-https://pypi.org}
+      
+      working_dir: /app/src
+      command: poetry run celery -A gai_cti_backend.background.celery_worker.celery_app worker --loglevel=info
+      depends_on:
+        - redis
+
+  celery_beat:
+      build:
+        context: ./backend
+        dockerfile: Dockerfile
+        args:
+          PIP_MIRROR_HOST: ${GAI_CTI_PIP_MIRROR_HOST:-https://pypi.org}
+
+      working_dir: /app/src
+      command: poetry run celery -A gai_cti_backend.background.celery_worker.celery_app beat --loglevel=info
+      depends_on:
+        - redis
+
+
+volumes:
+  redis_auth_data:
+    driver: local

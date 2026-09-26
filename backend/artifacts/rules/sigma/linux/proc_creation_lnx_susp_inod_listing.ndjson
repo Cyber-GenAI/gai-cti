@@ -1,0 +1,71 @@
+{
+  "id": "69e268b9-12a9-4018-b181-f02fd35d3955",
+  "name": "Potential Container Discovery Via Inodes Listing",
+  "tags": [
+    "attack.discovery",
+    "attack.t1082",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects listing of the inodes of the \"/\" directory to determine if the we are running inside of a container.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate system administrator usage of these commands",
+    "Some container tools or deployments may use these techniques natively to determine how they proceed with execution, and will need to be filtered"
+  ],
+  "from": "now-360s",
+  "rule_id": "e8c152da-9d74-4f80-a938-4ea26974f17f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.skyplabs.net/posts/container-detection/",
+    "https://stackoverflow.com/questions/20010199/how-to-determine-if-a-process-runs-inside-lxc-docker"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/ls AND (CommandLine:*\\ \\-*i* AND CommandLine:*\\ \\-*d*) AND CommandLine:*\\ \\/"
+}

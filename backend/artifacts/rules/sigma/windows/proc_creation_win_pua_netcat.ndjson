@@ -1,0 +1,71 @@
+{
+  "id": "75fdc376-feb4-427c-a25d-6f0950963246",
+  "name": "PUA - Netcat Suspicious Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1095",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of Netcat. Adversaries may use a non-application layer protocol for communication between host and C2 server or among infected hosts within a network",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate ncat use"
+  ],
+  "from": "now-360s",
+  "rule_id": "5c43913e-b5d4-4f83-a0da-705a6f444324",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1095",
+          "name": "Non-Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1095/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://nmap.org/ncat/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1095/T1095.md",
+    "https://www.revshells.com/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\nc.exe OR *\\\\ncat.exe OR *\\\\netcat.exe)) OR (process.command_line:(*\\ \\-lvp\\ * OR *\\ \\-lvnp* OR *\\ \\-l\\ \\-v\\ \\-p\\ * OR *\\ \\-lv\\ \\-p\\ * OR *\\ \\-l\\ \\-\\-proxy\\-type\\ http\\ * OR *\\ \\-vnl\\ \\-\\-exec\\ * OR *\\ \\-vnl\\ \\-e\\ * OR *\\ \\-\\-lua\\-exec\\ * OR *\\ \\-\\-sh\\-exec\\ *))"
+}

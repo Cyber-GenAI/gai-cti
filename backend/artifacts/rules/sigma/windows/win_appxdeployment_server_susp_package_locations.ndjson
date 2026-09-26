@@ -1,0 +1,54 @@
+{
+  "id": "9a68098d-b1e2-4cfd-8282-2382cbfeafdf",
+  "name": "Suspicious AppX Package Locations",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an appx package added the pipeline of the \"to be processed\" packages which is located in suspicious locations",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0abbcb54-3d3e-4b26-b559-23bee345dc4a",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://www.sentinelone.com/labs/inside-malicious-windows-apps-for-malware-deployment/",
+    "https://learn.microsoft.com/en-us/windows/win32/appxpkg/troubleshooting",
+    "https://news.sophos.com/en-us/2021/11/11/bazarloader-call-me-back-attack-abuses-windows-10-apps-mechanism/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-AppXDeploymentServer\\/Operational AND (event.code:854 AND (winlog.event_data.Path:(*C\\:\\\\Users\\\\Public\\\\* OR *\\/users\\/public\\/* OR *C\\:\\\\PerfLogs\\\\* OR *C\\:\\/perflogs\\/* OR *\\\\Desktop\\\\* OR *\\/desktop\\/* OR *\\\\Downloads\\\\* OR *\\/Downloads\\/* OR *C\\:\\\\Windows\\\\Temp\\\\* OR *C\\:\\/Windows\\/Temp\\/* OR *\\\\AppdData\\\\Local\\\\Temp\\\\* OR *\\/AppdData\\/Local\\/Temp\\/*)))"
+}

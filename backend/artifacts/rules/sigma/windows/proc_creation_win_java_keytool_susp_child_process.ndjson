@@ -1,0 +1,54 @@
+{
+  "id": "29970707-dd99-4f2c-89f4-7fce991072f7",
+  "name": "Suspicious Shells Spawn by Java Utility Keytool",
+  "tags": [
+    "attack.initial-access",
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious shell spawn from Java utility keytool process (e.g. adselfservice plus exploitation)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6c8772b3-2084-4f26-b67c-65592940421c",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/intelligence-insights-december-2021",
+    "https://www.synacktiv.com/en/publications/how-to-exploit-cve-2021-40539-on-manageengine-adselfservice-plus.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\keytool.exe AND (process.executable:(*\\\\cmd.exe OR *\\\\sh.exe OR *\\\\bash.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\schtasks.exe OR *\\\\certutil.exe OR *\\\\whoami.exe OR *\\\\bitsadmin.exe OR *\\\\wscript.exe OR *\\\\cscript.exe OR *\\\\scrcons.exe OR *\\\\regsvr32.exe OR *\\\\hh.exe OR *\\\\wmic.exe OR *\\\\mshta.exe OR *\\\\rundll32.exe OR *\\\\forfiles.exe OR *\\\\scriptrunner.exe OR *\\\\mftrace.exe OR *\\\\AppVLP.exe OR *\\\\systeminfo.exe OR *\\\\reg.exe OR *\\\\query.exe))"
+}

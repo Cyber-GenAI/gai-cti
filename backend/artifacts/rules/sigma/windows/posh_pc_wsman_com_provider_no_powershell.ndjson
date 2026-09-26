@@ -1,0 +1,89 @@
+{
+  "id": "0af77ba3-873c-4d78-a166-e3d8594f6044",
+  "name": "Suspicious Non PowerShell WSMAN COM Provider",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "attack.lateral-movement",
+    "attack.t1021.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious use of the WSMAN provider without PowerShell.exe as the host application.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a37d9d46-a795-4eff-aaaf-4da1d32cbca1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/chadtilbury/status/1275851297770610688",
+    "https://bohops.com/2020/05/12/ws-management-com-another-approach-for-winrm-lateral-movement/",
+    "https://github.com/bohops/WSMan-WinRM"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Windows\\ PowerShell AND (winlog.event_data.Data:*ProviderName\\=WSMan* AND (NOT ((winlog.event_data.Data:(*HostApplication\\=powershell* OR *HostApplication\\=C\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell* OR *HostApplication\\=C\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\powershell* OR *HostApplication\\=C\\:\\/Windows\\/System32\\/WindowsPowerShell\\/v1.0\\/powershell* OR *HostApplication\\=C\\:\\/Windows\\/SysWOW64\\/WindowsPowerShell\\/v1.0\\/powershell*)) OR winlog.event_data.Data:/HostId=[a-zA-Z0-9-]{36}\\s+EngineVersion=/)))"
+}

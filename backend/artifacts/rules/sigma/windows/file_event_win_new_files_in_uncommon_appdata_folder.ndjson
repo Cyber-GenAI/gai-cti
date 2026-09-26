@@ -1,0 +1,52 @@
+{
+  "id": "abe6527b-1a05-4b42-8896-6968a2f1c285",
+  "name": "Suspicious File Creation In Uncommon AppData Folder",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of suspicious files and folders inside the user's AppData folder but not inside any of the common and well known directories (Local, Romaing, LocalLow). This method could be used as a method to bypass detection who exclude the AppData folder in fear of FPs",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "15c1e22e-3257-4f92-a613-8291600ce344",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:C\\:\\\\Users\\\\* AND file.path:*\\\\AppData\\\\* AND (file.path:(*.bat OR *.cmd OR *.cpl OR *.dll OR *.exe OR *.hta OR *.iso OR *.lnk OR *.msi OR *.ps1 OR *.psm1 OR *.scr OR *.vbe OR *.vbs))) AND (NOT (file.path:C\\:\\\\Users\\\\* AND (file.path:(*\\\\AppData\\\\Local\\\\* OR *\\\\AppData\\\\LocalLow\\\\* OR *\\\\AppData\\\\Roaming\\\\*))))"
+}

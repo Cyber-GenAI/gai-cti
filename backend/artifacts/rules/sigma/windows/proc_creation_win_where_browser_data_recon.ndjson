@@ -1,0 +1,69 @@
+{
+  "id": "7bbe065e-5f40-42a3-9562-7d2013cd1f87",
+  "name": "Suspicious Where Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1217",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may enumerate browser bookmarks to learn more about compromised hosts.\nBrowser bookmarks may reveal personal information about users (ex: banking sites, interests, social media, etc.) as well as details about\ninternal network resources such as servers, tools/dashboards, or other related infrastructure.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "bf6f5df1-b9eb-43b3-9fa4-78752db045e5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1217",
+          "name": "Browser Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1217/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1217/T1217.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\where.exe OR process.pe.original_file_name:where.exe) AND (process.command_line:(*places.sqlite* OR *cookies.sqlite* OR *formhistory.sqlite* OR *logins.json* OR *key4.db* OR *key3.db* OR *sessionstore.jsonlz4* OR *History* OR *Bookmarks* OR *Cookies* OR *Login\\ Data*))"
+}

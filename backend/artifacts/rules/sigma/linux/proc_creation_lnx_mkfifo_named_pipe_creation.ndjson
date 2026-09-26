@@ -1,0 +1,52 @@
+{
+  "id": "7ec2a4b2-b676-4e4b-bbe0-df2dcfb968d1",
+  "name": "Named Pipe Created Via Mkfifo",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a new named pipe using the \"mkfifo\" utility",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e1f9a8ce-a709-4eab-a106-1a26a5f37840",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://dev.to/0xbf/use-mkfifo-to-create-named-pipe-linux-tips-5bbk",
+    "https://www.mandiant.com/resources/blog/barracuda-esg-exploited-globally"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/mkfifo"
+}

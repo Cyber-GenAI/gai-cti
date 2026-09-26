@@ -1,0 +1,73 @@
+{
+  "id": "9f5971b6-2d28-4643-aa03-cb9a86e7229c",
+  "name": "Buffer Overflow Attempts",
+  "tags": [
+    "attack.t1068",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects buffer overflow attempts in Unix system log files",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Base64 encoded data in log entries"
+  ],
+  "from": "now-360s",
+  "rule_id": "137cb2a6-a72f-4763-9ec5-1c1a96cbf26a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/ossec/ossec-hids/blob/1ecffb1b88/etc/rules/attack_rules.xml",
+    "https://docs.oracle.com/cd/E19683-01/816-4883/6mb2joatd/index.html",
+    "https://www.giac.org/paper/gcih/266/review-ftp-protocol-cyber-defense-initiative/102802",
+    "https://blu.org/mhonarc/discuss/2001/04/msg00285.php",
+    "https://rapid7.com/blog/post/2019/02/19/stack-based-buffer-overflow-attacks-what-you-need-to-know/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*attempt\\ to\\ execute\\ code\\ on\\ stack\\ by* OR *0bin0sh1* OR *AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA* OR *stack\\ smashing\\ detected*"
+}

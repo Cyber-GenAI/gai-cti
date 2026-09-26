@@ -1,0 +1,70 @@
+{
+  "id": "13ec8663-f3df-4e83-8b8c-06e5eb777c65",
+  "name": "Uncommon Connection to Active Directory Web Services",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uncommon network connections to the Active Directory Web Services (ADWS) from processes not typically associated with ADWS management.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "ADWS is used by a number of legitimate applications that need to interact with Active Directory. These applications should be added to the allow-listing to avoid false positives."
+  ],
+  "from": "now-360s",
+  "rule_id": "d8810368-7026-497e-9f23-d931faa59d54",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/falconforce/soaphound-tool-to-collect-active-directory-data-via-adws-165aca78288c",
+    "https://github.com/FalconForceTeam/FalconFriday/blob/master/Discovery/ADWS_Connection_from_Unexpected_Binary-Win.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(network.direction:true AND destination.port:9389) AND (NOT (process.executable:C\\:\\\\Windows\\\\system32\\\\dsac.exe OR process.executable:C\\:\\\\Program\\ Files\\\\Microsoft\\ Monitoring\\ Agent\\\\ OR (process.executable:(C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\\\pwsh.exe* OR C\\:\\\\Program\\ Files\\\\PowerShell\\\\7\\-preview\\\\pwsh.ex* OR C\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\*))))"
+}

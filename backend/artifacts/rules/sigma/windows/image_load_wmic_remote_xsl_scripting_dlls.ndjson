@@ -1,0 +1,73 @@
+{
+  "id": "3d9b8d04-73e7-4df0-ac71-cf4386bc18f4",
+  "name": "WMIC Loading Scripting Libraries",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1220",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects threat actors proxy executing code and bypassing application controls by leveraging wmic and the `/FORMAT` argument switch to download and execute an XSL file (i.e js, vbs, etc).",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "The command wmic os get lastboottuptime loads vbscript.dll",
+    "The command wmic os get locale loads vbscript.dll",
+    "Since the ImageLoad event doesn't have enough information in this case. It's better to look at the recent process creation events that spawned the WMIC process and investigate the command line and parent/child processes to get more insights"
+  ],
+  "from": "now-360s",
+  "rule_id": "4c49ba94-3933-496c-a80b-99c52b6eb2b0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1220",
+          "name": "XSL Script Processing",
+          "reference": "https://attack.mitre.org/techniques/T1220/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://securitydatasets.com/notebooks/atomic/windows/defense_evasion/SDWIN-201017061100.html",
+    "https://twitter.com/dez_/status/986614411711442944",
+    "https://lolbas-project.github.io/lolbas/Binaries/Wmic/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\wmic.exe AND (file.path:(*\\\\jscript.dll OR *\\\\vbscript.dll))"
+}

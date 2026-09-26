@@ -1,0 +1,70 @@
+{
+  "id": "6fd2470b-b660-4237-9299-f6be165e0021",
+  "name": "Suspicious PFX File Creation",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1552.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "A general detection for processes creating PFX files. This could be an indicator of an adversary exporting a local certificate to a PFX file.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "System administrators managing certificates."
+  ],
+  "from": "now-360s",
+  "rule_id": "eeeb1bfc-6518-46a2-b17f-2e78c1070628",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1552",
+          "name": "Unsecured Credentials",
+          "reference": "https://attack.mitre.org/techniques/T1552/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/OTRF/detection-hackathon-apt29/issues/14",
+    "https://github.com/OTRF/ThreatHunter-Playbook/blob/2d4257f630f4c9770f78d0c1df059f891ffc3fec/docs/evals/apt29/detections/6.B.1_6392C9F1-D975-4F75-8A70-433DEDD7F622.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*.pfx AND (NOT (file.path:*\\\\Templates\\\\Windows\\\\Windows_TemporaryKey.pfx* AND file.path:*\\\\CMake\\\\*))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "6814bf2b-e078-4416-a803-b864ce641c01",
+  "name": "Python Inline Command Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of python using the \"-c\" flag. This is could be used as a way to launch a reverse shell or execute live python code.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Python libraries that use a flag starting with \"-c\". Filter according to your environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "a9036072-2ec6-4a86-98d9-eb9df8d591f9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://docs.python.org/3/using/cmdline.html#cmdoption-c",
+    "https://www.revshells.com/",
+    "https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.pe.original_file_name:python.exe OR (process.executable:(*python.exe OR *python3.exe OR *python2.exe))) AND process.command_line:*\\ \\-c*) AND (NOT (process.parent.executable:C\\:\\\\Program\\ Files\\\\Python* AND process.parent.executable:*\\\\python.exe AND process.parent.command_line:*\\-E\\ \\-s\\ \\-m\\ ensurepip\\ \\-U\\ \\-\\-default\\-pip*)) AND (NOT (process.parent.executable:*\\\\AppData\\\\Local\\\\Programs\\\\Microsoft\\ VS\\ Code\\\\Code.exe OR (process.command_line:*\\<pip\\-setuptools\\-caller\\>* AND process.command_line:*exec\\(compile\\(*)))"
+}

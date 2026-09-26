@@ -1,0 +1,69 @@
+{
+  "id": "120c7670-a5c7-4f46-a9c2-6223b0198f9c",
+  "name": "Loaded Module Enumeration Via Tasklist.EXE",
+  "tags": [
+    "attack.t1003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the enumeration of a specific DLL or EXE being used by a binary via \"tasklist.exe\".\nThis is often used by attackers in order to find the specific process identifier (PID) that is using the DLL in question.\nIn order to dump the process memory or perform other nefarious actions.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f14ac6d9-b09f-43ce-9782-73f441e35c82",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.n00py.io/2021/05/dumping-plaintext-rdp-credentials-from-svchost-exe/",
+    "https://pentestlab.blog/tag/svchost/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\tasklist.exe OR process.pe.original_file_name:tasklist.exe) AND process.command_line:(*\\-m* OR *\\/m* OR *\u2013m* OR *\u2014m* OR *\u2015m*) AND process.command_line:*rdpcorets.dll*"
+}

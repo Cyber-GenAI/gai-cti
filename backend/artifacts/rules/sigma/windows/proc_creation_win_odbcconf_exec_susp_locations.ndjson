@@ -1,0 +1,71 @@
+{
+  "id": "075c112e-17fe-48e2-a603-7b126e24ac27",
+  "name": "Odbcconf.EXE Suspicious DLL Location",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"odbcconf\" where the path of the DLL being registered is located in a potentially suspicious location.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "8828d89f-2f28-4ed1-812f-a6f742d17974",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sql/odbc/odbcconf-exe?view=sql-server-ver16",
+    "https://www.trendmicro.com/en_us/research/17/h/backdoor-carrying-emails-set-sights-on-russian-speaking-businesses.html",
+    "https://securityintelligence.com/posts/raspberry-robin-worm-dridex-malware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\odbcconf.exe OR process.pe.original_file_name:odbcconf.exe) AND (process.command_line:(*\\:\\\\PerfLogs\\\\* OR *\\:\\\\ProgramData\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Registration\\\\CRMLog* OR *\\:\\\\Windows\\\\System32\\\\com\\\\dmp\\\\* OR *\\:\\\\Windows\\\\System32\\\\FxsTmp\\\\* OR *\\:\\\\Windows\\\\System32\\\\Microsoft\\\\Crypto\\\\RSA\\\\MachineKeys\\\\* OR *\\:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\color\\\\* OR *\\:\\\\Windows\\\\System32\\\\spool\\\\PRINTERS\\\\* OR *\\:\\\\Windows\\\\System32\\\\spool\\\\SERVERS\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks_Migrated\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\com\\\\dmp\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\FxsTmp\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\PLA\\\\System\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\* OR *\\:\\\\Windows\\\\Tasks\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\:\\\\Windows\\\\Tracing\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Roaming\\\\*))"
+}

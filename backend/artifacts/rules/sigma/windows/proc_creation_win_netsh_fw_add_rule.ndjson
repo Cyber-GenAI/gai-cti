@@ -1,0 +1,71 @@
+{
+  "id": "9bbde2e9-0c13-4c7f-8e46-e5b526c7a4e0",
+  "name": "New Firewall Rule Added Via Netsh.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "attack.s0246",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the addition of a new rule to the Windows firewall via netsh",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activity",
+    "Software installations"
+  ],
+  "from": "now-360s",
+  "rule_id": "a899bb77-ae45-4893-987b-5902f1a86d6f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20190508165435/https://www.operationblockbuster.com/wp-content/uploads/2016/02/Operation-Blockbuster-RAT-and-Staging-Report.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\netsh.exe OR process.pe.original_file_name:netsh.exe) AND (process.command_line:*\\ firewall\\ * AND process.command_line:*\\ add\\ *)) AND (NOT (process.command_line:(*advfirewall\\ firewall\\ add\\ rule\\ name\\=Dropbox\\ dir\\=in\\ action\\=allow\\ \\\"program\\=?\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Dropbox\\\\Client\\\\Dropbox.exe\\\"\\ enable\\=yes\\ profile\\=Any* OR *advfirewall\\ firewall\\ add\\ rule\\ name\\=Dropbox\\ dir\\=in\\ action\\=allow\\ \\\"program\\=?\\:\\\\Program\\ Files\\\\Dropbox\\\\Client\\\\Dropbox.exe\\\"\\ enable\\=yes\\ profile\\=Any*)))"
+}

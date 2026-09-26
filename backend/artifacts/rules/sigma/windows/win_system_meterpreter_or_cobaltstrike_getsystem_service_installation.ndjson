@@ -1,0 +1,71 @@
+{
+  "id": "bff7e59d-022e-4b17-ac0a-71cbfdf9e865",
+  "name": "Meterpreter or Cobalt Strike Getsystem Service Installation - System",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1134.001",
+    "attack.t1134.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of getsystem Meterpreter/Cobalt Strike command by detecting a specific service installation",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "9f7f9daf-79e5-4223-87c4-5053ff86fa49",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-privilege-escalation-in-windows-environment",
+    "https://blog.cobaltstrike.com/2014/04/02/what-happens-when-i-type-getsystem/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045) AND (((winlog.event_data.ImagePath:*\\/c* AND winlog.event_data.ImagePath:*echo* AND winlog.event_data.ImagePath:*\\\\pipe\\\\*) AND (winlog.event_data.ImagePath:(*cmd* OR *%COMSPEC%*))) OR (winlog.event_data.ImagePath:*rundll32* AND winlog.event_data.ImagePath:*.dll,a* AND winlog.event_data.ImagePath:*\\/p\\:*) OR winlog.event_data.ImagePath:\\\\\\\\127.0.0.1\\\\ADMIN$\\\\*))"
+}

@@ -1,0 +1,75 @@
+{
+  "id": "726e7d1c-9aea-487c-965b-f8795b6ece3f",
+  "name": "Data Export From MSSQL Table Via BCP.EXE",
+  "tags": [
+    "attack.execution",
+    "attack.t1048",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the BCP utility in order to export data from the database.\nAttackers were seen saving their malware to a database column or table and then later extracting it via \"bcp.exe\" into a file.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate data export operations."
+  ],
+  "from": "now-360s",
+  "rule_id": "ff245948-34c6-4327-9017-d99e86481228",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1048",
+          "name": "Exfiltration Over Alternative Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1048/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://docs.microsoft.com/en-us/sql/tools/bcp-utility",
+    "https://asec.ahnlab.com/en/61000/",
+    "https://asec.ahnlab.com/en/78944/",
+    "https://www.huntress.com/blog/attacking-mssql-servers",
+    "https://www.huntress.com/blog/attacking-mssql-servers-pt-ii",
+    "https://news.sophos.com/en-us/2024/08/07/sophos-mdr-hunt-tracks-mimic-ransomware-campaign-against-organizations-in-india/",
+    "https://research.nccgroup.com/2018/03/10/apt15-is-alive-and-strong-an-analysis-of-royalcli-and-royaldns/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\bcp.exe OR process.pe.original_file_name:BCP.exe) AND (process.command_line:(*\\ out\\ * OR *\\ queryout\\ *))"
+}

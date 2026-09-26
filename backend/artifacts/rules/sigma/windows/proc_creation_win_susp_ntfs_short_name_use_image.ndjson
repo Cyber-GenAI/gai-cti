@@ -1,0 +1,71 @@
+{
+  "id": "3fb886a8-ae30-4a74-856c-cdfa66e93857",
+  "name": "Use NTFS Short Name in Image",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect use of the Windows 8.3 short name. Which could be used as a method to avoid Image based detection",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Software Installers"
+  ],
+  "from": "now-360s",
+  "rule_id": "f74157ed-9f37-4078-bd3f-3b40a33a3a95",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.acunetix.com/blog/articles/windows-short-8-3-filenames-web-security-problem/",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc959352(v=technet.10)",
+    "https://twitter.com/jonasLyk/status/1555914501802921984"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\~1.bat* OR *\\~1.dll* OR *\\~1.exe* OR *\\~1.hta* OR *\\~1.js* OR *\\~1.msi* OR *\\~1.ps1* OR *\\~1.tmp* OR *\\~1.vbe* OR *\\~1.vbs* OR *\\~2.bat* OR *\\~2.dll* OR *\\~2.exe* OR *\\~2.hta* OR *\\~2.js* OR *\\~2.msi* OR *\\~2.ps1* OR *\\~2.tmp* OR *\\~2.vbe* OR *\\~2.vbs*)) AND (NOT process.parent.executable:C\\:\\\\Windows\\\\explorer.exe) AND (NOT (process.parent.executable:*\\\\WebEx\\\\WebexHost.exe OR process.parent.executable:*\\\\thor\\\\thor64.exe OR process.executable:C\\:\\\\PROGRA\\~1\\\\WinZip\\\\WZPREL\\~1.EXE OR process.executable:*\\\\VCREDI\\~1.EXE))"
+}

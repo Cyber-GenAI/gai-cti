@@ -1,0 +1,77 @@
+{
+  "id": "1060e54e-6fd2-4c7d-8c8d-a06f0c280ea7",
+  "name": "Microsoft Malware Protection Engine Crash",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1211",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "This rule detects a suspicious crash of the Microsoft Malware Protection Engine",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "MsMpEng might crash if the \"C:\\\" partition is full"
+  ],
+  "from": "now-360s",
+  "rule_id": "183670ef-ddb0-459d-9d2a-c64170eaf90e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1211",
+          "name": "Exploitation for Defense Evasion",
+          "reference": "https://attack.mitre.org/techniques/T1211/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://bugs.chromium.org/p/project-zero/issues/detail?id=1252&desc=5",
+    "https://technet.microsoft.com/en-us/library/security/4022344"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (winlog.provider_name:Application\\ Error AND event.code:1000 AND (winlog.event_data.Data:*MsMpEng.exe* AND winlog.event_data.Data:*mpengine.dll*))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "a732a316-58f1-4a7b-8476-3abcc20fcb44",
+  "name": "Triple Cross eBPF Rootkit Install Commands",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1014",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects default install commands of the Triple Cross eBPF rootkit based on the \"deployer.sh\" script",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "0b964847-a249-4c4d-a2af-34704b6b5ba5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1014",
+          "name": "Rootkit",
+          "reference": "https://attack.mitre.org/techniques/T1014/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/h3xduck/TripleCross/blob/1f1c3e0958af8ad9f6ebe10ab442e75de33e91de/apps/deployer.sh"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/sudo AND (CommandLine:*\\ tc\\ * AND CommandLine:*\\ enp0s3\\ *) AND (CommandLine:(*\\ qdisc\\ * OR *\\ filter\\ *))"
+}

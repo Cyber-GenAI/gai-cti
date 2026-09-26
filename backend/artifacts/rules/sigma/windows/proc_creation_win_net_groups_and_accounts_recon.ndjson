@@ -1,0 +1,73 @@
+{
+  "id": "52dec7d4-fa15-4565-86ba-b182d0ad8ad9",
+  "name": "Suspicious Group And Account Reconnaissance Activity Using Net.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087.001",
+    "attack.t1087.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious reconnaissance command line activity on Windows systems using Net.EXE\nCheck if the user that executed the commands is suspicious (e.g. service accounts, LOCAL_SYSTEM)\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Inventory tool runs",
+    "Administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "52696166-6388-453d-af66-05251ad298f4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/how-one-hospital-thwarted-a-ryuk-ransomware-outbreak/",
+    "https://thedfirreport.com/2020/10/18/ryuk-in-5-hours/",
+    "https://research.nccgroup.com/2022/08/19/back-in-black-unlocking-a-lockbit-3-0-ransomware-attack/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\net.exe OR *\\\\net1.exe)) OR (process.pe.original_file_name:(net.exe OR net1.exe))) AND ((((process.command_line:(*\\ group\\ * OR *\\ localgroup\\ *)) AND (process.command_line:(*domain\\ admins* OR *\\ administrator* OR *\\ administrateur* OR *enterprise\\ admins* OR *Exchange\\ Trusted\\ Subsystem* OR *Remote\\ Desktop\\ Users* OR *Utilisateurs\\ du\\ Bureau\\ \u00e0\\ distance* OR *Usuarios\\ de\\ escritorio\\ remoto* OR *\\ \\/do*))) AND (NOT process.command_line:*\\ \\/add*)) OR (process.command_line:*\\ accounts\\ * AND process.command_line:*\\ \\/do*))"
+}

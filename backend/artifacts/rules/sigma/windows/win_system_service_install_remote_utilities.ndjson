@@ -1,0 +1,51 @@
+{
+  "id": "8ca2023d-7a32-4b63-b25f-5441fa9addeb",
+  "name": "Remote Utilities Host Service Install",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Remote Utilities Host service installation on the target system.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the tool"
+  ],
+  "from": "now-360s",
+  "rule_id": "ed661252-d692-42e9-9885-f20cf6ad975b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.remoteutilities.com/support/kb/host-service-won-t-start/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045) AND ((winlog.event_data.ImagePath:*\\\\rutserv.exe* AND winlog.event_data.ImagePath:*\\-service*) OR winlog.event_data.ServiceName:Remote\\ Utilities\\ \\-\\ Host))"
+}

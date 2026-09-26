@@ -1,0 +1,70 @@
+{
+  "id": "9e72d1ad-8e0b-4a34-9e6f-6cc9780e8958",
+  "name": "Potential Execution of Sysinternals Tools",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1588.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command lines that contain the 'accepteula' flag which could be a sign of execution of one of the Sysinternals tools",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of SysInternals tools",
+    "Programs that use the same command line flag"
+  ],
+  "from": "now-360s",
+  "rule_id": "df0cda1c-3327-4be0-8e7e-8825b1864337",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1588",
+          "name": "Obtain Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1588/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Moti_B/status/1008587936735035392"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:(*\\ \\-accepteula* OR *\\ \\/accepteula* OR *\\ \u2013accepteula* OR *\\ \u2014accepteula* OR *\\ \u2015accepteula*)"
+}

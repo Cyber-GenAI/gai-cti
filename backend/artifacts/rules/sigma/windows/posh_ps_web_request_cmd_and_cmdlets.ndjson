@@ -1,0 +1,70 @@
+{
+  "id": "b713aae4-4eeb-426a-a0c9-b6560a965713",
+  "name": "Usage Of Web Request Commands And Cmdlets - ScriptBlock",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of various web request commands with commandline tools and Windows PowerShell cmdlets (including aliases) via PowerShell scriptblock logs",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Use of Get-Command and Get-Help modules to reference Invoke-WebRequest and Start-BitsTransfer."
+  ],
+  "from": "now-360s",
+  "rule_id": "0234cf8d-7a35-4b0e-bf60-21dcf23a7090",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://4sysops.com/archives/use-powershell-to-download-a-file-with-http-https-and-ftp/",
+    "https://blog.jourdant.me/post/3-ways-to-download-files-with-powershell"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*\\[System.Net.WebRequest\\]\\:\\:create* OR *curl\\ * OR *Invoke\\-RestMethod* OR *Invoke\\-WebRequest* OR *iwr\\ * OR *Net.WebClient* OR *Resume\\-BitsTransfer* OR *Start\\-BitsTransfer* OR *wget\\ * OR *WinHttp.WinHttpRequest*)) AND (NOT winlog.event_data.Path:C\\:\\\\Packages\\\\Plugins\\\\Microsoft.GuestConfiguration.ConfigurationforWindows\\\\*)"
+}

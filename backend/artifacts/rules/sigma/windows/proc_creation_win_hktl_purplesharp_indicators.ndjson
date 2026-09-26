@@ -1,0 +1,69 @@
+{
+  "id": "e6b60cf3-e516-4225-bac5-d6d448b77667",
+  "name": "HackTool - PurpleSharp Execution",
+  "tags": [
+    "attack.t1587",
+    "attack.resource-development",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the PurpleSharp adversary simulation tool",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "b398363b-c69f-4529-95ac-33735f9a2660",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1587",
+          "name": "Develop Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1587/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/mvelazc0/PurpleSharp"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\purplesharp* OR process.pe.original_file_name:PurpleSharp.exe) OR (process.command_line:(*xyz123456.exe* OR *PurpleSharp*))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "57122b01-daf3-45d8-bb29-162bc031e64a",
+  "name": "Suspicious Desktopimgdownldr Command",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1105",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious Microsoft desktopimgdownldr execution with parameters used to download files from the Internet",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives depend on scripts and administrative tools used in the monitored environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "ec7e6db4-bdf8-420a-9e3c-d95934b2cc14",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://labs.sentinelone.com/living-off-windows-land-a-new-native-file-downldr/",
+    "https://twitter.com/SBousseaden/status/1278977301745741825"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*\\ \\/lockscreenurl\\:* AND (NOT (process.command_line:(*.jpg* OR *.jpeg* OR *.png*)))) OR (process.command_line:*reg\\ delete* AND process.command_line:*\\\\PersonalizationCSP*)"
+}

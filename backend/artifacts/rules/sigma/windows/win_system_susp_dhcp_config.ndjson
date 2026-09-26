@@ -1,0 +1,71 @@
+{
+  "id": "d578fe96-dcb0-4287-9f78-a7cc57d5b69d",
+  "name": "DHCP Server Loaded the CallOut DLL",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "This rule detects a DHCP server in which a specified Callout DLL (in registry) was loaded",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e6ae6456-96ee-4c42-997e-591617cc3e8e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.3or.de/mimilib-dhcp-server-callout-dll-injection.html",
+    "https://technet.microsoft.com/en-us/library/cc726884(v=ws.10).aspx",
+    "https://msdn.microsoft.com/de-de/library/windows/desktop/aa363389(v=vs.85).aspx"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND (event.code:1033 AND winlog.provider_name:Microsoft\\-Windows\\-DHCP\\-Server)"
+}

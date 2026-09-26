@@ -1,0 +1,70 @@
+{
+  "id": "5394c30b-9c53-43a4-90f8-51a198354523",
+  "name": "Suspicious PowerShell IEX Execution Patterns",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious ways to run Invoke-Execution using IEX alias",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate scripts that use IEX"
+  ],
+  "from": "now-360s",
+  "rule_id": "5c39ae40-0a1c-4c15-a577-4449a5ce986b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-expression?view=powershell-7.2",
+    "https://www.huntress.com/blog/slashandgrab-screen-connect-post-exploitation-in-the-wild-cve-2024-1709-cve-2024-1708"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) AND (process.command_line:(*\\ \\|\\ iex;* OR *\\ \\|\\ iex\\ * OR *\\ \\|\\ iex\\}* OR *\\ \\|\\ IEX\\ ;* OR *\\ \\|\\ IEX\\ \\-Error* OR *\\ \\|\\ IEX\\ \\(new* OR *\\);IEX\\ *))) AND (process.command_line:(*\\:\\:FromBase64String* OR *.GetString\\(\\[System.Convert\\]\\:\\:*))) OR (process.command_line:(*\\)\\|iex;$* OR *\\);iex\\($* OR *\\);iex\\ $* OR *\\ \\|\\ IEX\\ \\|\\ * OR *\\ \\|\\ iex\\\\\\\"*))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "981dd9f1-2c39-4dc6-96c3-38e09c87db6b",
+  "name": "DLL Loaded From Suspicious Location Via Cmspt.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects cmstp loading \"dll\" or \"ocx\" files from suspicious locations",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "22d88ed5-e065-462b-b2d4-8392edab301d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/vadim-hunter/Detection-Ideas-Rules/blob/02bcbfc2bfb8b4da601bb30de0344ae453aa1afe/TTPs/Defense%20Evasion/T1218%20-%20Signed%20Binary%20Proxy%20Execution/T1218.003%20-%20CMSTP/Procedures.yaml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\cmstp.exe AND (file.path:(*\\\\PerfLogs\\\\* OR *\\\\ProgramData\\\\* OR *\\\\Users\\\\* OR *\\\\Windows\\\\Temp\\\\* OR *C\\:\\\\Temp\\\\*)) AND (file.path:(*.dll OR *.ocx))"
+}

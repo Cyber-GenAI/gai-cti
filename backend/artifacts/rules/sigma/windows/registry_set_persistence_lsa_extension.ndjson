@@ -1,0 +1,52 @@
+{
+  "id": "1ebd6ece-bbbf-4f84-83e9-6160f9a53324",
+  "name": "Potential Persistence Via LSA Extensions",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker modifies the \"REG_MULTI_SZ\" value named \"Extensions\" to include a custom DLL to achieve persistence via lsass.\nThe \"Extensions\" list contains filenames of DLLs being automatically loaded by lsass.exe. Each DLL has its InitializeLsaExtension() method called after loading.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "e2b5d223-1e42-4796-9cd0-f327fac893cc",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/lsaaextension.html",
+    "https://twitter.com/0gtweet/status/1476286368385019906"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\LsaExtensionConfig\\\\LsaSrv\\\\Extensions*"
+}

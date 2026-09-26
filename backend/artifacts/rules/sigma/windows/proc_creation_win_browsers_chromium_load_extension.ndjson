@@ -1,0 +1,71 @@
+{
+  "id": "5ce0b18f-74ed-48dc-a469-302e0c1a880e",
+  "name": "Chromium Browser Instance Executed With Custom Extension",
+  "tags": [
+    "attack.persistence",
+    "attack.t1176",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a Chromium based browser process with the 'load-extension' flag to start a instance with a custom extension",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Usage of Chrome Extensions in testing tools such as BurpSuite will trigger this alert"
+  ],
+  "from": "now-360s",
+  "rule_id": "6d66eb17-d1a5-40d9-991c-e3c834ca236d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1176",
+          "name": "Software Extensions",
+          "reference": "https://attack.mitre.org/techniques/T1176/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/chromeloader/",
+    "https://emkc.org/s/RJjuLa",
+    "https://www.mandiant.com/resources/blog/lnk-between-browsers"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\brave.exe OR *\\\\chrome.exe OR *\\\\msedge.exe OR *\\\\opera.exe OR *\\\\vivaldi.exe)) AND process.command_line:*\\-\\-load\\-extension\\=*"
+}

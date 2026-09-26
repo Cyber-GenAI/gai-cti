@@ -1,0 +1,51 @@
+{
+  "id": "4f465ba3-ff2c-45ef-a5e1-c28f2efdc8f0",
+  "name": "Suspicious Workstation Locking via Rundll32",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious call to the user32.dll function that locks the user workstation",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Scripts or links on the user desktop used to lock the workstation instead of Windows+L or the menu option"
+  ],
+  "from": "now-360s",
+  "rule_id": "2f5d84e6-c49e-457e-bece-c0dbaeca83fb",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/2aef9c63-f944-4763-b3ef-81eee209d128/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE) AND process.parent.executable:*\\\\cmd.exe AND process.command_line:*user32.dll,* AND process.command_line:*LockWorkStation*"
+}

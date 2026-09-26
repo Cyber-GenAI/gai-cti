@@ -1,0 +1,71 @@
+{
+  "id": "906a00a6-fba4-4967-aa2c-c46fd2a206cf",
+  "name": "Computer Discovery And Export Via Get-ADComputer Cmdlet",
+  "tags": [
+    "attack.discovery",
+    "attack.t1033",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the Get-ADComputer cmdlet to collect computer information and output it to a file",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate admin scripts may use the same technique, it's better to exclude specific computers or users who execute these commands or scripts often"
+  ],
+  "from": "now-360s",
+  "rule_id": "c2d056ff-ebb5-4125-9918-dc717c2d4fa1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "http://blog.talosintelligence.com/2022/09/lazarus-three-rats.html",
+    "https://www.microsoft.com/en-us/security/blog/2022/10/18/defenders-beware-a-case-for-post-ransomware-investigations/",
+    "https://www.cisa.gov/uscert/sites/default/files/publications/aa22-320a_joint_csa_iranian_government-sponsored_apt_actors_compromise_federal%20network_deploy_crypto%20miner_credential_harvester.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND ((process.command_line:*Get\\-ADComputer\\ * AND process.command_line:*\\ \\-Filter\\ \\**) AND (process.command_line:(*\\ \\>\\ * OR *\\ \\|\\ Select\\ * OR *Out\\-File* OR *Set\\-Content* OR *Add\\-Content*)))"
+}

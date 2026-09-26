@@ -1,0 +1,70 @@
+{
+  "id": "7545f200-ad02-46ee-8112-5a4420ec3e34",
+  "name": "Suspicious VBoxDrvInst.exe Parameters",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect VBoxDrvInst.exe run with parameters allowing processing INF file.\nThis allows to create values in the registry and install drivers.\nFor example one could use this technique to obtain persistence via modifying one of Run or RunOnce registry keys\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of VBoxDrvInst.exe utility by VirtualBox Guest Additions installation process"
+  ],
+  "from": "now-360s",
+  "rule_id": "e638f6b9-b44f-4893-ad2a-b1b722f4df63",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/LOLBAS-Project/LOLBAS/blob/4db780e0f0b2e2bb8cb1fa13e09196da9b9f1834/yml/LOLUtilz/OtherBinaries/VBoxDrvInst.yml",
+    "https://twitter.com/pabraeken/status/993497996179492864"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\VBoxDrvInst.exe AND (process.command_line:*driver* AND process.command_line:*executeinf*)"
+}

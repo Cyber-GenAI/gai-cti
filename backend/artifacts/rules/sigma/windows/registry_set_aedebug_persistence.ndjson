@@ -1,0 +1,52 @@
+{
+  "id": "7a2b9f8b-f882-49d8-8f52-45591ed3b4eb",
+  "name": "Add Debugger Entry To AeDebug For Persistence",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker adds a new \"Debugger\" value to the \"AeDebug\" key in order to achieve persistence which will get invoked when an application crashes",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the key to setup a debugger. Which is often the case on developers machines"
+  ],
+  "from": "now-360s",
+  "rule_id": "d70a4b80-5f0b-4d12-ad57-9560f10b5985",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/aedebug.html",
+    "https://learn.microsoft.com/en-us/windows/win32/debug/configuring-automatic-debugging"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\AeDebug\\\\Debugger* AND winlog.event_data.Details:*.dll) AND (NOT winlog.event_data.Details:\\\"C\\:\\\\WINDOWS\\\\system32\\\\vsjitdebugger.exe\\\"\\ \\-p\\ %ld\\ \\-e\\ %ld\\ \\-j\\ 0x%p)"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "5424ba7f-6ffc-41b0-beb3-30472da37adc",
+  "name": "AD Object WriteDAC Access",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1222.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects WRITE_DAC access to a domain object",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9ce0f42d-8f82-4f4d-8e6e-6168da99a92f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1222",
+          "name": "File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://threathunterplaybook.com/hunts/windows/180815-ADObjectAccessReplication/notebook.html",
+    "https://threathunterplaybook.com/library/windows/active_directory_replication.html",
+    "https://threathunterplaybook.com/hunts/windows/190101-ADModDirectoryReplication/notebook.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4662 AND winlog.event_data.ObjectServer:DS AND winlog.event_data.AccessMask:0x40000 AND (winlog.event_data.ObjectType:(19195a5b\\-6da0\\-11d0\\-afd3\\-00c04fd930c9 OR domainDNS)))"
+}

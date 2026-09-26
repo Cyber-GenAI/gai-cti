@@ -1,0 +1,69 @@
+{
+  "id": "f0607ed6-9a44-49a4-8b8a-ee38d61bd473",
+  "name": "Certificate Request Export to Exchange Webserver",
+  "tags": [
+    "attack.persistence",
+    "attack.t1505.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a write of an Exchange CSR to an untypical directory or with aspx name suffix which can be used to place a webshell",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "6f1e127e-026a-4edd-b82e-f8ec3322f1de",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/GossiTheDog/status/1429175908905127938"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:MSExchange\\ Management AND ((*New\\-ExchangeCertificate* AND *\\ \\-GenerateRequest* AND *\\ \\-BinaryEncoded* AND *\\ \\-RequestFile*) AND (*\\\\\\\\localhost\\\\C$* OR *\\\\\\\\127.0.0.1\\\\C$* OR *C\\:\\\\inetpub* OR *.aspx*))"
+}

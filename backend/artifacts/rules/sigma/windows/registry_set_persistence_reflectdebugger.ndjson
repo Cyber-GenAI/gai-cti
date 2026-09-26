@@ -1,0 +1,70 @@
+{
+  "id": "cf9435a1-9925-45e9-9685-53ecee009054",
+  "name": "Potential WerFault ReflectDebugger Registry Value Abuse",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential WerFault \"ReflectDebugger\" registry value abuse for persistence.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b94810fb-5577-4086-a9d5-95a77a3d10da",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://cocomelonc.github.io/malware/2022/11/02/malware-pers-18.html",
+    "https://www.hexacorn.com/blog/2018/08/31/beyond-good-ol-run-key-part-85/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.EventType:SetValue AND registry.path:*\\\\Microsoft\\\\Windows\\\\Windows\\ Error\\ Reporting\\\\Hangs\\\\ReflectDebugger"
+}

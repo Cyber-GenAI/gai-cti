@@ -1,0 +1,51 @@
+{
+  "id": "c55687de-362b-4a7c-a033-4b1e9ea78952",
+  "name": "Potential RDP Session Hijacking Activity",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential RDP Session Hijacking activity on Windows systems",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "1364b947-0e4c-4344-97ee-b28e26cd8770",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Moti_B/status/909449115477659651"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\tscon.exe OR process.pe.original_file_name:tscon.exe) AND (winlog.event_data.IntegrityLevel:(System OR S\\-1\\-16\\-16384))"
+}

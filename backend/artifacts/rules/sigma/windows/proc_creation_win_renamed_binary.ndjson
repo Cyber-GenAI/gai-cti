@@ -1,0 +1,71 @@
+{
+  "id": "6dfff49f-de07-43ea-894e-3676d72ca6c8",
+  "name": "Potential Defense Evasion Via Binary Rename",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of a renamed binary often used by attackers or malware leveraging new Sysmon OriginalFileName datapoint.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Custom applications use renamed binaries adding slight change to binary name. Typically this is easy to spot and add to whitelist"
+  ],
+  "from": "now-360s",
+  "rule_id": "a95d0c50-121c-47a8-a366-e8c2efe81821",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://mgreen27.github.io/posts/2019/05/12/BinaryRename.html",
+    "https://mgreen27.github.io/posts/2019/05/29/BinaryRename2.html",
+    "https://github.com/redcanaryco/atomic-red-team/blob/0f229c0e42bfe7ca736a14023836d65baa941ed2/atomics/T1036.003/T1036.003.md#atomic-test-1---masquerading-as-windows-lsass-process"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:(Cmd.Exe OR CONHOST.EXE OR 7z.exe OR WinRAR.exe OR wevtutil.exe OR net.exe OR net1.exe OR netsh.exe OR InstallUtil.exe)) AND (NOT (process.executable:(*\\\\cmd.exe OR *\\\\conhost.exe OR *\\\\7z.exe OR *\\\\WinRAR.exe OR *\\\\wevtutil.exe OR *\\\\net.exe OR *\\\\net1.exe OR *\\\\netsh.exe OR *\\\\InstallUtil.exe)))"
+}

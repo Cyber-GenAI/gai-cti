@@ -1,0 +1,71 @@
+{
+  "id": "4f805321-dc10-4cec-bff3-b795eb5ee351",
+  "name": "PUA - Chisel Tunneling Tool Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1090.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the Chisel tunneling tool via the commandline arguments",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some false positives may occur with other tools with similar commandlines"
+  ],
+  "from": "now-360s",
+  "rule_id": "b9e205e3-492e-467d-bff2-e9122278e5c6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/jpillora/chisel/",
+    "https://arcticwolf.com/resources/blog/lorenz-ransomware-chiseling-in/",
+    "https://blog.sekoia.io/lucky-mouse-incident-response-to-detection-engineering/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\chisel.exe OR ((process.command_line:(*exe\\ client\\ * OR *exe\\ server\\ *)) AND (process.command_line:(*\\-socks5* OR *\\-reverse* OR *\\ r\\:* OR *\\:127.0.0.1\\:* OR *\\-tls\\-skip\\-verify\\ * OR *\\:socks*)))"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "2bf5847e-783a-4f4b-a335-b9f8f430f9ce",
+  "name": "Kernel Memory Dump Via LiveKD",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of LiveKD with the \"-m\" flag to potentially dump the kernel memory",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely in production environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "eb63c78b-999c-4c14-9f11-8cf50a7d5feb",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/livekd",
+    "https://4sysops.com/archives/creating-a-complete-memory-dump-without-a-blue-screen/",
+    "https://kb.acronis.com/content/60892"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\livekd.exe OR *\\\\livekd64.exe)) OR process.pe.original_file_name:livekd.exe) AND process.command_line:(*\\ \\-m* OR *\\ \\/m* OR *\\ \u2013m* OR *\\ \u2014m* OR *\\ \u2015m*)"
+}

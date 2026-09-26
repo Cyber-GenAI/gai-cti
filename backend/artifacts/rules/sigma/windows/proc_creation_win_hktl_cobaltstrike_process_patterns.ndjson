@@ -1,0 +1,70 @@
+{
+  "id": "6825c51d-7755-4ca4-8e3d-b33741262f94",
+  "name": "Potential CobaltStrike Process Patterns",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential process patterns related to Cobalt Strike beacon activity",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "72300051-e01d-4b88-a566-5992d99e65b2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://hausec.com/2021/07/26/cobalt-strike-and-tradecraft/",
+    "https://thedfirreport.com/2021/08/29/cobalt-strike-a-defenders-guide/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*cmd.exe\\ \\/C\\ whoami AND process.parent.executable:C\\:\\\\Temp\\\\*) OR ((process.parent.executable:(*\\\\runonce.exe OR *\\\\dllhost.exe)) AND (process.command_line:*cmd.exe\\ \\/c\\ echo* AND process.command_line:*\\>\\ \\\\\\\\.\\\\pipe*)) OR ((process.parent.command_line:*cmd.exe\\ \\/C\\ echo* AND process.parent.command_line:*\\ \\>\\ \\\\\\\\.\\\\pipe*) AND process.command_line:*conhost.exe\\ 0xffffffff\\ \\-ForceV1) OR (process.parent.command_line:*\\/C\\ whoami AND process.command_line:*conhost.exe\\ 0xffffffff\\ \\-ForceV1)"
+}

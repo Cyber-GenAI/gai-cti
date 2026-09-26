@@ -1,0 +1,70 @@
+{
+  "id": "9f960cbc-f27a-4f97-8b23-21acf535a76b",
+  "name": "Suspicious Keyboard Layout Load",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1588.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the keyboard preload installation with a suspicious keyboard layout, e.g. Chinese, Iranian or Vietnamese layout load in user session on systems maintained by US staff only",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrators or users that actually use the selected keyboard layouts (heavily depends on the organisation's user base)"
+  ],
+  "from": "now-360s",
+  "rule_id": "6c0e885e-fc5f-490d-8e29-601cc516510a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1588",
+          "name": "Obtain Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1588/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://renenyffenegger.ch/notes/Windows/registry/tree/HKEY_CURRENT_USER/Keyboard-Layout/Preload/index",
+    "https://github.com/SwiftOnSecurity/sysmon-config/pull/92/files"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\Keyboard\\ Layout\\\\Preload\\\\* OR *\\\\Keyboard\\ Layout\\\\Substitutes\\\\*)) AND (winlog.event_data.Details:(*00000429* OR *00050429* OR *0000042a*))"
+}

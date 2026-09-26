@@ -1,0 +1,53 @@
+{
+  "id": "200ecb08-59e0-4930-af43-05547c5e0f07",
+  "name": "Remote Access Tool - AnyDesk Execution With Known Revoked Signing Certificate",
+  "tags": [
+    "attack.execution",
+    "attack.initial-access",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of an AnyDesk binary with a version prior to 8.0.8.\nPrior to version 8.0.8, the Anydesk application used a signing certificate that got compromised by threat actors.\nUse this rule to detect instances of older versions of Anydesk using the compromised certificate\nThis is recommended in order to avoid attackers leveraging the certificate and signing their binaries to bypass detections.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "df2f6952-8185-47d0-8628-05af7f0f5622",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.bleepingcomputer.com/news/security/anydesk-says-hackers-breached-its-production-servers-reset-passwords/",
+    "https://anydesk.com/en/changelog/windows"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\AnyDesk.exe OR process.pe.description:AnyDesk OR process.pe.product:AnyDesk OR process.pe.company:AnyDesk\\ Software\\ GmbH) AND (process.pe.file_version:(7.0.* OR 7.1.* OR 8.0.1* OR 8.0.2* OR 8.0.3* OR 8.0.4* OR 8.0.5* OR 8.0.6* OR 8.0.7*))) AND (NOT (process.command_line:(*\\ \\-\\-remove* OR *\\ \\-\\-uninstall*)))"
+}

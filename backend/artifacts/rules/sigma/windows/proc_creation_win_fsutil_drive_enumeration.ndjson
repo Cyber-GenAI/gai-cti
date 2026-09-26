@@ -1,0 +1,70 @@
+{
+  "id": "2c8caa99-368e-40bf-a3e0-2859a78f6797",
+  "name": "Fsutil Drive Enumeration",
+  "tags": [
+    "attack.discovery",
+    "attack.t1120",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Attackers may leverage fsutil to enumerated connected drives.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Certain software or administrative tasks may trigger false positives."
+  ],
+  "from": "now-360s",
+  "rule_id": "0fdcc013-7470-46ee-b4fa-125675373466",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1120",
+          "name": "Peripheral Device Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1120/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Turla has used fsutil fsinfo drives to list connected drives.",
+    "https://github.com/elastic/detection-rules/blob/414d32027632a49fb239abb8fbbb55d3fa8dd861/rules/windows/discovery_peripheral_device.toml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\fsutil.exe OR process.pe.original_file_name:fsutil.exe) AND process.command_line:*drives*"
+}

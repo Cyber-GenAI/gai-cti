@@ -1,0 +1,52 @@
+{
+  "id": "5316772a-4e0d-4af7-9b25-1593dc13ce6a",
+  "name": "Email Exifiltration Via Powershell",
+  "tags": [
+    "attack.exfiltration",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects email exfiltration via powershell cmdlets",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0b3a46d3-3a10-4be0-9102-313973bbd40b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/security/blog/2022/09/07/profiling-dev-0270-phosphorus-ransomware-operations/",
+    "https://github.com/Azure/Azure-Sentinel/blob/7e6aa438e254d468feec061618a7877aa528ee9f/Hunting%20Queries/Microsoft%20365%20Defender/Ransomware/DEV-0270/Email%20data%20exfiltration%20via%20PowerShell.yaml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) AND (process.command_line:*Add\\-PSSnapin* AND process.command_line:*Get\\-Recipient* AND process.command_line:*\\-ExpandProperty* AND process.command_line:*EmailAddresses* AND process.command_line:*SmtpAddress* AND process.command_line:*\\-hidetableheaders*)"
+}

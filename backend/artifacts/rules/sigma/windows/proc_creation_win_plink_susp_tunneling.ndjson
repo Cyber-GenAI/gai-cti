@@ -1,0 +1,69 @@
+{
+  "id": "ab20492d-57ab-4054-9181-80898d368f0b",
+  "name": "Potential RDP Tunneling Via Plink",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1572",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Execution of plink to perform data exfiltration and tunneling",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "5c2c884b-58bd-442e-a2e4-6d7d4281a40d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1572",
+          "name": "Protocol Tunneling",
+          "reference": "https://attack.mitre.org/techniques/T1572/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.microsoft.com/security/blog/2022/07/26/malicious-iis-extensions-quietly-open-persistent-backdoors-into-servers/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\plink.exe AND process.command_line:*\\:127.0.0.1\\:3389*) OR ((process.executable:*\\\\plink.exe AND process.command_line:*\\:3389*) AND (process.command_line:(*\\ \\-P\\ 443* OR *\\ \\-P\\ 22*)))"
+}

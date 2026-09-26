@@ -1,0 +1,70 @@
+{
+  "id": "c53f1990-c105-44fd-84e5-d9116e6e5f1e",
+  "name": "Potential Webshell Creation On Static Website",
+  "tags": [
+    "attack.persistence",
+    "attack.t1505.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of files with certain extensions on a static web site. This can be indicative of potential uploads of a web shell.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrator or developer creating legitimate executable files in a web application folder"
+  ],
+  "from": "now-360s",
+  "rule_id": "46496f3c-5554-4d2c-a08f-a1e42308e7c7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "PT ESC rule and personal experience",
+    "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/c95a0a1a2855dc0cd7f7327614545fe30482a636/Upload%20Insecure%20Files/README.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((file.path:*\\\\inetpub\\\\wwwroot\\\\* AND (file.path:(*.ashx* OR *.asp* OR *.ph* OR *.soap*))) OR ((file.path:(*\\\\www\\\\* OR *\\\\htdocs\\\\* OR *\\\\html\\\\*)) AND file.path:*.ph*)) AND (NOT ((file.path:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Windows\\\\Temp\\\\*)) OR process.executable:System OR file.path:*\\\\xampp*))"
+}

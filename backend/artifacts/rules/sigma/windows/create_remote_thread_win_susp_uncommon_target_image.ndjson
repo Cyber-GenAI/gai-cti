@@ -1,0 +1,86 @@
+{
+  "id": "b3332273-05bb-43a0-961a-b30a02fdcf9e",
+  "name": "Remote Thread Creation In Uncommon Target Image",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1055.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uncommon target processes for remote thread creation",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3267e65d-7599-4455-a093-f826b326d672",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20220319032520/https://blog.redbluepurple.io/offensive-research/bypassing-injection-detection"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.TargetImage:(*\\\\calc.exe OR *\\\\calculator.exe OR *\\\\mspaint.exe OR *\\\\notepad.exe OR *\\\\ping.exe OR *\\\\sethc.exe OR *\\\\spoolsv.exe OR *\\\\wordpad.exe OR *\\\\write.exe)) AND (NOT process.executable:C\\:\\\\Windows\\\\System32\\\\csrss.exe) AND (NOT (winlog.event_data.StartFunction:EtwpNotificationThread OR process.executable:*unknown\\ process* OR (process.executable:C\\:\\\\Program\\ Files\\\\VMware\\\\VMware\\ Tools\\\\vmtoolsd.exe AND winlog.event_data.StartFunction:GetCommandLineW AND (winlog.event_data.TargetImage:(C\\:\\\\Windows\\\\System32\\\\notepad.exe OR C\\:\\\\Windows\\\\System32\\\\spoolsv.exe))) OR (process.executable:C\\:\\\\Program\\ Files\\\\Xerox\\\\XeroxPrintExperience\\\\CommonFiles\\\\XeroxPrintJobEventManagerService.exe AND winlog.event_data.StartFunction:LoadLibraryW AND winlog.event_data.TargetImage:C\\:\\\\Windows\\\\System32\\\\spoolsv.exe)))"
+}

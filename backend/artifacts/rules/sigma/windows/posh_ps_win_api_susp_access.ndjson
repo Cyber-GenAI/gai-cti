@@ -1,0 +1,76 @@
+{
+  "id": "ff3b7cb2-49e4-44ab-8f30-5ba7f6e3a37d",
+  "name": "Potential WinAPI Calls Via PowerShell Scripts",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "attack.t1106",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects use of WinAPI functions in PowerShell scripts",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4044ca54-4643-434d-8f40-0b0d7c3db91a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1106",
+          "name": "Native API",
+          "reference": "https://attack.mitre.org/techniques/T1106/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-powershell-abuse"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*VirtualAlloc* AND powershell.file.script_block_text:*OpenProcess* AND powershell.file.script_block_text:*WriteProcessMemory* AND powershell.file.script_block_text:*CreateRemoteThread*) OR (powershell.file.script_block_text:*OpenProcessToken* AND powershell.file.script_block_text:*LookupPrivilegeValue* AND powershell.file.script_block_text:*AdjustTokenPrivileges*) OR (powershell.file.script_block_text:*OpenProcessToken* AND powershell.file.script_block_text:*DuplicateTokenEx* AND powershell.file.script_block_text:*CloseHandle*) OR (powershell.file.script_block_text:*WriteProcessMemory* AND powershell.file.script_block_text:*VirtualAlloc* AND powershell.file.script_block_text:*ReadProcessMemory* AND powershell.file.script_block_text:*VirtualFree*)"
+}

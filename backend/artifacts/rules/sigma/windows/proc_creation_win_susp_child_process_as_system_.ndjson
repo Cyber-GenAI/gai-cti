@@ -1,0 +1,72 @@
+{
+  "id": "f5fcf865-c1b5-4431-b736-fc65f149b255",
+  "name": "Suspicious Child Process Created as System",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1134.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detection of child processes spawned with SYSTEM privileges by parents with LOCAL SERVICE or NETWORK SERVICE accounts",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f93d473c-a1e6-485b-a732-47899c8260e2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-privilege-escalation-in-windows-environment",
+    "https://foxglovesecurity.com/2016/09/26/rotten-potato-privilege-escalation-from-service-accounts-to-system/",
+    "https://github.com/antonioCoco/RogueWinRM",
+    "https://twitter.com/Cyb3rWard0g/status/1453123054243024897"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((winlog.event_data.ParentUser:(*AUTHORI* OR *AUTORI*)) AND (winlog.event_data.ParentUser:(*\\\\NETWORK\\ SERVICE OR *\\\\LOCAL\\ SERVICE)) AND (user.name:(*AUTHORI* OR *AUTORI*)) AND (user.name:(*\\\\SYSTEM OR *\\\\Syst\u00e8me OR *\\\\\u0421\u0418\u0421\u0422\u0415\u041c\u0410)) AND (winlog.event_data.IntegrityLevel:(System OR S\\-1\\-16\\-16384))) AND (NOT (process.executable:*\\\\rundll32.exe AND process.command_line:*DavSetCookie*))"
+}

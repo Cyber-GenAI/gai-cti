@@ -1,0 +1,52 @@
+{
+  "id": "462f6e94-989e-4b46-93d9-415e5f36e05f",
+  "name": "Windows Kernel Debugger Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the Windows Kernel Debugger \"kd.exe\".",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare occasions of legitimate cases where kernel debugging is necessary in production. Investigation is required"
+  ],
+  "from": "now-360s",
+  "rule_id": "86c15e19-9d07-4bff-ba7f-37aece0df932",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\kd.exe OR process.pe.original_file_name:kd.exe"
+}

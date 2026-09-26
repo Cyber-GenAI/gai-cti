@@ -1,0 +1,91 @@
+{
+  "id": "23c1c53b-0352-4111-9336-3bc6a33140d5",
+  "name": "Suspicious Curl File Upload - Linux",
+  "tags": [
+    "attack.exfiltration",
+    "attack.command-and-control",
+    "attack.t1567",
+    "attack.t1105",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious curl process start the adds a file to a web request",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Scripts created by developers and admins"
+  ],
+  "from": "now-360s",
+  "rule_id": "96188731-af3e-4a20-8ec0-37966d82ff5f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1567",
+          "name": "Exfiltration Over Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1567/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/d1r4c/status/1279042657508081664",
+    "https://medium.com/@petehouston/upload-files-with-curl-93064dcccc76",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1105/T1105.md#atomic-test-19---curl-upload-file",
+    "https://curl.se/docs/manpage.html",
+    "https://www.trendmicro.com/en_us/research/22/i/how-malicious-actors-abuse-native-linux-tools-in-their-attacks.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:*\\/curl AND ((CommandLine:(*\\ \\-\\-form* OR *\\ \\-\\-upload\\-file\\ * OR *\\ \\-\\-data\\ * OR *\\ \\-\\-data\\-*)) OR CommandLine:/\\s-[FTd]\\s/)) AND (NOT (CommandLine:(*\\:\\/\\/localhost* OR *\\:\\/\\/127.0.0.1*)))"
+}

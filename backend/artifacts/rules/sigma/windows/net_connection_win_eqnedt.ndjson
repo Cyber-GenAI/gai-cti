@@ -1,0 +1,71 @@
+{
+  "id": "bc8f939d-e597-4fe6-bb95-15202149305e",
+  "name": "Network Connection Initiated By Eqnedt32.EXE",
+  "tags": [
+    "attack.execution",
+    "attack.t1203",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects network connections from the Equation Editor process \"eqnedt32.exe\".",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "9a1418e1-dab1-4494-8e55-8ee91a2d9bbf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1203",
+          "name": "Exploitation for Client Execution",
+          "reference": "https://attack.mitre.org/techniques/T1203/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/forensicitguy/status/1513538712986079238",
+    "https://forensicitguy.github.io/xloader-formbook-velvetsweatshop-spreadsheet/",
+    "https://news.sophos.com/en-us/2019/07/18/a-new-equation-editor-exploit-goes-commercial-as-maldoc-attacks-using-it-spike/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\eqnedt32.exe"
+}

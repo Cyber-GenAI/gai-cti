@@ -1,0 +1,69 @@
+{
+  "id": "d0b8abe7-6540-49c7-a18b-913d4ae6cf24",
+  "name": "Uncommon Svchost Parent Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an uncommon svchost parent process",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "00d0324b-68a2-4541-a959-bdd00bf87cc7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\svchost.exe AND (NOT ((process.parent.executable:(*\\\\Mrt.exe OR *\\\\MsMpEng.exe OR *\\\\ngen.exe OR *\\\\rpcnet.exe OR *\\\\services.exe OR *\\\\TiWorker.exe)) OR (NOT _exists_:process.parent.executable) OR (process.parent.executable:(\\- OR \"\"))))"
+}

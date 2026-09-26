@@ -1,0 +1,77 @@
+{
+  "id": "a65fa72d-7f98-4dab-95b4-4e03ef859b54",
+  "name": "Program Executions in Suspicious Folders",
+  "tags": [
+    "attack.t1587",
+    "attack.t1584",
+    "attack.resource-development",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects program executions in suspicious non-program folders related to malware or hacking activity",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Admin activity (especially in /tmp folders)",
+    "Crazy web applications"
+  ],
+  "from": "now-360s",
+  "rule_id": "2801a506-bc00-41ab-8d87-97d7a7da3200",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1584",
+          "name": "Compromise Infrastructure",
+          "reference": "https://attack.mitre.org/techniques/T1584/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1587",
+          "name": "Develop Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1587/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "type:SYSCALL AND (exe:(\\/tmp\\/* OR \\/var\\/www\\/* OR \\/home\\/*\\/public_html\\/* OR \\/usr\\/local\\/apache2\\/* OR \\/usr\\/local\\/httpd\\/* OR \\/var\\/apache\\/* OR \\/srv\\/www\\/* OR \\/home\\/httpd\\/html\\/* OR \\/srv\\/http\\/* OR \\/usr\\/share\\/nginx\\/html\\/* OR \\/var\\/lib\\/pgsql\\/data\\/* OR \\/usr\\/local\\/mysql\\/data\\/* OR \\/var\\/lib\\/mysql\\/* OR \\/var\\/vsftpd\\/* OR \\/etc\\/bind\\/* OR \\/var\\/named\\/*))"
+}

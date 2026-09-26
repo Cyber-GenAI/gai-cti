@@ -1,0 +1,76 @@
+{
+  "id": "1060a46e-7204-4031-9a86-f923c51cbe83",
+  "name": "Dumping of Sensitive Hives Via Reg.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.002",
+    "attack.t1003.004",
+    "attack.t1003.005",
+    "car.2013-07-001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of \"reg.exe\" in order to dump sensitive registry hives. This includes SAM, SYSTEM and SECURITY hives.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Dumping hives for legitimate purpouse i.e. backup or forensic investigation"
+  ],
+  "from": "now-360s",
+  "rule_id": "a71bf26e-0d8f-4c15-87cb-1a78516b6596",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.slideshare.net/heirhabarov/hunting-for-credentials-dumping-in-windows-environment",
+    "https://eqllib.readthedocs.io/en/latest/analytics/aed95fc6-5e3f-49dc-8b35-06508613f979.html",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1003/T1003.md",
+    "https://www.wietzebeukema.nl/blog/windows-command-line-obfuscation",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1003.002/T1003.002.md#atomic-test-1---registry-dump-of-sam-creds-and-secrets"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\reg.exe OR process.pe.original_file_name:reg.exe) AND (process.command_line:(*\\ save\\ * OR *\\ export\\ * OR *\\ \u02e2ave\\ * OR *\\ e\u02e3port\\ *)) AND (process.command_line:(*hklm* OR *hk\u02eam* OR *hkey_local_machine* OR *hkey_\u02eaocal_machine* OR *hkey_loca\u02ea_machine* OR *hkey_\u02eaoca\u02ea_machine*)) AND (process.command_line:(*\\\\system* OR *\\\\sam* OR *\\\\security* OR *\\\\\u02e2ystem* OR *\\\\sy\u02e2tem* OR *\\\\\u02e2y\u02e2tem* OR *\\\\\u02e2am* OR *\\\\\u02e2ecurity*))"
+}

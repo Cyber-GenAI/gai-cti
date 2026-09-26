@@ -1,0 +1,87 @@
+{
+  "id": "160172e4-cacd-4f25-8633-9e6752be85d5",
+  "name": "Uncommon Service Installation Image Path",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "car.2013-09-005",
+    "attack.t1543.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects uncommon service installation commands by looking at suspicious or uncommon image path values containing references to encoded powershell commands, temporary paths, etc.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "39fdd789-56e3-454e-93b4-4661e3cdd8d5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045) AND ((winlog.event_data.ImagePath:(*\\\\\\\\.\\\\pipe* OR *\\\\Users\\\\Public\\\\* OR *\\\\Windows\\\\Temp\\\\*)) OR (winlog.event_data.ImagePath:*\\ \\-e* AND (winlog.event_data.ImagePath:(*\\ aQBlAHgA* OR *\\ aWV4I* OR *\\ IAB* OR *\\ JAB* OR *\\ PAA* OR *\\ SQBFAFgA* OR *\\ SUVYI*)))) AND (NOT winlog.event_data.ImagePath:C\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\\\Definition\\ Updates\\\\*) AND (NOT winlog.event_data.ImagePath:C\\:\\\\WINDOWS\\\\TEMP\\\\thor10\\-remote\\\\thor64.exe*))"
+}

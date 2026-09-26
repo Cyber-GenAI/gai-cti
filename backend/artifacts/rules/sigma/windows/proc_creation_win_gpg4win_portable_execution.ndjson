@@ -1,0 +1,69 @@
+{
+  "id": "6dfebbb4-05ef-4d75-b2a4-3583021045c6",
+  "name": "Portable Gpg.EXE Execution",
+  "tags": [
+    "attack.impact",
+    "attack.t1486",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"gpg.exe\" from uncommon location. Often used by ransomware and loaders to decrypt/encrypt data.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [],
+  "from": "now-360s",
+  "rule_id": "1ad9565b-a392-4a3e-bfcb-555d5d254f3b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1486",
+          "name": "Data Encrypted for Impact",
+          "reference": "https://attack.mitre.org/techniques/T1486/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trendmicro.com/vinfo/vn/threat-encyclopedia/malware/ransom.bat.zarlock.a",
+    "https://securelist.com/locked-out/68960/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1486/T1486.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\gpg.exe OR *\\\\gpg2.exe)) OR process.pe.original_file_name:gpg.exe OR process.pe.description:GnuPG\u2019s\\ OpenPGP\\ tool) AND (NOT (process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\GNU\\\\GnuPG\\\\bin\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\GnuPG\\ VS\\-Desktop\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\GnuPG\\\\bin\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Gpg4win\\\\bin\\\\*)))"
+}

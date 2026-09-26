@@ -1,0 +1,12 @@
+async def FUNCTION_NAME() -> SOMETHING:
+    query = gql(
+        """
+            {{query}}
+        """
+    )
+
+    variables = {{ variables }}
+
+    result = await send(query=query, variables=variables)
+
+    # return SOMETHING

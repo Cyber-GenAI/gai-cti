@@ -1,0 +1,75 @@
+{
+  "id": "44d484e7-5974-4180-a36a-ce08d025d733",
+  "name": "Dynamic .NET Compilation Via Csc.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1027.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"csc.exe\" to compile .NET code. Attackers often leverage this to compile code on the fly and use it in other stages.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate software from program files - https://twitter.com/gN3mes1s/status/1206874118282448897",
+    "Legitimate Microsoft software - https://twitter.com/gabriele_pippi/status/1206907900268072962",
+    "Ansible"
+  ],
+  "from": "now-360s",
+  "rule_id": "0578d925-6be7-41e1-bc59-0f5326b2828c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1027",
+          "name": "Obfuscated Files or Information",
+          "reference": "https://attack.mitre.org/techniques/T1027/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://securityboulevard.com/2019/08/agent-tesla-evading-edr-by-removing-api-hooks/",
+    "https://www.clearskysec.com/wp-content/uploads/2018/11/MuddyWater-Operations-in-Lebanon-and-Oman.pdf",
+    "https://app.any.run/tasks/c6993447-d1d8-414e-b856-675325e5aa09/",
+    "https://twitter.com/gN3mes1s/status/1206874118282448897",
+    "https://github.com/redcanaryco/atomic-red-team/blob/b27a3cb25025161d49ac861cb216db68c46a3537/atomics/T1027.004/T1027.004.md#atomic-test-1---compile-after-delivery-using-cscexe"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\csc.exe AND ((process.command_line:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Temporary\\ Internet* OR *\\\\Windows\\\\Temp\\\\*)) OR ((process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favorites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favourites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Contacts\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Pictures\\\\*)) OR process.command_line:/([Pp]rogram[Dd]ata|%([Ll]ocal)?[Aa]pp[Dd]ata%|\\\\[Aa]pp[Dd]ata\\\\([Ll]ocal([Ll]ow)?|[Rr]oaming))\\\\[^\\\\]{1,256}$/) AND (NOT ((process.parent.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\Program\\ Files\\\\*)) OR process.parent.executable:C\\:\\\\Windows\\\\System32\\\\sdiagnhost.exe OR process.parent.executable:C\\:\\\\Windows\\\\System32\\\\inetsrv\\\\w3wp.exe)) AND (NOT ((process.parent.executable:(C\\:\\\\ProgramData\\\\chocolatey\\\\choco.exe OR C\\:\\\\ProgramData\\\\chocolatey\\\\tools\\\\shimgen.exe)) OR process.parent.command_line:*\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\ Advanced\\ Threat\\ Protection* OR (process.parent.command_line:(*JwB7ACIAZgBhAGkAbABlAGQAIgA6AHQAcgB1AGUALAAiAG0AcwBnACIAOgAiAEEAbgBzAGkAYgBsAGUAIAByAGUAcQB1AGkAcgBlAHMAIABQAG8AdwBlAHIAUwBoAGUAbABsACAAdgAzAC4AMAAgAG8AcgAgAG4AZQB3AGUAcgAiAH0AJw* OR *cAewAiAGYAYQBpAGwAZQBkACIAOgB0AHIAdQBlACwAIgBtAHMAZwAiADoAIgBBAG4AcwBpAGIAbABlACAAcgBlAHEAdQBpAHIAZQBzACAAUABvAHcAZQByAFMAaABlAGwAbAAgAHYAMwAuADAAIABvAHIAIABuAGUAdwBlAHIAIgB9ACcA* OR *nAHsAIgBmAGEAaQBsAGUAZAAiADoAdAByAHUAZQAsACIAbQBzAGcAIgA6ACIAQQBuAHMAaQBiAGwAZQAgAHIAZQBxAHUAaQByAGUAcwAgAFAAbwB3AGUAcgBTAGgAZQBsAGwAIAB2ADMALgAwACAAbwByACAAbgBlAHcAZQByACIAfQAnA*))))"
+}

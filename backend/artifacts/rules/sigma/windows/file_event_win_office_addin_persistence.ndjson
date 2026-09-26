@@ -1,0 +1,71 @@
+{
+  "id": "070eb2bd-6b9f-4bb8-ba70-c661d95b3d39",
+  "name": "Potential Persistence Via Microsoft Office Add-In",
+  "tags": [
+    "attack.persistence",
+    "attack.t1137.006",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential persistence activity via startup add-ins that load when Microsoft Office starts (.wll/.xll are simply .dll fit for Word or Excel).",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate add-ins"
+  ],
+  "from": "now-360s",
+  "rule_id": "7b794b7f-c419-49fe-943c-ea74d0222c0d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1137",
+          "name": "Office Application Startup",
+          "reference": "https://attack.mitre.org/techniques/T1137/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://labs.withsecure.com/publications/add-in-opportunities-for-office-persistence",
+    "https://github.com/redcanaryco/atomic-red-team/blob/4ae9580a1a8772db87a1b6cdb0d03e5af231e966/atomics/T1137.006/T1137.006.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:*\\\\Microsoft\\\\Word\\\\Startup\\\\* AND file.path:*.wll) OR (file.path:*\\\\Microsoft\\\\Excel\\\\Startup\\\\* AND file.path:*.xll) OR (file.path:*Microsoft\\\\Excel\\\\XLSTART\\\\* AND file.path:*.xlam) OR (file.path:*\\\\Microsoft\\\\Addins\\\\* AND (file.path:(*.xlam OR *.xla OR *.ppam)))"
+}

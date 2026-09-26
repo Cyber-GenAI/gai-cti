@@ -1,0 +1,69 @@
+{
+  "id": "19d611b8-cf58-41cc-b0da-a8a76aa7c251",
+  "name": "HackTool - HandleKatz LSASS Dumper Execution",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of HandleKatz, a tool that demonstrates the usage of cloned handles to Lsass in order to create an obfuscated memory dump of the same",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4958ee85-7d37-4f98-9ae7-4fdf443af6dd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/codewhitesec/HandleKatz"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\loader.exe AND process.command_line:*\\-\\-pid\\:*) OR (winlog.event_data.Hashes:(*IMPHASH\\=38D9E015591BBFD4929E0D0F47FA0055* OR *IMPHASH\\=0E2216679CA6E1094D63322E3412D650*)) OR ((process.command_line:*\\-\\-pid\\:* AND process.command_line:*\\-\\-outfile\\:*) AND (process.command_line:(*.dmp* OR *lsass* OR *.obf* OR *dump*)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "3989aed1-632f-4ed8-b89b-6892a03fade9",
+  "name": "PowerShell Script Run in AppData",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious command line execution that invokes PowerShell with reference to an AppData folder",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "9ca59180-9fb6-452b-ae7d-fc88c0c35680",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/JohnLaTwC/status/1082851155481288706",
+    "https://app.any.run/tasks/f87f1c4e-47e2-4c46-9cf4-31454c06ce03"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*powershell.exe* OR *\\\\powershell* OR *\\\\pwsh* OR *pwsh.exe*)) AND ((process.command_line:*\\/c\\ * AND process.command_line:*\\\\AppData\\\\*) AND (process.command_line:(*Local\\\\* OR *Roaming\\\\*)))"
+}

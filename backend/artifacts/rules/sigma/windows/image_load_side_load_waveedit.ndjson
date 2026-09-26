@@ -1,0 +1,86 @@
+{
+  "id": "7a75e81c-0119-4bf1-a8f7-497774b0ec22",
+  "name": "Potential Waveedit.DLL Sideloading",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL sideloading of \"waveedit.dll\", which is part of the Nero WaveEditor audio editing software.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "149016d0-22d1-469a-b225-7a1e6a43ad27",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trendmicro.com/en_us/research/23/f/behind-the-scenes-unveiling-the-hidden-workings-of-earth-preta.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\waveedit.dll AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Nero\\\\Nero\\ Apps\\\\Nero\\ WaveEditor\\\\waveedit.exe OR C\\:\\\\Program\\ Files\\\\Nero\\\\Nero\\ Apps\\\\Nero\\ WaveEditor\\\\waveedit.exe)) AND (file.path:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Nero\\\\Nero\\ Apps\\\\Nero\\ WaveEditor\\\\* OR C\\:\\\\Program\\ Files\\\\Nero\\\\Nero\\ Apps\\\\Nero\\ WaveEditor\\\\*))))"
+}

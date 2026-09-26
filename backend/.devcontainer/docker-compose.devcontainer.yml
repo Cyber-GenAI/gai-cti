@@ -1,0 +1,60 @@
+name: gai-cti-back-{$USER}
+
+include:
+  - ./docker-compose.common.customized.yml
+  - ../../elastdocker/docker-compose.yml
+  - ../../opencti/docker-compose.yml
+
+services:
+  front:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+      args:
+        - YARN_REGISTRY_DOMAIN=mirror-npm.runflare.com
+        - VITE_API_ROOT=http://localhost:8088/api
+        - VITE_KIBANA_API_ROOT=http://localhost:5601/kibana/api
+        - VITE_ELASTIC_API_ROOT=http://localhost:9200
+        - VITE_SOCKET_IO_ROOT=http://localhost:8088
+
+  back:
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+
+    command: sleep infinity
+
+    volumes:
+      - ../..:/workspaces:cached
+      - ~/.ssh:/home/vscode/.ssh
+      - dev_cache:/home/vscode/.cache/
+      
+    environment:
+      - AVALAI_API_KEY=${GAI_CTI_AVALAI_API_KEY}
+
+  celery-flower:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+      args:
+        PIP_MIRROR_HOST: ${GAI_CTI_PIP_MIRROR_HOST:-https://pypi.org}
+
+    command: poetry run celery --broker=redis://redis-backend:6379/0 flower --port=5555
+
+    environment:
+      - CELERY_BROKER_URL=redis://redis-backend:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis-backend:6379/0
+    depends_on:
+      - redis-backend
+      - celery_worker
+
+volumes:
+  dev_cache:
+    driver: local
+
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1400

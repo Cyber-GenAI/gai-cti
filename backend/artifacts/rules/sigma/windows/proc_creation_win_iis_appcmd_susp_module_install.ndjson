@@ -1,0 +1,70 @@
+{
+  "id": "ac6cf599-cd0b-4922-97f9-0af7fddf93bc",
+  "name": "IIS Native-Code Module Command Line Installation",
+  "tags": [
+    "attack.persistence",
+    "attack.t1505.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious IIS native-code module installations via command line",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown as it may vary from organisation to organisation how admins use to install IIS modules"
+  ],
+  "from": "now-360s",
+  "rule_id": "fc6294a7-b3bb-43d7-9cbd-cfd1385c0157",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://researchcenter.paloaltonetworks.com/2018/01/unit42-oilrig-uses-rgdoor-iis-backdoor-targets-middle-east/",
+    "https://www.microsoft.com/security/blog/2022/07/26/malicious-iis-extensions-quietly-open-persistent-backdoors-into-servers/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\appcmd.exe OR process.pe.original_file_name:appcmd.exe) AND ((process.command_line:*install* AND process.command_line:*module*) AND process.command_line:(*\\-name\\:* OR *\\/name\\:* OR *\u2013name\\:* OR *\u2014name\\:* OR *\u2015name\\:*))) AND (NOT process.parent.executable:C\\:\\\\Windows\\\\System32\\\\inetsrv\\\\iissetup.exe)"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "2c5abf3a-f890-4ef5-9ca7-a236e8ff97dc",
+  "name": "Suspicious Windows Defender Registry Key Tampering Via Reg.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of \"reg.exe\" to tamper with different Windows Defender registry keys in order to disable some important features related to protection and detection",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare legitimate use by administrators to test software (should always be investigated)"
+  ],
+  "from": "now-360s",
+  "rule_id": "d9c1763d-9740-43ca-8e76-373936aa0180",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/03/21/apt35-automates-initial-access-using-proxyshell/",
+    "https://github.com/swagkarna/Defeat-Defender-V1.2.0",
+    "https://www.elevenforum.com/t/video-guide-how-to-completely-disable-microsoft-defender-antivirus.14608/page-2"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\reg.exe OR process.pe.original_file_name:reg.exe) AND (process.command_line:(*SOFTWARE\\\\Microsoft\\\\Windows\\ Defender\\\\* OR *SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\ Defender\\ Security\\ Center* OR *SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\ Defender\\\\*))) AND (((process.command_line:*\\ add\\ * AND process.command_line:*d\\ 0*) AND (process.command_line:(*DisallowExploitProtectionOverride* OR *EnableControlledFolderAccess* OR *MpEnablePus* OR *PUAProtection* OR *SpynetReporting* OR *SubmitSamplesConsent* OR *TamperProtection*))) OR ((process.command_line:*\\ add\\ * AND process.command_line:*d\\ 1*) AND (process.command_line:(*DisableAntiSpyware* OR *DisableAntiSpywareRealtimeProtection* OR *DisableAntiVirus* OR *DisableArchiveScanning* OR *DisableBehaviorMonitoring* OR *DisableBlockAtFirstSeen* OR *DisableConfig* OR *DisableEnhancedNotifications* OR *DisableIntrusionPreventionSystem* OR *DisableIOAVProtection* OR *DisableOnAccessProtection* OR *DisablePrivacyMode* OR *DisableRealtimeMonitoring* OR *DisableRoutinelyTakingAction* OR *DisableScanOnRealtimeEnable* OR *DisableScriptScanning* OR *Notification_Suppress* OR *SignatureDisableUpdateOnStartupWithoutEngine*))))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "26b7f22d-69e2-497d-9e40-bc2d62ee515c",
+  "name": "Kerberoasting Activity - Initial Query",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1558.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "This rule will collect the data needed to start looking into possible kerberoasting activity.\nFurther analysis or computation within the query is needed focusing on requests from one specific host/IP towards multiple service names within a time period of 5 seconds.\nYou can then set a threshold for the number of requests and time between the requests to turn this into an alert.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legacy applications."
+  ],
+  "from": "now-360s",
+  "rule_id": "e8c060a3-1358-4185-9428-ba547bf518f5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1558",
+          "name": "Steal or Forge Kerberos Tickets",
+          "reference": "https://attack.mitre.org/techniques/T1558/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trustedsec.com/blog/art_of_kerberoast/",
+    "https://adsecurity.org/?p=3513"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4769 AND winlog.event_data.Status:0x0 AND winlog.event_data.TicketEncryptionType:0x17) AND (NOT ((service.name:(*krbtgt OR *$)) AND winlog.event_data.TargetUserName:*$@*)))"
+}

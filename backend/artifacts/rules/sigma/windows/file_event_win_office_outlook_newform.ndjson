@@ -1,0 +1,72 @@
+{
+  "id": "754d590e-b17e-414c-961b-15c253c87b54",
+  "name": "Potential Persistence Via Outlook Form",
+  "tags": [
+    "attack.persistence",
+    "attack.t1137.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a new Outlook form which can contain malicious code",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of outlook forms"
+  ],
+  "from": "now-360s",
+  "rule_id": "292922d7-0ce0-4124-a50c-0000604e61ed",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1137",
+          "name": "Office Application Startup",
+          "reference": "https://attack.mitre.org/techniques/T1137/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://speakerdeck.com/heirhabarov/hunting-for-persistence-via-microsoft-exchange-server-or-outlook?slide=76",
+    "https://speakerdeck.com/heirhabarov/hunting-for-persistence-via-microsoft-exchange-server-or-outlook?slide=79",
+    "https://learn.microsoft.com/en-us/office/vba/outlook/concepts/outlook-forms/create-an-outlook-form",
+    "https://www.slipstick.com/developer/custom-form/clean-outlooks-forms-cache/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\outlook.exe AND (file.path:(*\\\\AppData\\\\Local\\\\Microsoft\\\\FORMS\\\\IPM* OR *\\\\Local\\ Settings\\\\Application\\ Data\\\\Microsoft\\\\Forms*))"
+}

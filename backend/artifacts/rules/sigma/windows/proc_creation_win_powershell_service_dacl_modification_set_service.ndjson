@@ -1,0 +1,70 @@
+{
+  "id": "e871f08d-43f9-4f12-8719-c8f7aa791a8b",
+  "name": "Suspicious Service DACL Modification Via Set-Service Cmdlet",
+  "tags": [
+    "attack.persistence",
+    "attack.t1543.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious DACL modifications via the \"Set-Service\" cmdlet using the \"SecurityDescriptorSddl\" flag (Only available with PowerShell 7) that can be used to hide services or make them unstopable",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f51a432a-3554-44d6-baa1-f3f50fce9c70",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.sans.org/blog/red-team-tactics-hiding-windows-services/",
+    "https://learn.microsoft.com/pt-br/windows/win32/secauthz/sid-strings"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\pwsh.exe OR process.pe.original_file_name:pwsh.dll) AND (process.command_line:(*\\-SecurityDescriptorSddl\\ * OR *\\-sd\\ *)) AND ((process.command_line:*Set\\-Service\\ * AND process.command_line:*D;;*) AND (process.command_line:(*;;;IU* OR *;;;SU* OR *;;;BA* OR *;;;SY* OR *;;;WD*)))"
+}

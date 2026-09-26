@@ -1,0 +1,70 @@
+{
+  "id": "f1eb6a0b-30e1-474b-bfc6-9f30ba6f9cc1",
+  "name": "New DLL Added to AppCertDlls Registry Key",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.009",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Dynamic-link libraries (DLLs) that are specified in the AppCertDLLs value in the Registry key can be abused to obtain persistence and privilege escalation\nby causing a malicious DLL to be loaded and run in the context of separate processes on the computer.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b77e1211-d304-4b3f-b9af-334623850adf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "http://www.hexacorn.com/blog/2013/01/19/beyond-good-ol-run-key-part-3/",
+    "https://eqllib.readthedocs.io/en/latest/analytics/14f90406-10a0-4d36-a672-31cabe149f2f.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Session\\ Manager\\\\AppCertDlls OR winlog.event_data.NewName:HKLM\\\\SYSTEM\\\\CurentControlSet\\\\Control\\\\Session\\ Manager\\\\AppCertDlls"
+}

@@ -1,0 +1,80 @@
+{
+  "id": "f1d84a61-8a03-4711-b6e5-d768f772d98d",
+  "name": "Sdiagnhost Calling Suspicious Child Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects sdiagnhost.exe calling a suspicious child process (e.g. used in exploits for Follina / CVE-2022-30190)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f0776cde-0ca8-4fb3-a4d1-ce79771dded4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/nao_sec/status/1530196847679401984",
+    "https://doublepulsar.com/follina-a-microsoft-office-code-execution-vulnerability-1a47fce5629e",
+    "https://app.any.run/tasks/713f05d2-fe78-4b9d-a744-f7c133e3fafb/",
+    "https://app.any.run/tasks/f420d295-0457-4e9b-9b9e-6732be227583/",
+    "https://app.any.run/tasks/c4117d9a-f463-461a-b90f-4cd258746798/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\sdiagnhost.exe AND (process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\cmd.exe OR *\\\\mshta.exe OR *\\\\cscript.exe OR *\\\\wscript.exe OR *\\\\taskkill.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\calc.exe))) AND (NOT ((process.executable:*\\\\cmd.exe AND process.command_line:*bits*) OR (process.executable:*\\\\powershell.exe AND (process.command_line:(*\\-noprofile\\ \\- OR *\\-noprofile)))))"
+}

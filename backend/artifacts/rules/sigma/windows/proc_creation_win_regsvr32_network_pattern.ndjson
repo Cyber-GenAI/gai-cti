@@ -1,0 +1,71 @@
+{
+  "id": "86f617bb-bdaf-4133-ae04-1f00f057f74b",
+  "name": "Potentially Suspicious Regsvr32 HTTP/FTP Pattern",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects regsvr32 execution to download/install/register new DLLs that are hosted on Web or FTP servers.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9bdff77e-ad26-4451-aa27-9b74a93414a2",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/mrd0x/status/1461041276514623491",
+    "https://twitter.com/tccontre18/status/1480950986650832903",
+    "https://lolbas-project.github.io/lolbas/Binaries/Regsvr32/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\regsvr32.exe OR process.pe.original_file_name:REGSVR32.EXE) AND (process.command_line:(*\\ \\/i* OR *\\ \\-i*)) AND (process.command_line:(*ftp* OR *http*))"
+}

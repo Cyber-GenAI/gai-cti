@@ -1,0 +1,71 @@
+{
+  "id": "b94dbc1b-5f5b-4eda-9456-69013f102644",
+  "name": "VHD Image Download Via Browser",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1587.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of \".vhd\"/\".vhdx\" files by browser processes.\nMalware can use mountable Virtual Hard Disk \".vhd\" files to encapsulate payloads and evade security controls.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate downloads of \".vhd\" files would also trigger this"
+  ],
+  "from": "now-360s",
+  "rule_id": "f4c8e5e0-1855-49c0-9276-c227c0643dda",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1587",
+          "name": "Develop Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1587/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/intelligence-insights-october-2021/",
+    "https://www.kaspersky.com/blog/lazarus-vhd-ransomware/36559/",
+    "https://securelist.com/lazarus-on-the-hunt-for-big-game/97757/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\brave.exe OR *\\\\chrome.exe OR *\\\\firefox.exe OR *\\\\iexplore.exe OR *\\\\maxthon.exe OR *\\\\MicrosoftEdge.exe OR *\\\\msedge.exe OR *\\\\msedgewebview2.exe OR *\\\\opera.exe OR *\\\\safari.exe OR *\\\\seamonkey.exe OR *\\\\vivaldi.exe OR *\\\\whale.exe)) AND file.path:*.vhd*"
+}

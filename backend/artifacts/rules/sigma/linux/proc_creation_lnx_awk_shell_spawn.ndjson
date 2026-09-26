@@ -1,0 +1,72 @@
+{
+  "id": "333007a4-f5a3-4e6c-994b-d8890848a562",
+  "name": "Suspicious Invocation of Shell via AWK - Linux",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"awk\" or it's sibling commands, to invoke a shell using the system() function.\nThis behavior is commonly associated with attempts to execute arbitrary commands or escalate privileges, potentially leading to unauthorized access or further exploitation.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9a773390-8625-44b7-886f-9a2370db1e43",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/awk/#shell",
+    "https://gtfobins.github.io/gtfobins/gawk/#shell",
+    "https://gtfobins.github.io/gtfobins/nawk/#shell",
+    "https://gtfobins.github.io/gtfobins/mawk/#shell"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((Image:(*\\/awk OR *\\/gawk OR *\\/mawk OR *\\/nawk)) AND CommandLine:*BEGIN\\ \\{system*) AND (CommandLine:(*\\/bin\\/bash* OR *\\/bin\\/dash* OR *\\/bin\\/fish* OR *\\/bin\\/sh* OR *\\/bin\\/zsh*))"
+}

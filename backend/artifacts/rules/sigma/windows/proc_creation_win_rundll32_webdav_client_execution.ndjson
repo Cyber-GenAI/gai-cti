@@ -1,0 +1,70 @@
+{
+  "id": "73d3f07b-6667-40cc-85ce-80a0bd734096",
+  "name": "WebDav Client Execution Via Rundll32.EXE",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1048.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects \"svchost.exe\" spawning \"rundll32.exe\" with command arguments like \"C:\\windows\\system32\\davclnt.dll,DavSetCookie\".\nThis could be an indicator of exfiltration or use of WebDav to launch code (hosted on a WebDav server).\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1434b8ed-dd12-4194-a20e-a2ec4c294420",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1048",
+          "name": "Exfiltration Over Alternative Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1048/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/OTRF/detection-hackathon-apt29/issues/17",
+    "https://github.com/OTRF/ThreatHunter-Playbook/blob/2d4257f630f4c9770f78d0c1df059f891ffc3fec/docs/evals/apt29/detections/7.B.4_C10730EA-6345-4934-AA0F-B0EFCA0C4BA6.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\svchost.exe AND (process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE) AND process.command_line:*C\\:\\\\windows\\\\system32\\\\davclnt.dll,DavSetCookie*"
+}

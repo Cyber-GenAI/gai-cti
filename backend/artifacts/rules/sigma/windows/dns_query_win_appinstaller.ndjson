@@ -1,0 +1,70 @@
+{
+  "id": "77cb4c32-ea3a-4fd7-8996-d4b94390b031",
+  "name": "AppX Package Installation Attempts Via AppInstaller.EXE",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1105",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DNS queries made by \"AppInstaller.EXE\". The AppInstaller is the default handler for the \"ms-appinstaller\" URI. It attempts to load/install a package from the referenced URL\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7fb142f8-1768-4e87-9c92-93c86b9d3660",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/notwhickey/status/1333900137232523264",
+    "https://lolbas-project.github.io/lolbas/Binaries/AppInstaller/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:C\\:\\\\Program\\ Files\\\\WindowsApps\\\\Microsoft.DesktopAppInstaller_* AND process.executable:*\\\\AppInstaller.exe"
+}

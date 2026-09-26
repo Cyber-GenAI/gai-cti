@@ -1,0 +1,69 @@
+{
+  "id": "c9413c28-f303-4f69-952a-5edc0eaa3308",
+  "name": "Potential Direct Syscall of NtOpenProcess",
+  "tags": [
+    "attack.execution",
+    "attack.t1106",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential calls to NtOpenProcess directly from NTDLL.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "fca4b0d4-127a-41f8-9fb5-f9946080a251",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1106",
+          "name": "Native API",
+          "reference": "https://attack.mitre.org/techniques/T1106/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/falconforce/falconfriday-direct-system-calls-and-cobalt-strike-bofs-0xff14-741fa8e1bdd6"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.CallTrace:UNKNOWN* AND (NOT ((winlog.event_data.TargetImage:*vcredist_x64.exe AND process.executable:*vcredist_x64.exe) OR ((process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR *\\:\\\\Program\\ Files\\\\* OR *\\:\\\\Windows\\\\System32\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\* OR *\\:\\\\Windows\\\\WinSxS\\\\*)) AND (winlog.event_data.TargetImage:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR *\\:\\\\Program\\ Files\\\\* OR *\\:\\\\Windows\\\\System32\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\* OR *\\:\\\\Windows\\\\WinSxS\\\\*))) OR winlog.provider_name:Microsoft\\-Windows\\-Kernel\\-Audit\\-API\\-Calls)) AND (NOT ((winlog.event_data.TargetImage:*\\:\\\\Windows\\\\system32\\\\systeminfo.exe AND process.executable:*setup64.exe) OR (process.executable:*\\:\\\\Windows\\\\Explorer.EXE AND winlog.event_data.TargetImage:*\\:\\\\Program\\ Files\\\\Cylance\\\\Desktop\\\\CylanceUI.exe) OR (process.executable:*AmazonSSMAgentSetup.exe AND winlog.event_data.TargetImage:*AmazonSSMAgentSetup.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Programs\\\\Microsoft\\ VS\\ Code\\\\Code.exe AND winlog.event_data.TargetImage:*\\\\AppData\\\\Local\\\\Programs\\\\Microsoft\\ VS\\ Code\\\\Code.exe) OR (winlog.event_data.TargetImage:*\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe AND process.executable:*\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe) OR (winlog.event_data.TargetImage:*\\\\AppData\\\\Local\\\\Discord\\\\* AND winlog.event_data.TargetImage:*\\\\Discord.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\yammerdesktop\\\\app\\-* AND process.executable:*\\\\Yammer.exe AND winlog.event_data.TargetImage:*\\\\AppData\\\\Local\\\\yammerdesktop\\\\app\\-* AND winlog.event_data.TargetImage:*\\\\Yammer.exe AND winlog.event_data.GrantedAccess:0x1000) OR winlog.event_data.TargetImage:*\\\\Evernote\\\\Evernote.exe OR (process.executable:*\\:\\\\Program\\ Files\\\\Adobe\\\\Acrobat\\ DC\\\\Acrobat\\\\* AND process.executable:*\\\\AcroCEF.exe AND winlog.event_data.TargetImage:*\\:\\\\Program\\ Files\\\\Adobe\\\\Acrobat\\ DC\\\\Acrobat\\\\* AND winlog.event_data.TargetImage:*\\\\AcroCEF.exe)))"
+}

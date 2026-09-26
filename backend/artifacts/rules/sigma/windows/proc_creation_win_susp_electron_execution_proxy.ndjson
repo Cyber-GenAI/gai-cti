@@ -1,0 +1,56 @@
+{
+  "id": "45c152c8-50f2-43c1-ba64-371822849748",
+  "name": "Potentially Suspicious Electron Application CommandLine",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious CommandLine of electron apps (teams, discord, slack, etc.). This could be a sign of abuse to proxy execution through a signed binary.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage for debugging purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "4f216477-c930-45cb-919b-5c5850cca563",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://positive.security/blog/ms-officecmd-rce",
+    "https://lolbas-project.github.io/lolbas/Binaries/Teams/",
+    "https://lolbas-project.github.io/lolbas/Binaries/Msedge/",
+    "https://lolbas-project.github.io/lolbas/Binaries/msedgewebview2/",
+    "https://medium.com/@MalFuzzer/one-electron-to-rule-them-all-dc2e9b263daf",
+    "https://chromium.googlesource.com/chromium/chromium/+/master/content/public/common/content_switches.cc"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\chrome.exe OR *\\\\code.exe OR *\\\\discord.exe OR *\\\\GitHubDesktop.exe OR *\\\\keybase.exe OR *\\\\msedge_proxy.exe OR *\\\\msedge.exe OR *\\\\msedgewebview2.exe OR *\\\\msteams.exe OR *\\\\slack.exe OR *\\\\Teams.exe)) OR (process.pe.original_file_name:(chrome.exe OR code.exe OR discord.exe OR GitHubDesktop.exe OR keybase.exe OR msedge_proxy.exe OR msedge.exe OR msedgewebview2.exe OR msteams.exe OR slack.exe OR Teams.exe))) AND (process.command_line:(*\\-\\-browser\\-subprocess\\-path* OR *\\-\\-gpu\\-launcher* OR *\\-\\-renderer\\-cmd\\-prefix* OR *\\-\\-utility\\-cmd\\-prefix*))"
+}

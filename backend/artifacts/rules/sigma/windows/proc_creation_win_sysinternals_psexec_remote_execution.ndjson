@@ -1,0 +1,71 @@
+{
+  "id": "3e568ee0-0ef5-4b52-ac06-f2d3f9e18d3b",
+  "name": "Potential PsExec Remote Execution",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1587.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential psexec command that initiate execution on a remote systems via common commandline flags used by the utility",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b6b3f21c-ab5c-4edb-be9f-1c6dfdebe82e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1587",
+          "name": "Develop Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1587/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/psexec",
+    "https://www.poweradmin.com/paexec/",
+    "https://www.fireeye.com/blog/threat-research/2020/10/kegtap-and-singlemalt-with-a-ransomware-chaser.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*accepteula* AND process.command_line:*\\ \\-u\\ * AND process.command_line:*\\ \\-p\\ * AND process.command_line:*\\ \\\\\\\\*"
+}

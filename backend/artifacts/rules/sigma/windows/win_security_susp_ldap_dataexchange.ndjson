@@ -1,0 +1,71 @@
+{
+  "id": "a44186d9-5e1f-4cd7-892d-8e459aa31f40",
+  "name": "Suspicious LDAP-Attributes Used",
+  "tags": [
+    "attack.t1001.003",
+    "attack.command-and-control",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of particular AttributeLDAPDisplayNames, which are known for data exchange via LDAP by the tool LDAPFragger and are additionally not commonly used in companies.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Companies, who may use these default LDAP-Attributes for personal information"
+  ],
+  "from": "now-360s",
+  "rule_id": "2190289a-342b-48dc-8163-9631d35ab1f3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1001",
+          "name": "Data Obfuscation",
+          "reference": "https://attack.mitre.org/techniques/T1001/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/@ivecodoe/detecting-ldapfragger-a-newly-released-cobalt-strike-beacon-using-ldap-for-c2-communication-c274a7f00961",
+    "https://blog.fox-it.com/2020/03/19/ldapfragger-command-and-control-over-ldap-attributes/",
+    "https://github.com/fox-it/LDAPFragger"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:5136 AND winlog.event_data.AttributeValue:* AND (winlog.event_data.AttributeLDAPDisplayName:(primaryInternationalISDNNumber OR otherFacsimileTelephoneNumber OR primaryTelexNumber)))"
+}

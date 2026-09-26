@@ -1,0 +1,71 @@
+{
+  "id": "9e5c4c33-3e02-4fd9-ab7f-1a202bd05c87",
+  "name": "Potential Excel.EXE DCOM Lateral Movement Via ActivateMicrosoftApp",
+  "tags": [
+    "attack.t1021.003",
+    "attack.lateral-movement",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious child processes of Excel which could be an indicator of lateral movement leveraging the \"ActivateMicrosoftApp\" Excel DCOM object.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "58456c38-ee83-477a-8856-730027351897",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://posts.specterops.io/lateral-movement-abuse-the-power-of-dcom-excel-application-3c016d0d9922",
+    "https://github.com/grayhatkiller/SharpExShell",
+    "https://learn.microsoft.com/en-us/office/vba/api/excel.xlmsapplication"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\excel.exe AND ((process.pe.original_file_name:(foxprow.exe OR schdplus.exe OR winproj.exe)) OR (process.executable:(*\\\\foxprow.exe OR *\\\\schdplus.exe OR *\\\\winproj.exe)))"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "2a5d10ed-9d56-429b-bcac-354cfe6550ff",
+  "name": "Suspicious Usage Of ShellExec_RunDLL",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious usage of the ShellExec_RunDLL function to launch other commands as seen in the the raspberry-robin attack",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f51650d1-15e6-43b3-a487-fd42331dde5a",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/raspberry-robin/",
+    "https://www.microsoft.com/en-us/security/blog/2022/10/27/raspberry-robin-worm-part-of-larger-ecosystem-facilitating-pre-ransomware-activity/",
+    "https://github.com/SigmaHQ/sigma/issues/1009"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*ShellExec_RunDLL* AND (process.command_line:(*\\\\Desktop\\\\* OR *\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\* OR *comspec* OR *iex* OR *Invoke\\-* OR *msiexec* OR *odbcconf* OR *regsvr32*))"
+}

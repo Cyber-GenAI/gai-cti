@@ -1,0 +1,86 @@
+{
+  "id": "06beccef-15a8-424f-86c9-02809c75e6f1",
+  "name": "Potential Active Directory Reconnaissance/Enumeration Via LDAP",
+  "tags": [
+    "attack.discovery",
+    "attack.t1069.002",
+    "attack.t1087.002",
+    "attack.t1482",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential Active Directory enumeration via LDAP",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [],
+  "from": "now-360s",
+  "rule_id": "4a0c9752-a106-4268-82fa-44d3f6d3e0fe",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1069",
+          "name": "Permission Groups Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1069/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1482",
+          "name": "Domain Trust Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1482/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://techcommunity.microsoft.com/t5/microsoft-defender-for-endpoint/hunting-for-reconnaissance-activities-using-ldap-search-filters/ba-p/824726",
+    "https://github.com/PowerShellMafia/PowerSploit/blob/d943001a7defb5e0d1657085a77a0e78609be58f/Recon/PowerView.ps1",
+    "https://github.com/BloodHoundAD/SharpHound3/blob/7d96b991b1887ff50349ce59c80980bc0d95c86a/SharpHound3/LdapBuilder.cs",
+    "https://medium.com/falconforce/falconfriday-detecting-active-directory-data-collection-0xff21-c22d1a57494c",
+    "https://github.com/fox-it/BloodHound.py/blob/d65eb614831cd30f26028ccb072f5e77ca287e0b/bloodhound/ad/domain.py#L427",
+    "https://ipurple.team/2024/07/15/sharphound-detection/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((event.code:30 AND (winlog.event_data.SearchFilter:(*\\(groupType\\:1.2.840.113556.1.4.803\\:\\=2147483648\\)* OR *\\(groupType\\:1.2.840.113556.1.4.803\\:\\=2147483656\\)* OR *\\(groupType\\:1.2.840.113556.1.4.803\\:\\=2147483652\\)* OR *\\(groupType\\:1.2.840.113556.1.4.803\\:\\=2147483650\\)* OR *\\(sAMAccountType\\=805306369\\)* OR *\\(sAMAccountType\\=805306368\\)* OR *\\(sAMAccountType\\=536870913\\)* OR *\\(sAMAccountType\\=536870912\\)* OR *\\(sAMAccountType\\=268435457\\)* OR *\\(sAMAccountType\\=268435456\\)* OR *\\(objectCategory\\=groupPolicyContainer\\)* OR *\\(objectCategory\\=organizationalUnit\\)* OR *\\(objectCategory\\=Computer\\)* OR *\\(objectCategory\\=nTDSDSA\\)* OR *\\(objectCategory\\=server\\)* OR *\\(objectCategory\\=domain\\)* OR *\\(objectCategory\\=person\\)* OR *\\(objectCategory\\=group\\)* OR *\\(objectCategory\\=user\\)* OR *\\(objectClass\\=trustedDomain\\)* OR *\\(objectClass\\=computer\\)* OR *\\(objectClass\\=server\\)* OR *\\(objectClass\\=group\\)* OR *\\(objectClass\\=user\\)* OR *\\(primaryGroupID\\=521\\)* OR *\\(primaryGroupID\\=516\\)* OR *\\(primaryGroupID\\=515\\)* OR *\\(primaryGroupID\\=512\\)* OR *Domain\\ Admins* OR *objectGUID\\=\\** OR *\\(schemaIDGUID\\=\\*\\)* OR *admincount\\=1*))) AND (NOT (event.code:30 AND (winlog.event_data.SearchFilter:(*\\(domainSid\\=*\\)* OR *\\(objectSid\\=*\\)*))))) OR (event.code:30 AND (winlog.event_data.SearchFilter:(*\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=4194304\\)* OR *\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=2097152\\)* OR *\\!\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=1048574\\)* OR *\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=524288\\)* OR *\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=65536\\)* OR *\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=8192\\)* OR *\\(userAccountControl\\:1.2.840.113556.1.4.803\\:\\=544\\)* OR *\\!\\(UserAccountControl\\:1.2.840.113556.1.4.803\\:\\=2\\)* OR *msDS\\-AllowedToActOnBehalfOfOtherIdentity* OR *msDS\\-AllowedToDelegateTo* OR *msDS\\-GroupManagedServiceAccount* OR *\\(accountExpires\\=9223372036854775807\\)* OR *\\(accountExpires\\=0\\)* OR *\\(adminCount\\=1\\)* OR *ms\\-MCS\\-AdmPwd*))) OR (event.code:30 AND winlog.event_data.SearchFilter:\\(objectclass\\=\\*\\) AND (winlog.event_data.DistinguishedName:(*CN\\=Domain\\ Admins* OR *CN\\=Enterprise\\ Admins* OR *CN\\=Group\\ Policy\\ Creator\\ Owners*)))"
+}

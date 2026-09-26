@@ -1,0 +1,69 @@
+{
+  "id": "28d5ca5c-ccea-49f8-af3f-9d1d39959497",
+  "name": "Potentially Suspicious ODBC Driver Registered",
+  "tags": [
+    "attack.persistence",
+    "attack.t1003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the registration of a new ODBC driver where the driver is located in a potentially suspicious location",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "fa45ba4c-ba8f-4588-8602-15715b1168cc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2020/08/23/odbcconf-lolbin-trifecta/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\ODBC\\\\ODBCINST.INI\\\\* AND (registry.path:(*\\\\Driver OR *\\\\Setup)) AND (winlog.event_data.Details:(*\\:\\\\PerfLogs\\\\* OR *\\:\\\\ProgramData\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Registration\\\\CRMLog* OR *\\:\\\\Windows\\\\System32\\\\com\\\\dmp\\\\* OR *\\:\\\\Windows\\\\System32\\\\FxsTmp\\\\* OR *\\:\\\\Windows\\\\System32\\\\Microsoft\\\\Crypto\\\\RSA\\\\MachineKeys\\\\* OR *\\:\\\\Windows\\\\System32\\\\spool\\\\drivers\\\\color\\\\* OR *\\:\\\\Windows\\\\System32\\\\spool\\\\PRINTERS\\\\* OR *\\:\\\\Windows\\\\System32\\\\spool\\\\SERVERS\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks_Migrated\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\com\\\\dmp\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\FxsTmp\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\PLA\\\\System\\\\* OR *\\:\\\\Windows\\\\SysWOW64\\\\Tasks\\\\Microsoft\\\\Windows\\\\SyncCenter\\\\* OR *\\:\\\\Windows\\\\Tasks\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\:\\\\Windows\\\\Tracing\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\AppData\\\\Roaming\\\\*))"
+}

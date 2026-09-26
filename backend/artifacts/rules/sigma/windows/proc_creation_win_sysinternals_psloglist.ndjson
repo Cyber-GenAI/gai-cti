@@ -1,0 +1,75 @@
+{
+  "id": "5126271d-68da-47ec-9aed-7d1570fcb173",
+  "name": "Suspicious Use of PsLogList",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087",
+    "attack.t1087.001",
+    "attack.t1087.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the PsLogList utility to dump event log in order to extract admin accounts and perform account discovery or delete events logs",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Another tool that uses the command line switches of PsLogList",
+    "Legitimate use of PsLogList by an administrator"
+  ],
+  "from": "now-360s",
+  "rule_id": "f9245eae-951c-4d08-b65b-7e2d5de788a8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://research.nccgroup.com/2021/01/12/abusing-cloud-services-to-fly-under-the-radar/",
+    "https://www.cybereason.com/blog/deadringer-exposing-chinese-threat-actors-targeting-major-telcos",
+    "https://github.com/3CORESec/MAL-CL/tree/master/Descriptors/Sysinternals/PsLogList",
+    "https://twitter.com/EricaZelic/status/1614075109827874817"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:psloglist.exe OR (process.executable:(*\\\\psloglist.exe OR *\\\\psloglist64.exe))) AND (process.command_line:(*\\ security* OR *\\ application* OR *\\ system*)) AND (process.command_line:(*\\ \\-d* OR *\\ \\/d* OR *\\ \u2013d* OR *\\ \u2014d* OR *\\ \u2015d*) OR process.command_line:(*\\ \\-x* OR *\\ \\/x* OR *\\ \u2013x* OR *\\ \u2014x* OR *\\ \u2015x*) OR process.command_line:(*\\ \\-s* OR *\\ \\/s* OR *\\ \u2013s* OR *\\ \u2014s* OR *\\ \u2015s*) OR process.command_line:(*\\ \\-c* OR *\\ \\/c* OR *\\ \u2013c* OR *\\ \u2014c* OR *\\ \u2015c*) OR process.command_line:(*\\ \\-g* OR *\\ \\/g* OR *\\ \u2013g* OR *\\ \u2014g* OR *\\ \u2015g*))"
+}

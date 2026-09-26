@@ -1,0 +1,38 @@
+name: gai-cti-front-{$USER}
+
+include:
+  - ../../docker-compose.common.yml
+  - ../../elastdocker/docker-compose.yml
+  - ../../opencti/docker-compose.yml
+
+services:
+
+  back:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+      args:
+        PIP_MIRROR_HOST: ${GAI_CTI_PIP_MIRROR_HOST:-https://pypi.org}
+
+    environment:
+      - AVALAI_API_KEY=${GAI_CTI_AVALAI_API_KEY}
+
+  front:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1.1.8-22-bookworm
+    command: sleep infinity
+    environment:
+      - VITE_API_ROOT=http://localhost:8088/api
+      - VITE_KIBANA_API_ROOT=http://localhost:5601/kibana/api
+      - VITE_ELASTIC_API_ROOT=http://localhost:9200
+      - VITE_SOCKET_IO_ROOT=http://localhost:8088
+    volumes:
+      - ../..:/workspaces:cached
+      - ~/.ssh:/home/node/.ssh
+
+
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1400

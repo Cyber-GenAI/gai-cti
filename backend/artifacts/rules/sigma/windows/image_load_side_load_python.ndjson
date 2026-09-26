@@ -1,0 +1,71 @@
+{
+  "id": "041d1f04-35af-4b8f-bd59-b8b526b5aeaa",
+  "name": "Potential Python DLL SideLoading",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL sideloading of Python DLL files.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate software using Python DLLs"
+  ],
+  "from": "now-360s",
+  "rule_id": "0f980076-e1a9-4c37-9e5b-22316ceaf954",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.securonix.com/blog/seolurker-attack-campaign-uses-seo-poisoning-fake-google-ads-to-install-malware/",
+    "https://thedfirreport.com/2024/09/30/nitrogen-campaign-drops-sliver-and-ends-with-blackcat-ransomware/",
+    "https://github.com/wietze/HijackLibs/tree/dc9c9f2f94e6872051dab58fbafb043fdd8b4176/yml/3rd_party/python"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\python39.dll OR *\\\\python310.dll OR *\\\\python311.dll OR *\\\\python312.dll)) AND (NOT (((file.path:(C\\:\\\\Program\\ Files\\\\Python3* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Python3*)) OR file.path:*\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python3*) OR (file.pe.product:Python AND file.code_signature.signed:true AND file.pe.description:Python AND file.pe.company:Python\\ Software\\ Foundation))) AND (NOT (file.path:C\\:\\\\Program\\ Files\\\\Microsoft\\ Visual\\ Studio\\\\* OR (file.path:(*\\\\cpython\\\\externals\\\\* OR *\\\\cpython\\\\PCbuild\\\\*))))"
+}

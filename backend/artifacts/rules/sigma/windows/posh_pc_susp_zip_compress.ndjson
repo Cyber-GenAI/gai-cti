@@ -1,0 +1,70 @@
+{
+  "id": "8413f992-d0eb-42aa-b63a-6db064dc34da",
+  "name": "Zip A Folder With PowerShell For Staging In Temp - PowerShell",
+  "tags": [
+    "attack.collection",
+    "attack.t1074.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell scripts that make use of the \"Compress-Archive\" Cmdlet in order to compress folders and files where the output is stored in a potentially suspicious location that is used often by malware for exfiltration.\nAn adversary might compress data (e.g., sensitive documents) that is collected prior to exfiltration in order to make it portable and minimize the amount of data sent over the network.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "dc88d2f4-fd43-4b55-91ef-e5ba486040cf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1074",
+          "name": "Data Staged",
+          "reference": "https://attack.mitre.org/techniques/T1074/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1074.001/T1074.001.md",
+    "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-347a"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Windows\\ PowerShell AND (winlog.event_data.Data:(*Compress\\-Archive\\ \\-Path*\\-DestinationPath\\ $env\\:TEMP* OR *Compress\\-Archive\\ \\-Path*\\-DestinationPath*\\\\AppData\\\\Local\\\\Temp\\\\* OR *Compress\\-Archive\\ \\-Path*\\-DestinationPath*\\:\\\\Windows\\\\Temp\\\\*))"
+}

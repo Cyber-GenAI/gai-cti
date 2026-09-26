@@ -1,0 +1,72 @@
+{
+  "id": "8608cc39-a00b-4d92-b0e2-87e4274f7319",
+  "name": "Potentially Suspicious Command Executed Via Run Dialog Box - Registry",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of commands via the run dialog box on Windows by checking values of the \"RunMRU\" registry key.\nThis technique was seen being abused by threat actors to deceive users into pasting and executing malicious commands, often disguised as CAPTCHA verification steps.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9eef23a1-2df2-417c-8493-f64569e6b4fa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/@ahmed.moh.farou2/fake-captcha-campaign-on-arabic-pirated-movie-sites-delivers-lumma-stealer-4f203f7adabf",
+    "https://medium.com/@shaherzakaria8/downloading-trojan-lumma-infostealer-through-capatcha-1f25255a0e71",
+    "https://www.forensafe.com/blogs/runmrukey.html",
+    "https://redcanary.com/blog/threat-intelligence/intelligence-insights-october-2024/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU* AND (((winlog.event_data.Details:(*powershell* OR *pwsh*)) AND (winlog.event_data.Details:(*\\ \\-e\\ * OR *\\ \\-ec\\ * OR *\\ \\-en\\ * OR *\\ \\-enc\\ * OR *\\ \\-enco* OR *ftp* OR *Hidden* OR *http* OR *iex* OR *Invoke\\-*))) OR (winlog.event_data.Details:*wmic* AND (winlog.event_data.Details:(*shadowcopy* OR *process\\ call\\ create*))))"
+}

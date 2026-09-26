@@ -1,0 +1,69 @@
+{
+  "id": "1c16f611-bc5a-472d-98d5-b565391be43a",
+  "name": "Winrar Execution in Non-Standard Folder",
+  "tags": [
+    "attack.collection",
+    "attack.t1560.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious winrar execution in a folder which is not the default installation folder",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of WinRAR in a folder of a software that bundles WinRAR"
+  ],
+  "from": "now-360s",
+  "rule_id": "7a8827f7-24a4-4e5e-844f-bedd2c6e8bf7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1560",
+          "name": "Archive Collected Data",
+          "reference": "https://attack.mitre.org/techniques/T1560/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/cyb3rops/status/1460978167628406785"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\rar.exe OR *\\\\winrar.exe)) OR process.pe.description:Command\\ line\\ RAR) AND (NOT (process.executable:*\\\\UnRAR.exe OR (process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\WinRAR\\\\* OR *\\:\\\\Program\\ Files\\\\WinRAR\\\\*)))) AND (NOT process.executable:*\\:\\\\Windows\\\\Temp\\\\*)"
+}

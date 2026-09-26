@@ -1,0 +1,70 @@
+{
+  "id": "c31774f7-5a44-4454-b4d0-f4cf61a74403",
+  "name": "Potential Suspicious Browser Launch From Document Reader Process",
+  "tags": [
+    "attack.execution",
+    "attack.t1204.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when a browser process or browser tab is launched from an application that handles document files such as Adobe, Microsoft Office, etc. And connects to a web application over http(s), this could indicate a possible phishing attempt.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely in most cases, further investigation should be done in the commandline of the browser process to determine the context of the URL accessed."
+  ],
+  "from": "now-360s",
+  "rule_id": "f9920acb-bb24-44b5-8d1c-9e829a8641e3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/69c5abaa-92ad-45ba-8c53-c11e23e05d04/",
+    "https://app.any.run/tasks/64043a79-165f-4052-bcba-e6e49f847ec1/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:(*Acrobat\\ Reader* OR *Microsoft\\ Office* OR *PDF\\ Reader*)) AND (process.executable:(*\\\\brave.exe OR *\\\\chrome.exe OR *\\\\firefox.exe OR *\\\\msedge.exe OR *\\\\opera.exe OR *\\\\maxthon.exe OR *\\\\seamonkey.exe OR *\\\\vivaldi.exe OR *)) AND process.command_line:*http*"
+}

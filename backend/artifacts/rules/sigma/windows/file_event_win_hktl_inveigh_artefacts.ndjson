@@ -1,0 +1,71 @@
+{
+  "id": "e330abc4-2a0f-4d3a-bf56-e710646bed26",
+  "name": "HackTool - Inveigh Execution Artefacts",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1219",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the presence and execution of Inveigh via dropped artefacts",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "b15b765a-3233-4911-a582-e0187f401f11",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1219",
+          "name": "Remote Access Tools",
+          "reference": "https://attack.mitre.org/techniques/T1219/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Kevin-Robertson/Inveigh/blob/29d9e3c3a625b3033cdaf4683efaafadcecb9007/Inveigh/Support/Output.cs",
+    "https://github.com/Kevin-Robertson/Inveigh/blob/29d9e3c3a625b3033cdaf4683efaafadcecb9007/Inveigh/Support/Control.cs",
+    "https://thedfirreport.com/2020/11/23/pysa-mespinoza-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:(*\\\\Inveigh\\-Log.txt OR *\\\\Inveigh\\-Cleartext.txt OR *\\\\Inveigh\\-NTLMv1Users.txt OR *\\\\Inveigh\\-NTLMv2Users.txt OR *\\\\Inveigh\\-NTLMv1.txt OR *\\\\Inveigh\\-NTLMv2.txt OR *\\\\Inveigh\\-FormInput.txt OR *\\\\Inveigh.dll OR *\\\\Inveigh.exe OR *\\\\Inveigh.ps1 OR *\\\\Inveigh\\-Relay.ps1)"
+}

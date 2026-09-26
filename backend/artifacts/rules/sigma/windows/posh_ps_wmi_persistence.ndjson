@@ -1,0 +1,70 @@
+{
+  "id": "83d6c24f-0090-4782-b124-0f7a2167b3b3",
+  "name": "Powershell WMI Persistence",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1546.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may establish persistence and elevate privileges by executing malicious content triggered by a Windows Management Instrumentation (WMI) event subscription.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6b5adacc-1f43-401f-8fc9-a77646c66c66",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1546.003/T1546.003.md",
+    "https://github.com/EmpireProject/Empire/blob/08cbd274bef78243d7a8ed6443b8364acd1fc48b/data/module_source/persistence/Persistence.psm1#L545"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*New\\-CimInstance\\ * AND powershell.file.script_block_text:*\\-Namespace\\ root\\/subscription\\ * AND powershell.file.script_block_text:*\\-ClassName\\ __EventFilter\\ * AND powershell.file.script_block_text:*\\-Property\\ *) OR (powershell.file.script_block_text:*New\\-CimInstance\\ * AND powershell.file.script_block_text:*\\-Namespace\\ root\\/subscription\\ * AND powershell.file.script_block_text:*\\-ClassName\\ CommandLineEventConsumer\\ * AND powershell.file.script_block_text:*\\-Property\\ *)"
+}

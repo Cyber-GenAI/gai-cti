@@ -1,0 +1,88 @@
+{
+  "id": "1e3ec9b2-f80a-4c7f-8091-c2031f0ea006",
+  "name": "Control Panel Items",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1218.002",
+    "attack.persistence",
+    "attack.t1546",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the malicious use of a control panel item",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d2061730-6271-4c5a-a1e9-086db94986a4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://ired.team/offensive-security/code-execution/code-execution-through-control-panel-add-ins"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\reg.exe OR process.pe.original_file_name:reg.exe) AND (process.command_line:*add* AND process.command_line:*CurrentVersion\\\\Control\\ Panel\\\\CPLs*)) OR (process.command_line:*.cpl AND (NOT ((process.command_line:(*\\\\System32\\\\* OR *%System%* OR *\\|C\\:\\\\Windows\\\\system32\\|*)) OR (process.command_line:*regsvr32\\ * AND process.command_line:*\\ \\/s\\ * AND process.command_line:*igfxCPL.cpl*))))"
+}

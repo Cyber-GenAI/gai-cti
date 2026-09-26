@@ -1,0 +1,71 @@
+{
+  "id": "faec9394-5f7a-49f9-add7-4d2a0e771b51",
+  "name": "Visual Studio Code Tunnel Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1071.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Visual Studio Code tunnel execution. Attackers can abuse this functionality to establish a C2 channel",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of Visual Studio Code tunnel"
+  ],
+  "from": "now-360s",
+  "rule_id": "ffdd16dc-ec72-43b4-830a-0025f597f360",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1071/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://ipfyx.fr/post/visual-studio-code-tunnel/",
+    "https://badoption.eu/blog/2023/01/31/code_c2.html",
+    "https://code.visualstudio.com/docs/remote/tunnels"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((NOT _exists_:process.pe.original_file_name) AND process.command_line:*.exe\\ tunnel) OR (process.command_line:*.exe\\ tunnel* AND process.command_line:*\\-\\-name\\ * AND process.command_line:*\\-\\-accept\\-server\\-license\\-terms*) OR (process.parent.command_line:*\\ tunnel AND process.executable:*\\\\cmd.exe AND (process.command_line:*\\/d\\ \\/c\\ * AND process.command_line:*\\\\servers\\\\Stable\\-* AND process.command_line:*code\\-server.cmd*))"
+}

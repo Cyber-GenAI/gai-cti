@@ -1,0 +1,69 @@
+{
+  "id": "b0a937a5-107e-448b-bb60-42ea6e387db9",
+  "name": "DNS HybridConnectionManager Service Bus",
+  "tags": [
+    "attack.persistence",
+    "attack.t1554",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Azure Hybrid Connection Manager services querying the Azure service bus service",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of Azure Hybrid Connection Manager and the Azure Service Bus service"
+  ],
+  "from": "now-360s",
+  "rule_id": "cddf0522-6ca8-4401-9ebd-6cdcd18b6de8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1554",
+          "name": "Compromise Host Software Binary",
+          "reference": "https://attack.mitre.org/techniques/T1554/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Cyb3rWard0g/status/1381642789369286662"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "dns.question.name:*servicebus.windows.net* AND process.executable:*HybridConnectionManager*"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "155c21cf-6ff0-4a7f-9410-822a6901755e",
+  "name": "Potential Persistence Using DebugPath",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.015",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential persistence using Appx DebugPath",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "84963646-7fdd-4829-ad3f-c9bf4bf1e832",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://oddvar.moe/2018/09/06/persistence-using-universal-windows-platform-apps-appx/",
+    "https://github.com/rootm0s/WinPwnage"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*Classes\\\\ActivatableClasses\\\\Package\\\\Microsoft.* AND registry.path:*\\\\DebugPath) OR (registry.path:*\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\PackagedAppXDebug\\\\Microsoft.* AND registry.path:*\\\\\\(Default\\))"
+}

@@ -1,0 +1,110 @@
+{
+  "id": "cde5cbf5-06b8-4478-acd6-1c5ddf53e946",
+  "name": "Communication To Ngrok Tunneling Service Initiated",
+  "tags": [
+    "attack.exfiltration",
+    "attack.command-and-control",
+    "attack.t1567",
+    "attack.t1568.002",
+    "attack.t1572",
+    "attack.t1090",
+    "attack.t1102",
+    "attack.s0508",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an executable initiating a network connection to \"ngrok\" tunneling domains.\nAttackers were seen using this \"ngrok\" in order to store their second stage payloads and malware.\nWhile communication with such domains can be legitimate, often times is a sign of either data exfiltration by malicious actors or additional download.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the ngrok service."
+  ],
+  "from": "now-360s",
+  "rule_id": "4034bd0d-1cbf-4385-889e-abbf84ce840e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1567",
+          "name": "Exfiltration Over Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1567/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1568",
+          "name": "Dynamic Resolution",
+          "reference": "https://attack.mitre.org/techniques/T1568/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1572",
+          "name": "Protocol Tunneling",
+          "reference": "https://attack.mitre.org/techniques/T1572/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/hakluke/status/1587733971814977537/photo/1",
+    "https://ngrok.com/docs/secure-tunnels/tunnels/ssh-reverse-tunnel-agent"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "destination.domain:(*tunnel.us.ngrok.com* OR *tunnel.eu.ngrok.com* OR *tunnel.ap.ngrok.com* OR *tunnel.au.ngrok.com* OR *tunnel.sa.ngrok.com* OR *tunnel.jp.ngrok.com* OR *tunnel.in.ngrok.com*)"
+}

@@ -1,0 +1,95 @@
+{
+  "id": "9a9696c4-6e56-48ec-8535-0dd1f72db81b",
+  "name": "Process Memory Dump Via Comsvcs.DLL",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.credential-access",
+    "attack.t1036",
+    "attack.t1003.001",
+    "car.2013-05-009",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a process memory dump via \"comsvcs.dll\" using rundll32, covering multiple different techniques (ordinal, minidump function, etc.)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "4c22a102-4e97-4fae-90be-42d7cdf39e5a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/shantanukhande/status/1229348874298388484",
+    "https://twitter.com/pythonresponder/status/1385064506049630211?s=21",
+    "https://twitter.com/Hexacorn/status/1224848930795552769",
+    "https://modexp.wordpress.com/2019/08/30/minidumpwritedump-via-com-services-dll/",
+    "https://twitter.com/SBousseaden/status/1167417096374050817",
+    "https://twitter.com/Wietze/status/1542107456507203586",
+    "https://github.com/Hackndo/lsassy/blob/14d8f8ae596ecf22b449bfe919829173b8a07635/lsassy/dumpmethod/comsvcs.py",
+    "https://www.youtube.com/watch?v=52tAmVLg1KM&t=2070s"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE OR process.command_line:*rundll32*) AND ((process.command_line:*comsvcs* AND process.command_line:*full*) AND (process.command_line:(*#\\-* OR *#\\+* OR *#24* OR *24\\ * OR *MiniDump* OR *#65560*)))) OR ((process.command_line:*24* AND process.command_line:*comsvcs* AND process.command_line:*full*) AND (process.command_line:(*\\ #* OR *,#* OR *,\\ #* OR *\\\"#*)))"
+}

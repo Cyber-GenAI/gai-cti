@@ -1,0 +1,69 @@
+{
+  "id": "c7957845-7c64-490e-8c9a-c4a663374933",
+  "name": "Group Policy Abuse for Privilege Addition",
+  "tags": [
+    "attack.privilege-escalation",
+    "attack.t1484.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the first occurrence of a modification to Group Policy Object Attributes to add privileges to user accounts or use them to add users as local admins.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Users allowed to perform these modifications (user found in field SubjectUserName)"
+  ],
+  "from": "now-360s",
+  "rule_id": "b355ecbc-706b-4c00-9009-db3fc60782a1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1484",
+          "name": "Domain or Tenant Policy Modification",
+          "reference": "https://attack.mitre.org/techniques/T1484/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/guide/en/security/current/group-policy-abuse-for-privilege-addition.html#_setup_275"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:5136 AND winlog.event_data.AttributeLDAPDisplayName:gPCMachineExtensionNames AND (winlog.event_data.AttributeValue:(*827D319E\\-6EAC\\-11D2\\-A4EA\\-00C04F79F83A* OR *803E14A0\\-B4FB\\-11D0\\-A0D0\\-00A0C90F574B*)))"
+}

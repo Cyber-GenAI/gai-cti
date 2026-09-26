@@ -1,0 +1,71 @@
+{
+  "id": "acf85d9d-2c30-4b4e-9665-d1b8de922196",
+  "name": "Suspicious Rejected SMB Guest Logon From IP",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1110.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect Attempt PrintNightmare (CVE-2021-1675) Remote code execution in Windows Spooler Service",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Account fallback reasons (after failed login with specific account)"
+  ],
+  "from": "now-360s",
+  "rule_id": "719e53a8-60f6-414b-adac-ea9047333e3e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "reference": "https://attack.mitre.org/techniques/T1110/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/KevTheHermit/status/1410203844064301056",
+    "https://web.archive.org/web/20210629055600/https://github.com/hhlxf/PrintNightmare/",
+    "https://web.archive.org/web/20210701042336/https://github.com/afwu/PrintNightmare"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-SmbClient\\/Security AND (event.code:31017 AND winlog.event_data.UserName:\"\" AND winlog.event_data.ServerName:\\\\1*)"
+}

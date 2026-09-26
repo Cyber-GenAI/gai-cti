@@ -1,0 +1,69 @@
+{
+  "id": "9e9a5f4b-2dbf-4c5b-989b-f07f662a67fc",
+  "name": "Kerberos Manipulation",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1212",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects failed Kerberos TGT issue operation. This can be a sign of manipulations of TGT messages by an attacker.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Faulty legacy applications"
+  ],
+  "from": "now-360s",
+  "rule_id": "504fe902-28a2-4485-9ba8-ef7c9c50e28f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1212",
+          "name": "Exploitation for Credential Access",
+          "reference": "https://attack.mitre.org/techniques/T1212/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4771"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:(675 OR 4768 OR 4769 OR 4771)) AND (winlog.event_data.Status:(0x9 OR 0xA OR 0xB OR 0xF OR 0x10 OR 0x11 OR 0x13 OR 0x14 OR 0x1A OR 0x1F OR 0x21 OR 0x22 OR 0x23 OR 0x24 OR 0x26 OR 0x27 OR 0x28 OR 0x29 OR 0x2C OR 0x2D OR 0x2E OR 0x2F OR 0x31 OR 0x32 OR 0x3E OR 0x3F OR 0x40 OR 0x41 OR 0x43 OR 0x44)))"
+}

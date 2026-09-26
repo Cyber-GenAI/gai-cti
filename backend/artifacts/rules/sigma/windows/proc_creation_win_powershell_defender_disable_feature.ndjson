@@ -1,0 +1,72 @@
+{
+  "id": "33ea305e-7792-4bed-a0ab-30c4a394258e",
+  "name": "Powershell Defender Disable Scan Feature",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects requests to disable Microsoft Defender features using PowerShell commands",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Possible administrative activity",
+    "Other Cmdlets that may use the same parameters"
+  ],
+  "from": "now-360s",
+  "rule_id": "7bcad680-ab01-46c0-a6f0-3ba482131f89",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps",
+    "https://www.virustotal.com/gui/file/d609799091731d83d75ec5d1f030571af20c45efeeb94840b67ea09a3283ab65/behavior/C2AE",
+    "https://www.virustotal.com/gui/search/content%253A%2522Set-MpPreference%2520-Disable%2522/files"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:(*Add\\-MpPreference\\ * OR *Set\\-MpPreference\\ *)) AND (process.command_line:(*DisableArchiveScanning\\ * OR *DisableRealtimeMonitoring\\ * OR *DisableIOAVProtection\\ * OR *DisableBehaviorMonitoring\\ * OR *DisableBlockAtFirstSeen\\ * OR *DisableCatchupFullScan\\ * OR *DisableCatchupQuickScan\\ *)) AND (process.command_line:(*$true* OR *\\ 1\\ *))) OR ((process.command_line:(*ZGlzYWJsZWFyY2hpdmVzY2FubmluZy* OR *Rpc2FibGVhcmNoaXZlc2Nhbm5pbmcg* OR *kaXNhYmxlYXJjaGl2ZXNjYW5uaW5nI*) OR process.command_line:(*RGlzYWJsZUFyY2hpdmVTY2FubmluZy* OR *Rpc2FibGVBcmNoaXZlU2Nhbm5pbmcg* OR *EaXNhYmxlQXJjaGl2ZVNjYW5uaW5nI*) OR process.command_line:(*ZGlzYWJsZWJlaGF2aW9ybW9uaXRvcmluZy* OR *Rpc2FibGViZWhhdmlvcm1vbml0b3Jpbmcg* OR *kaXNhYmxlYmVoYXZpb3Jtb25pdG9yaW5nI*) OR process.command_line:(*RGlzYWJsZUJlaGF2aW9yTW9uaXRvcmluZy* OR *Rpc2FibGVCZWhhdmlvck1vbml0b3Jpbmcg* OR *EaXNhYmxlQmVoYXZpb3JNb25pdG9yaW5nI*) OR process.command_line:(*ZGlzYWJsZWJsb2NrYXRmaXJzdHNlZW4g* OR *Rpc2FibGVibG9ja2F0Zmlyc3RzZWVuI* OR *kaXNhYmxlYmxvY2thdGZpcnN0c2Vlbi*) OR process.command_line:(*RGlzYWJsZUJsb2NrQXRGaXJzdFNlZW4g* OR *Rpc2FibGVCbG9ja0F0Rmlyc3RTZWVuI* OR *EaXNhYmxlQmxvY2tBdEZpcnN0U2Vlbi*) OR process.command_line:(*ZGlzYWJsZWNhdGNodXBmdWxsc2Nhbi* OR *Rpc2FibGVjYXRjaHVwZnVsbHNjYW4g* OR *kaXNhYmxlY2F0Y2h1cGZ1bGxzY2FuI*) OR process.command_line:(*RGlzYWJsZUNhdGNodXBGdWxsU2Nhbi* OR *Rpc2FibGVDYXRjaHVwRnVsbFNjYW4g* OR *EaXNhYmxlQ2F0Y2h1cEZ1bGxTY2FuI*) OR process.command_line:(*ZGlzYWJsZWNhdGNodXBxdWlja3NjYW4g* OR *Rpc2FibGVjYXRjaHVwcXVpY2tzY2FuI* OR *kaXNhYmxlY2F0Y2h1cHF1aWNrc2Nhbi*) OR process.command_line:(*RGlzYWJsZUNhdGNodXBRdWlja1NjYW4g* OR *Rpc2FibGVDYXRjaHVwUXVpY2tTY2FuI* OR *EaXNhYmxlQ2F0Y2h1cFF1aWNrU2Nhbi*) OR process.command_line:(*ZGlzYWJsZWlvYXZwcm90ZWN0aW9uI* OR *Rpc2FibGVpb2F2cHJvdGVjdGlvbi* OR *kaXNhYmxlaW9hdnByb3RlY3Rpb24g*) OR process.command_line:(*RGlzYWJsZUlPQVZQcm90ZWN0aW9uI* OR *Rpc2FibGVJT0FWUHJvdGVjdGlvbi* OR *EaXNhYmxlSU9BVlByb3RlY3Rpb24g*) OR process.command_line:(*ZGlzYWJsZXJlYWx0aW1lbW9uaXRvcmluZy* OR *Rpc2FibGVyZWFsdGltZW1vbml0b3Jpbmcg* OR *kaXNhYmxlcmVhbHRpbWVtb25pdG9yaW5nI*) OR process.command_line:(*RGlzYWJsZVJlYWx0aW1lTW9uaXRvcmluZy* OR *Rpc2FibGVSZWFsdGltZU1vbml0b3Jpbmcg* OR *EaXNhYmxlUmVhbHRpbWVNb25pdG9yaW5nI*)) OR (process.command_line:(*RABpAHMAYQBiAGwAZQBSAGUAYQBsAHQAaQBtAGUATQBvAG4AaQB0AG8AcgBpAG4AZwAgA* OR *QAaQBzAGEAYgBsAGUAUgBlAGEAbAB0AGkAbQBlAE0AbwBuAGkAdABvAHIAaQBuAGcAIA* OR *EAGkAcwBhAGIAbABlAFIAZQBhAGwAdABpAG0AZQBNAG8AbgBpAHQAbwByAGkAbgBnACAA* OR *RABpAHMAYQBiAGwAZQBJAE8AQQBWAFAAcgBvAHQAZQBjAHQAaQBvAG4AIA* OR *QAaQBzAGEAYgBsAGUASQBPAEEAVgBQAHIAbwB0AGUAYwB0AGkAbwBuACAA* OR *EAGkAcwBhAGIAbABlAEkATwBBAFYAUAByAG8AdABlAGMAdABpAG8AbgAgA* OR *RABpAHMAYQBiAGwAZQBCAGUAaABhAHYAaQBvAHIATQBvAG4AaQB0AG8AcgBpAG4AZwAgA* OR *QAaQBzAGEAYgBsAGUAQgBlAGgAYQB2AGkAbwByAE0AbwBuAGkAdABvAHIAaQBuAGcAIA* OR *EAGkAcwBhAGIAbABlAEIAZQBoAGEAdgBpAG8AcgBNAG8AbgBpAHQAbwByAGkAbgBnACAA* OR *RABpAHMAYQBiAGwAZQBCAGwAbwBjAGsAQQB0AEYAaQByAHMAdABTAGUAZQBuACAA* OR *QAaQBzAGEAYgBsAGUAQgBsAG8AYwBrAEEAdABGAGkAcgBzAHQAUwBlAGUAbgAgA* OR *EAGkAcwBhAGIAbABlAEIAbABvAGMAawBBAHQARgBpAHIAcwB0AFMAZQBlAG4AIA* OR *ZABpAHMAYQBiAGwAZQByAGUAYQBsAHQAaQBtAGUAbQBvAG4AaQB0AG8AcgBpAG4AZwAgA* OR *QAaQBzAGEAYgBsAGUAcgBlAGEAbAB0AGkAbQBlAG0AbwBuAGkAdABvAHIAaQBuAGcAIA* OR *kAGkAcwBhAGIAbABlAHIAZQBhAGwAdABpAG0AZQBtAG8AbgBpAHQAbwByAGkAbgBnACAA* OR *ZABpAHMAYQBiAGwAZQBpAG8AYQB2AHAAcgBvAHQAZQBjAHQAaQBvAG4AIA* OR *QAaQBzAGEAYgBsAGUAaQBvAGEAdgBwAHIAbwB0AGUAYwB0AGkAbwBuACAA* OR *kAGkAcwBhAGIAbABlAGkAbwBhAHYAcAByAG8AdABlAGMAdABpAG8AbgAgA* OR *ZABpAHMAYQBiAGwAZQBiAGUAaABhAHYAaQBvAHIAbQBvAG4AaQB0AG8AcgBpAG4AZwAgA* OR *QAaQBzAGEAYgBsAGUAYgBlAGgAYQB2AGkAbwByAG0AbwBuAGkAdABvAHIAaQBuAGcAIA* OR *kAGkAcwBhAGIAbABlAGIAZQBoAGEAdgBpAG8AcgBtAG8AbgBpAHQAbwByAGkAbgBnACAA* OR *ZABpAHMAYQBiAGwAZQBiAGwAbwBjAGsAYQB0AGYAaQByAHMAdABzAGUAZQBuACAA* OR *QAaQBzAGEAYgBsAGUAYgBsAG8AYwBrAGEAdABmAGkAcgBzAHQAcwBlAGUAbgAgA* OR *kAGkAcwBhAGIAbABlAGIAbABvAGMAawBhAHQAZgBpAHIAcwB0AHMAZQBlAG4AIA* OR *RABpAHMAYQBiAGwAZQBDAGEAdABjAGgAdQBwAEYAdQBsAGwAUwBjAGEAbgA* OR *RABpAHMAYQBiAGwAZQBDAGEAdABjAGgAdQBwAFEAdQBpAGMAawBTAGMAYQBuAA* OR *RABpAHMAYQBiAGwAZQBBAHIAYwBoAGkAdgBlAFMAYwBhAG4AbgBpAG4AZwA*)))"
+}

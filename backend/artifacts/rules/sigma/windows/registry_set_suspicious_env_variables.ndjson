@@ -1,0 +1,52 @@
+{
+  "id": "84c6f7b9-6eeb-4696-b22e-5b0cc5b6364d",
+  "name": "Suspicious Environment Variable Has Been Registered",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of user-specific or system-wide environment variables via the registry. Which contains suspicious commands and strings",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2784f086-e7d0-4446-9278-941e3fe4fa7b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://infosec.exchange/@sbousseaden/109542254124022664"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Environment\\\\* AND ((winlog.event_data.Details:(powershell OR pwsh)) OR (winlog.event_data.Details:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *C\\:\\\\Users\\\\Public\\\\* OR *TVqQAAMAAAAEAAAA* OR *TVpQAAIAAAAEAA8A* OR *TVqAAAEAAAAEABAA* OR *TVoAAAAAAAAAAAAA* OR *TVpTAQEAAAAEAAAA* OR *SW52b2tlL* OR *ludm9rZS* OR *JbnZva2Ut* OR *SQBuAHYAbwBrAGUALQ* OR *kAbgB2AG8AawBlAC0A* OR *JAG4AdgBvAGsAZQAtA*)) OR (winlog.event_data.Details:(SUVY* OR SQBFAF* OR SQBuAH* OR cwBhA* OR aWV4* OR aQBlA* OR R2V0* OR dmFy* OR dgBhA* OR dXNpbm* OR H4sIA* OR Y21k* OR cABhAH* OR Qzpc* OR Yzpc*)))"
+}

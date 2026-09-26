@@ -1,0 +1,53 @@
+{
+  "id": "689c6d5d-5e6b-4c5c-97c2-51af76384b49",
+  "name": "Suspicious Use of /dev/tcp",
+  "tags": [
+    "attack.reconnaissance",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious command with /dev/tcp",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "31c523b7-f56f-4fc0-996a-352968bd8880",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.andreafortuna.org/2021/03/06/some-useful-tips-about-dev-tcp/",
+    "https://book.hacktricks.xyz/shells/shells/linux",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1046/T1046.md#atomic-test-1---port-scan"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*cat\\ \\<\\/dev\\/tcp\\/* OR *exec\\ 3\\<\\>\\/dev\\/tcp\\/* OR *echo\\ \\>\\/dev\\/tcp\\/* OR *bash\\ \\-i\\ \\>\\&\\ \\/dev\\/tcp\\/* OR *sh\\ \\-i\\ \\>\\&\\ \\/dev\\/udp\\/* OR *0\\<\\&196;exec\\ 196\\<\\>\\/dev\\/tcp\\/* OR *exec\\ 5\\<\\>\\/dev\\/tcp\\/* OR *\\(sh\\)0\\>\\/dev\\/tcp\\/* OR *bash\\ \\-c\\ 'bash\\ \\-i\\ \\>\\&\\ \\/dev\\/tcp\\/* OR *echo\\ \\-e\\ '#\\!\\/bin\\/bash\\\\nbash\\ \\-i\\ \\>\\&\\ \\/dev\\/tcp\\/*"
+}

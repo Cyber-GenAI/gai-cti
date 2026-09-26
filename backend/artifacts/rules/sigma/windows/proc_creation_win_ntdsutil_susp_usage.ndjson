@@ -1,0 +1,71 @@
+{
+  "id": "db2d3437-1d41-4a6a-a331-d9845f0fc4a4",
+  "name": "Suspicious Usage Of Active Directory Diagnostic Tool (ntdsutil.exe)",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of ntdsutil.exe to perform different actions such as restoring snapshots...etc.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage to restore snapshots",
+    "Legitimate admin activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "f12b6d35-fa0a-44e0-bd54-bd69d804f4ba",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc731620(v=ws.11)",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/espionage-asia-governments"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\ntdsutil.exe OR process.pe.original_file_name:ntdsutil.exe) AND ((process.command_line:*snapshot* AND process.command_line:*mount\\ *) OR (process.command_line:*ac* AND process.command_line:*\\ i* AND process.command_line:*\\ ntds*))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "4c0fab47-75ea-48b5-8f3b-6f988e01f5ca",
+  "name": "Credential Dumping Attempt Via WerFault",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "attack.s0002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects process LSASS memory dump using Mimikatz, NanoDump, Invoke-Mimikatz, Procdump or Taskmgr based on the CallTrace pointing to ntdll.dll, dbghelp.dll or dbgcore.dll for win10, server2016 and up.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Actual failures in lsass.exe that trigger a crash dump (unlikely)",
+    "Unknown cases in which WerFault accesses lsass.exe"
+  ],
+  "from": "now-360s",
+  "rule_id": "90d2c568-3e97-4be6-bbdb-c0b819908607",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/helpsystems/nanodump/commit/578116faea3d278d53d70ea932e2bbfe42569507"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\WerFault.exe AND winlog.event_data.TargetImage:*\\\\lsass.exe AND winlog.event_data.GrantedAccess:0x1FFFFF"
+}

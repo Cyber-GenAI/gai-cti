@@ -1,0 +1,73 @@
+{
+  "id": "ad1fa983-e1e0-43e9-a569-582aa05f4ca0",
+  "name": "Suspicious Curl.EXE Download",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1105",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious curl process start on Windows and outputs the requested document to a local file",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "3d47262a-480b-45ba-ac49-adfc1fdba332",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/max_mal_/status/1542461200797163522",
+    "https://web.archive.org/web/20200128160046/https://twitter.com/reegun21/status/1222093798009790464",
+    "https://github.com/pr0xylife/Qakbot/blob/4f0795d79dabee5bc9dd69f17a626b48852e7869/Qakbot_AA_23.06.2022.txt",
+    "https://www.volexity.com/blog/2022/07/28/sharptongue-deploys-clever-mail-stealing-browser-extension-sharpext/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/0f229c0e42bfe7ca736a14023836d65baa941ed2/atomics/T1105/T1105.md#atomic-test-18---curl-download-file"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\curl.exe OR process.pe.product:The\\ curl\\ executable) AND ((process.command_line:(*%AppData%* OR *%Public%* OR *%Temp%* OR *%tmp%* OR *\\\\AppData\\\\* OR *\\\\Desktop\\\\* OR *\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\* OR *C\\:\\\\PerfLogs\\\\* OR *C\\:\\\\ProgramData\\\\* OR *C\\:\\\\Windows\\\\Temp\\\\*)) OR (process.command_line:(*.dll OR *.gif OR *.jpeg OR *.jpg OR *.png OR *.temp OR *.tmp OR *.txt OR *.vbe OR *.vbs))) AND (NOT (process.parent.executable:C\\:\\\\Program\\ Files\\\\Git\\\\usr\\\\bin\\\\sh.exe AND process.executable:C\\:\\\\Program\\ Files\\\\Git\\\\mingw64\\\\bin\\\\curl.exe AND (process.command_line:*\\-\\-silent\\ \\-\\-show\\-error\\ \\-\\-output\\ * AND process.command_line:*gfw\\-httpget\\-* AND process.command_line:*AppData*)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "55de4514-e7bd-4f6b-92bd-778daf06bfa3",
+  "name": "Potential SPN Enumeration Via Setspn.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1558.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects service principal name (SPN) enumeration used for Kerberoasting",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administration activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "19eea558-37e5-4712-85d2-35e2640991b1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1558",
+          "name": "Steal or Forge Kerberos Tickets",
+          "reference": "https://attack.mitre.org/techniques/T1558/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20200329173843/https://p16.praetorian.com/blog/how-to-use-kerberoasting-t1208-for-privilege-escalation",
+    "https://www.praetorian.com/blog/how-to-use-kerberoasting-t1208-for-privilege-escalation/?edition=2019"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\setspn.exe OR process.pe.original_file_name:setspn.exe OR (process.pe.description:*Query\\ or\\ reset\\ the\\ computer* AND process.pe.description:*SPN\\ attribute*)) AND (process.command_line:(*\\ \\-q\\ * OR *\\ \\/q\\ *))"
+}

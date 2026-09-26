@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: gai-cti-docs
+  namespace: gai-cti-docs-project
+spec:
+  to:
+    kind: Service
+    name: gai-cti-docs
+  port:
+    targetPort: http
+  tls:
+    termination: edge

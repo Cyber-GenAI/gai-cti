@@ -1,0 +1,72 @@
+{
+  "id": "7cf9632a-509c-47c6-9837-e731453f4f34",
+  "name": "Operator Bloopers Cobalt Strike Commands",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.003",
+    "stp.1u",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects use of Cobalt Strike commands accidentally entered in the CMD shell",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4a1ef246-b57a-45ab-a258-817c47b28f24",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/cobalt-4-5-user-guide.pdf",
+    "https://thedfirreport.com/2021/10/04/bazarloader-and-the-conti-leaks/",
+    "https://thedfirreport.com/2022/06/16/sans-ransomware-summit-2022-can-you-detect-this/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:Cmd.Exe OR process.executable:*\\\\cmd.exe) AND ((process.command_line:(cmd\\ * OR cmd.exe* OR c\\:\\\\windows\\\\system32\\\\cmd.exe*)) AND (process.command_line:(*psinject* OR *spawnas* OR *make_token* OR *remote\\-exec* OR *rev2self* OR *dcsync* OR *logonpasswords* OR *execute\\-assembly* OR *getsystem*)))"
+}

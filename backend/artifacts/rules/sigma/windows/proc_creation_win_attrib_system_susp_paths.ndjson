@@ -1,0 +1,71 @@
+{
+  "id": "84e848c1-1560-42fd-9680-d341009f81df",
+  "name": "Set Suspicious Files as System Files Using Attrib.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of attrib with the \"+s\" option to set scripts or executables located in suspicious locations as system files to hide them from users and make them unable to be deleted with simple rights. The rule limits the search to specific extensions and directories to avoid FPs\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f54e682b-90ab-498a-9738-62ee84e40ff1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/c28cabc8-a19f-40f3-a78b-cae506a5c0d4",
+    "https://app.any.run/tasks/cfc8870b-ccd7-4210-88cf-a8087476a6d0",
+    "https://unit42.paloaltonetworks.com/unit42-sure-ill-take-new-combojack-malware-alters-clipboards-steal-cryptocurrency/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\attrib.exe OR process.pe.original_file_name:ATTRIB.EXE) AND process.command_line:*\\ \\+s* AND (process.command_line:(*\\ %* OR *\\\\Users\\\\Public\\\\* OR *\\\\AppData\\\\Local\\\\* OR *\\\\ProgramData\\\\* OR *\\\\Downloads\\\\* OR *\\\\Windows\\\\Temp\\\\*)) AND (process.command_line:(*.bat* OR *.dll* OR *.exe* OR *.hta* OR *.ps1* OR *.vbe* OR *.vbs*))) AND (NOT (process.command_line:*\\\\Windows\\\\TEMP\\\\* AND process.command_line:*.exe*))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "a5d9eb5b-bfae-44a0-8136-593a9db3f0a1",
+  "name": "Potentially Suspicious Command Targeting Teams Sensitive Files",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1528",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a commandline containing references to the Microsoft Teams database or cookies files from a process other than Teams.\nThe database might contain authentication tokens and other sensitive information about the logged in accounts.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "34776ce1-7cba-4696-87d6-4359cf8a65f8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1528",
+          "name": "Steal Application Access Token",
+          "reference": "https://attack.mitre.org/techniques/T1528/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.bleepingcomputer.com/news/security/microsoft-teams-stores-auth-tokens-as-cleartext-in-windows-linux-macs/",
+    "https://www.vectra.ai/blogpost/undermining-microsoft-teams-security-by-mining-tokens"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\\\Microsoft\\\\Teams\\\\Cookies* OR *\\\\Microsoft\\\\Teams\\\\Local\\ Storage\\\\leveldb*)) AND (NOT process.executable:*\\\\Microsoft\\\\Teams\\\\current\\\\Teams.exe)"
+}

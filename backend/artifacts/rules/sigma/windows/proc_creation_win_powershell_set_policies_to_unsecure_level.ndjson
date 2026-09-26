@@ -1,0 +1,72 @@
+{
+  "id": "cf8a2cbe-17fd-4c07-a495-c86cb3bbdef7",
+  "name": "Change PowerShell Policies to an Insecure Level",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changing the PowerShell script execution policy to a potentially insecure level using the \"-ExecutionPolicy\" flag.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "6eb944c0-612a-405e-a292-bcd74d845d0a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.4",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4",
+    "https://adsecurity.org/?p=2604",
+    "https://thedfirreport.com/2021/11/01/from-zero-to-domain-admin/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll)) OR (process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe))) AND (process.command_line:(*\\-executionpolicy\\ * OR *\\ \\-ep\\ * OR *\\ \\-exec\\ *)) AND (process.command_line:(*Bypass* OR *Unrestricted*))"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "8f98aaf9-ee7b-42b7-9096-f05a82cd4587",
+  "name": "Potential Suspicious Windows Feature Enabled",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the built-in PowerShell cmdlet \"Enable-WindowsOptionalFeature\" used as a Deployment Image Servicing and Management tool.\nSimilar to DISM.exe, this cmdlet is used to enumerate, install, uninstall, configure, and update features and packages in Windows images\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the features listed in the rule."
+  ],
+  "from": "now-360s",
+  "rule_id": "2a3ca30f-c916-4891-b2c3-60bc5f35bfb8",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/powershell/module/dism/enable-windowsoptionalfeature?view=windowsserver2022-ps",
+    "https://learn.microsoft.com/en-us/windows/win32/projfs/enabling-windows-projected-file-system",
+    "https://learn.microsoft.com/en-us/windows/wsl/install-on-server"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Enable\\-WindowsOptionalFeature* AND powershell.file.script_block_text:*\\-Online* AND powershell.file.script_block_text:*\\-FeatureName*) AND (powershell.file.script_block_text:(*TelnetServer* OR *Internet\\-Explorer\\-Optional\\-amd64* OR *TFTP* OR *SMB1Protocol* OR *Client\\-ProjFS* OR *Microsoft\\-Windows\\-Subsystem\\-Linux*))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "3a213bea-e83b-489b-af7a-b664c60c68da",
+  "name": "Disabling Security Tools",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects disabling security tools",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "28663de4-cacd-4577-98ad-f97081d03641",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1562.004/T1562.004.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:*\\/service AND (CommandLine:*iptables* AND CommandLine:*stop*)) OR (Image:*\\/service AND (CommandLine:*ip6tables* AND CommandLine:*stop*)) OR (Image:*\\/chkconfig AND (CommandLine:*iptables* AND CommandLine:*stop*)) OR (Image:*\\/chkconfig AND (CommandLine:*ip6tables* AND CommandLine:*stop*)) OR (Image:*\\/systemctl AND (CommandLine:*firewalld* AND CommandLine:*stop*)) OR (Image:*\\/systemctl AND (CommandLine:*firewalld* AND CommandLine:*disable*)) OR (Image:*\\/service AND (CommandLine:*cbdaemon* AND CommandLine:*stop*)) OR (Image:*\\/chkconfig AND (CommandLine:*cbdaemon* AND CommandLine:*off*)) OR (Image:*\\/systemctl AND (CommandLine:*cbdaemon* AND CommandLine:*stop*)) OR (Image:*\\/systemctl AND (CommandLine:*cbdaemon* AND CommandLine:*disable*)) OR (Image:*\\/setenforce AND CommandLine:*0*) OR (Image:*\\/systemctl AND (CommandLine:*stop* AND CommandLine:*falcon\\-sensor*)) OR (Image:*\\/systemctl AND (CommandLine:*disable* AND CommandLine:*falcon\\-sensor*))"
+}

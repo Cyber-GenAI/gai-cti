@@ -1,0 +1,54 @@
+{
+  "id": "6c09460c-85e1-4112-beff-087488ea18b2",
+  "name": "Wab/Wabmig Unusual Parent Or Child Processes",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects unusual parent or children of the wab.exe (Windows Contacts) and Wabmig.exe (Microsoft Address Book Import Tool) processes as seen being used with bumblebee activity",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7b8e4931-b6b9-4386-87a4-96572171e2f7",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/08/08/bumblebee-roasts-its-way-to-domain-admin/",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/bumblebee-loader-cybercrime",
+    "https://thedfirreport.com/2022/09/26/bumblebee-round-two/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\WmiPrvSE.exe OR *\\\\svchost.exe OR *\\\\dllhost.exe)) AND (process.executable:(*\\\\wab.exe OR *\\\\wabmig.exe))) OR (process.parent.executable:(*\\\\wab.exe OR *\\\\wabmig.exe))"
+}

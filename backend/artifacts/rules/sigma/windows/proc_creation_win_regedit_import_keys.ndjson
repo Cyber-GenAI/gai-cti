@@ -1,0 +1,71 @@
+{
+  "id": "78631297-7c86-4407-bc34-cfb3a0056e45",
+  "name": "Imports Registry Key From a File",
+  "tags": [
+    "attack.t1112",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the import of the specified file to the registry with regedit.exe.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate import of keys",
+    "Evernote"
+  ],
+  "from": "now-360s",
+  "rule_id": "25910f4b-83db-49f8-b608-979b006150d1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Regedit/",
+    "https://gist.github.com/api0cradle/cdd2d0d0ec9abb686f0e89306e277b8f"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\regedit.exe OR process.pe.original_file_name:REGEDIT.EXE) AND (process.command_line:(*\\ \\/i\\ * OR *\\ \\/s\\ * OR *.reg*))) AND (NOT ((process.command_line:(*\\ \\-e\\ * OR *\\ \\/e\\ * OR *\\ \u2013e\\ * OR *\\ \u2014e\\ * OR *\\ \u2015e\\ *) OR process.command_line:(*\\ \\-a\\ * OR *\\ \\/a\\ * OR *\\ \u2013a\\ * OR *\\ \u2014a\\ * OR *\\ \u2015a\\ *) OR process.command_line:(*\\ \\-c\\ * OR *\\ \\/c\\ * OR *\\ \u2013c\\ * OR *\\ \u2014c\\ * OR *\\ \u2015c\\ *)) AND process.command_line:/:[^ \\\\]/))"
+}

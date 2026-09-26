@@ -1,0 +1,70 @@
+{
+  "id": "772c1575-c3af-4714-85fd-306f01adb2f7",
+  "name": "Suspicious Executable File Creation",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect creation of suspicious executable file names.\nSome strings look for suspicious file extensions, others look for filenames that exploit unquoted service paths.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e47188eb-96e9-4e6a-9577-ed8d1e524eaa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://medium.com/@SumitVerma101/windows-privilege-escalation-part-1-unquoted-service-path-c7a011a8d8ae",
+    "https://app.any.run/tasks/76c69e2d-01e8-49d9-9aea-fb7cc0c4d3ad/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:(*\\:\\\\$Recycle.Bin.exe OR *\\:\\\\Documents\\ and\\ Settings.exe OR *\\:\\\\MSOCache.exe OR *\\:\\\\PerfLogs.exe OR *\\:\\\\Recovery.exe OR *.bat.exe OR *.sys.exe)"
+}

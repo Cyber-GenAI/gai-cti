@@ -1,0 +1,122 @@
+{
+  "id": "258b4e7f-490d-4e9d-81bc-65a4be7f02e7",
+  "name": "PUA - System Informer Execution",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.discovery",
+    "attack.defense-evasion",
+    "attack.t1082",
+    "attack.t1564",
+    "attack.t1543",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of System Informer, a task manager tool to view and manipulate processes, kernel options and other low level operations",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "System Informer is regularly used legitimately by system administrators or developers. Apply additional filters accordingly"
+  ],
+  "from": "now-360s",
+  "rule_id": "93efa3b6-c69c-4faa-9af5-0fa7af79de73",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/winsiderss/systeminformer"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\SystemInformer.exe OR process.pe.original_file_name:SystemInformer.exe OR process.pe.description:System\\ Informer OR process.pe.product:System\\ Informer OR (winlog.event_data.Hashes:(*MD5\\=19426363A37C03C3ED6FEDF57B6696EC* OR *SHA1\\=8B12C6DA8FAC0D5E8AB999C31E5EA04AF32D53DC* OR *SHA256\\=8EE9D84DE50803545937A63C686822388A3338497CDDB660D5D69CF68B68F287* OR *IMPHASH\\=B68908ADAEB5D662F87F2528AF318F12*))"
+}

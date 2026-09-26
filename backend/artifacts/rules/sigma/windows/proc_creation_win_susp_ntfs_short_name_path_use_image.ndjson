@@ -1,0 +1,71 @@
+{
+  "id": "c95dedd6-e280-4a0b-afd1-9ce6aef00c24",
+  "name": "Use Short Name Path in Image",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1564.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect use of the Windows 8.3 short name. Which could be used as a method to avoid Image detection",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Applications could use this notation occasionally which might generate some false positives. In that case Investigate the parent and child process."
+  ],
+  "from": "now-360s",
+  "rule_id": "ddae7440-d5bf-4d2d-ab40-d363ba76efda",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1564",
+          "name": "Hide Artifacts",
+          "reference": "https://attack.mitre.org/techniques/T1564/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.acunetix.com/blog/articles/windows-short-8-3-filenames-web-security-problem/",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc959352(v=technet.10)",
+    "https://twitter.com/frack113/status/1555830623633375232"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\~1\\\\* OR *\\~2\\\\*)) AND (NOT (((process.parent.executable:(C\\:\\\\Windows\\\\System32\\\\Dism.exe OR C\\:\\\\Windows\\\\System32\\\\cleanmgr.exe)) OR (process.parent.executable:(*\\\\WebEx\\\\WebexHost.exe OR *\\\\thor\\\\thor64.exe)) OR process.pe.product:InstallShield\\ \\(R\\) OR process.pe.description:InstallShield\\ \\(R\\)\\ Setup\\ Engine OR process.pe.company:InstallShield\\ Software\\ Corporation) OR ((process.executable:*\\\\AppData\\\\* AND process.executable:*\\\\Temp\\\\*) OR (process.executable:(*\\~1\\\\unzip.exe OR *\\~1\\\\7zG.exe)))))"
+}

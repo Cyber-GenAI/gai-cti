@@ -1,0 +1,69 @@
+{
+  "id": "a1e8ae63-4b14-426a-9b87-0df9a2456ba2",
+  "name": "User Added to Local Administrators Group",
+  "tags": [
+    "attack.persistence",
+    "attack.t1098",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects addition of users to the local administrator group via \"Net\" or \"Add-LocalGroupMember\".",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "154f2dc7-4726-463c-bf71-cc230ae495a3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1098",
+          "name": "Account Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1098/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://blog.talosintelligence.com/2022/08/recent-cyber-attack.html?m=1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:*localgroup\\ * AND process.command_line:*\\ \\/add*) OR (process.command_line:*Add\\-LocalGroupMember\\ * AND process.command_line:*\\ \\-Group\\ *)) AND (process.command_line:(*\\ administrators\\ * OR *\\ administrateur*))"
+}

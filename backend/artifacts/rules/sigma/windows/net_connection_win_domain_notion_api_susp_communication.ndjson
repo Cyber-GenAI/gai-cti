@@ -1,0 +1,70 @@
+{
+  "id": "ac9d86d6-a674-4086-a42f-7ec9dc06bac1",
+  "name": "Potentially Suspicious Network Connection To Notion API",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1102",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a non-browser process communicating with the Notion API. This could indicate potential use of a covert C2 channel such as \"OffensiveNotion C2\"",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate applications communicating with the \"api.notion.com\" endpoint that are not already in the exclusion list. The desktop and browser applications do not appear to be using the API by default unless integrations are configured."
+  ],
+  "from": "now-360s",
+  "rule_id": "775810d2-c32f-4dd5-9740-41de4086912b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/mttaggart/OffensiveNotion",
+    "https://medium.com/@huskyhacks.mk/we-put-a-c2-in-your-notetaking-app-offensivenotion-3e933bace332"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "destination.domain:*api.notion.com* AND (NOT (process.executable:*\\\\AppData\\\\Local\\\\Programs\\\\Notion\\\\Notion.exe OR process.executable:*\\\\brave.exe OR (process.executable:(C\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe)) OR (process.executable:(C\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Mozilla\\ Firefox\\\\firefox.exe)) OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Internet\\ Explorer\\\\iexplore.exe OR C\\:\\\\Program\\ Files\\\\Internet\\ Explorer\\\\iexplore.exe)) OR process.executable:*\\\\maxthon.exe OR (process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\* OR process.executable:*\\\\WindowsApps\\\\MicrosoftEdge.exe OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe))) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeCore\\\\* OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\EdgeCore\\\\*)) AND (process.executable:(*\\\\msedge.exe OR *\\\\msedgewebview2.exe))) OR process.executable:*\\\\opera.exe OR process.executable:*\\\\safari.exe OR process.executable:*\\\\seamonkey.exe OR process.executable:*\\\\vivaldi.exe OR process.executable:*\\\\whale.exe))"
+}

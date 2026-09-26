@@ -1,0 +1,71 @@
+{
+  "id": "3157be28-8d28-4a3a-b0ac-93c0d4910d65",
+  "name": "Visual Studio NodejsTools PressAnyKey Arbitrary Binary Execution",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects child processes of Microsoft.NodejsTools.PressAnyKey.exe that can be used to execute any other binary",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use by developers as part of NodeJS development with Visual Studio Tools"
+  ],
+  "from": "now-360s",
+  "rule_id": "abc989bf-1a8f-4f69-9683-8513e6f51fd7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/mrd0x/status/1463526834918854661",
+    "https://gist.github.com/nasbench/a989ce64cefa8081bd50cf6ad8c491b5"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\Microsoft.NodejsTools.PressAnyKey.exe"
+}

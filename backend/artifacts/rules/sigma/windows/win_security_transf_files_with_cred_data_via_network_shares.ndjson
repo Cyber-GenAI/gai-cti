@@ -1,0 +1,71 @@
+{
+  "id": "a9c7bbda-7c9f-4d1c-8370-0c16489df413",
+  "name": "Transferring Files with Credential Data via Network Shares",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.002",
+    "attack.t1003.001",
+    "attack.t1003.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Transferring files with well-known filenames (sensitive files with credential data) using network shares",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Transferring sensitive files for legitimate administration work by legitimate administrator"
+  ],
+  "from": "now-360s",
+  "rule_id": "09a7d254-1928-47e5-b462-196853804ed8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.slideshare.net/heirhabarov/hunting-for-credentials-dumping-in-windows-environment"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:5145 AND (winlog.event_data.RelativeTargetName:(*\\\\mimidrv* OR *\\\\lsass* OR *\\\\windows\\\\minidump\\\\* OR *\\\\hiberfil* OR *\\\\sqldmpr* OR *\\\\sam* OR *\\\\ntds.dit* OR *\\\\security*)))"
+}

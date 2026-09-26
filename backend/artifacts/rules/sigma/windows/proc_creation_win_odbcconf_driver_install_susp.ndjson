@@ -1,0 +1,71 @@
+{
+  "id": "cdae8ab4-20de-4fbe-aa0b-78fe0d19cd4a",
+  "name": "Suspicious Driver/DLL Installation Via Odbcconf.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"odbcconf\" with the \"INSTALLDRIVER\" action where the driver doesn't contain a \".dll\" extension. This is often used as a defense evasion method.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "8c74166b-67eb-469e-bf23-7cedd6f7c440",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Odbcconf/",
+    "https://web.archive.org/web/20191023232753/https://twitter.com/Hexacorn/status/1187143326673330176",
+    "https://www.hexacorn.com/blog/2020/08/23/odbcconf-lolbin-trifecta/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\odbcconf.exe OR process.pe.original_file_name:odbcconf.exe) AND process.command_line:*INSTALLDRIVER\\ *) AND (NOT process.command_line:*.dll*)"
+}

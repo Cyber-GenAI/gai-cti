@@ -1,0 +1,51 @@
+{
+  "id": "7a2f1752-99ea-4590-87a3-7b09a7bd3ce1",
+  "name": "Old TLS1.0/TLS1.1 Protocol Version Enabled",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects applications or users re-enabling old TLS versions by setting the \"Enabled\" value to \"1\" for the \"Protocols\" registry key.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate enabling of the old tls versions due to incompatibility"
+  ],
+  "from": "now-360s",
+  "rule_id": "65883961-a1bc-4716-bf2b-1432bcae5c54",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://techcommunity.microsoft.com/t5/windows-it-pro-blog/tls-1-0-and-tls-1-1-soon-to-be-disabled-in-windows/ba-p/3887947"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:(*\\\\Control\\\\SecurityProviders\\\\SCHANNEL\\\\Protocols\\\\TLS\\ 1.0\\\\* OR *\\\\Control\\\\SecurityProviders\\\\SCHANNEL\\\\Protocols\\\\TLS\\ 1.1\\\\*)) AND registry.path:*\\\\Enabled AND winlog.event_data.Details:DWORD\\ \\(0x00000001\\)"
+}

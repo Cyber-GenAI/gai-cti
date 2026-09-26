@@ -1,0 +1,71 @@
+{
+  "id": "cae71e46-5408-45c4-b442-ae2f18c84a48",
+  "name": "ScreenSaver Registry Key Set",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects registry key established after masqueraded .scr file execution using Rundll32 through desk.cpl",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of screen saver"
+  ],
+  "from": "now-360s",
+  "rule_id": "66b10d8a-4322-4c33-ade4-ee04ec7aa253",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/VakninHai/status/1517027824984547329",
+    "https://twitter.com/pabraeken/status/998627081360695297",
+    "https://jstnk9.github.io/jstnk9/research/InstallScreenSaver-SCR-files"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\rundll32.exe AND (registry.path:*\\\\Control\\ Panel\\\\Desktop\\\\SCRNSAVE.EXE* AND winlog.event_data.Details:*.scr) AND (NOT (winlog.event_data.Details:(*C\\:\\\\Windows\\\\System32\\\\* OR *C\\:\\\\Windows\\\\SysWOW64\\\\*)))"
+}

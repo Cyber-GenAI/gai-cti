@@ -1,0 +1,70 @@
+{
+  "id": "9e6b3f18-2bf3-486e-b28c-c63300818e03",
+  "name": "Powershell Add Name Resolution Policy Table Rule",
+  "tags": [
+    "attack.impact",
+    "attack.t1565",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects powershell scripts that adds a Name Resolution Policy Table (NRPT) rule for the specified namespace.\nThis will bypass the default DNS server and uses a specified server for answering the query.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "083d1385-4455-4dd3-ab14-779cb9a662cc",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1565",
+          "name": "Data Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1565/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/NathanMcNulty/status/1569497348841287681",
+    "https://learn.microsoft.com/en-us/powershell/module/dnsclient/add-dnsclientnrptrule?view=windowsserver2022-ps"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Add\\-DnsClientNrptRule* AND powershell.file.script_block_text:*\\-Namesp* AND powershell.file.script_block_text:*\\-NameSe*"
+}

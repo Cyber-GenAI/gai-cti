@@ -1,0 +1,71 @@
+{
+  "id": "152fc057-160d-4c47-b5c5-ae0038b29db2",
+  "name": "Powershell Executed From Headless ConHost Process",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "attack.t1059.001",
+    "attack.t1059.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of powershell commands from headless ConHost window.\nThe \"--headless\" flag hides the windows from the user upon execution.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "266cb5f6-39c6-4f44-9992-0af821970f76",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.huntress.com/blog/fake-browser-updates-lead-to-boinc-volunteer-computing-software"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\conhost.exe OR process.pe.original_file_name:CONHOST.EXE) AND (process.command_line:*\\-\\-headless* AND process.command_line:*powershell*)"
+}

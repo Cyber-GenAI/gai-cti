@@ -1,0 +1,70 @@
+{
+  "id": "d18cabcd-2c8e-4b55-be78-bd1f259a494a",
+  "name": "HackTool - Hashcat Password Cracker Execution",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1110.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Execute Hashcat.exe with provided SAM file from registry of Windows and Password list to crack against",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Tools that use similar command line flags and values"
+  ],
+  "from": "now-360s",
+  "rule_id": "e6d259fd-ca68-4f0f-9384-b80e1a0e9de8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "reference": "https://attack.mitre.org/techniques/T1110/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1110.002/T1110.002.md#atomic-test-1---password-cracking-with-hashcat",
+    "https://hashcat.net/wiki/doku.php?id=hashcat"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\hashcat.exe OR (process.command_line:*\\-a\\ * AND process.command_line:*\\-m\\ 1000\\ * AND process.command_line:*\\-r\\ *)"
+}

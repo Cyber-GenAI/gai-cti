@@ -1,0 +1,69 @@
+{
+  "id": "5522301c-7f93-4a00-8be8-ecb92ca5a9ae",
+  "name": "Setup16.EXE Execution With Custom .Lst File",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1574.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"Setup16.EXE\" and old installation utility with a custom \".lst\" file.\nThese \".lst\" file can contain references to external program that \"Setup16.EXE\" will execute.\nAttackers and adversaries might leverage this as a living of the land utility.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "On modern Windows system, the \"Setup16\" utility is practically never used, hence false positive should be very rare."
+  ],
+  "from": "now-360s",
+  "rule_id": "e9d65442-fa5f-4e53-bc20-f2c4396a77e0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2024/10/12/the-sweet16-the-oldbin-lolbin-called-setup16-exe/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:C\\:\\\\Windows\\\\SysWOW64\\\\setup16.exe AND process.parent.command_line:*\\ \\-m\\ *) AND (NOT process.executable:C\\:\\\\\\~MSSETUP.T\\\\*)"
+}

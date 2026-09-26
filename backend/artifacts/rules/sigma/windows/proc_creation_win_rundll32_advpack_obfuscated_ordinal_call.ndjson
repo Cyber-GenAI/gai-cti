@@ -1,0 +1,52 @@
+{
+  "id": "7a43e29e-c91d-4fa8-869e-bcdec5a12852",
+  "name": "Suspicious Advpack Call Via Rundll32.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"rundll32\" calling \"advpack.dll\" with potential obfuscated ordinal calls in order to leverage the \"RegisterOCX\" function",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "00ca12eb-cbc2-4798-865f-5f0332605758",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Hexacorn/status/1224848930795552769",
+    "http://www.hexacorn.com/blog/2020/02/05/stay-positive-lolbins-not/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE OR process.command_line:*rundll32*) AND process.command_line:*advpack* AND ((process.command_line:*#\\+* AND process.command_line:*12*) OR process.command_line:*#\\-*)"
+}

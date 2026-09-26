@@ -1,0 +1,52 @@
+{
+  "id": "384114f4-8738-4e06-a990-7f03e9b2a009",
+  "name": "HackTool - Evil-WinRm Execution - PowerShell Module",
+  "tags": [
+    "attack.lateral-movement",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of Evil-WinRM via PowerShell Module logs by leveraging the hardcoded strings inside the utility.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d05398c7-ff0a-4a2f-a3db-c6b9cec741b3",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/Hackplayers/evil-winrm/blob/7514b055d67ec19836e95c05bd63e7cc47c4c2aa/evil-winrm.rb",
+    "https://github.com/search?q=repo%3AHackplayers%2Fevil-winrm++shell.run%28&type=code"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.ContextInfo:(*\\:\\\\Windows\\\\System32\\\\wsmprovhost.exe* OR *\\:\\\\Windows\\\\SysWOW64\\\\wsmprovhost.exe*)) AND ((powershell.file.script_block_text:(*value\\=\\\"\\(get\\-location\\).path* OR *value\\=\\\"\\(get\\-item*\\).length* OR *Invoke\\-Binary\\ * OR *Donut\\-Loader\\ \\-process_id*\\-donutfile* OR *Bypass\\-4MSI* OR *IEX\\ \\(\\[System.Text.Encoding\\]\\:\\:ASCII.GetString\\(\\[System.Convert\\]\\:\\:FromBase64String\\($a\\)\\)\\).replace\\('???',''\\)*)) OR (powershell.file.script_block_text:*$servicios\\ \\=\\ Get\\-ItemProperty\\ \\\"registry\\:\\:HKLM\\\\System\\\\CurrentControlSet\\\\Services\\\\\\\"* AND powershell.file.script_block_text:*Where\\-Object\\ \\{$_.imagepath\\ \\-notmatch\\ \\\"system\\\"\\ \\-and\\ $_.imagepath\\ \\-ne\\ $null\\ \\}\\ \\|\\ Select\\-Object\\ pschildname,imagepath*) OR (powershell.file.script_block_text:*$a\\ \\+\\=\\ \\ \\\\\\\"$\\($_.FullName.Replace\\('\\\\','\\/'\\)\\)\\/\\\\\\\"\\}else\\{\\ \\ $a\\ \\+\\=\\ \\\\\\\"$\\($_.FullName.Replace\\('\\\\',\\ '\\/'\\)\\)\\\\\\\"\\ \\}* AND powershell.file.script_block_text:*$a\\=@\\(\\);$*))"
+}

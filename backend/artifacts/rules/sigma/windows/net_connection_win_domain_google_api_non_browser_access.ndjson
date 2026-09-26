@@ -1,0 +1,73 @@
+{
+  "id": "1a5bbcff-642c-44a8-9055-e3b27b44a456",
+  "name": "Suspicious Non-Browser Network Communication With Google API",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1102",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a non-browser process interacting with the Google API which could indicate the use of a covert C2 such as Google Sheet C2 (GC2-sheet)\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate applications communicating with the \"googleapis.com\" endpoints that are not already in the exclusion list. This is environmental dependent and requires further testing and tuning."
+  ],
+  "from": "now-360s",
+  "rule_id": "7203af52-94f8-4bca-8cc4-293151525650",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/looCiprian/GC2-sheet",
+    "https://youtu.be/n2dFlSaBBKo",
+    "https://services.google.com/fh/files/blogs/gcat_threathorizons_full_apr2023.pdf",
+    "https://www.tanium.com/blog/apt41-deploys-google-gc2-for-attacks-cyber-threat-intelligence-roundup/",
+    "https://www.bleepingcomputer.com/news/security/hackers-abuse-google-command-and-control-red-team-tool-in-attacks/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(destination.domain:(*drive.googleapis.com* OR *oauth2.googleapis.com* OR *sheets.googleapis.com* OR *www.googleapis.com*)) AND (NOT ((NOT _exists_:process.executable) OR process.executable:\"\")) AND (NOT (process.executable:*\\\\brave.exe OR (process.executable:(*\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe)) OR (process.executable:*\\:\\\\Program\\ Files\\\\Google\\\\Drive\\ File\\ Stream\\\\* AND process.executable:*\\\\GoogleDriveFS.exe) OR (process.executable:(*\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Mozilla\\ Firefox\\\\firefox.exe)) OR (process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Internet\\ Explorer\\\\iexplore.exe OR *\\:\\\\Program\\ Files\\\\Internet\\ Explorer\\\\iexplore.exe)) OR process.executable:*\\\\maxthon.exe OR (process.executable:*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\* OR (process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe OR *\\:\\\\Program\\ Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe OR *\\\\WindowsApps\\\\MicrosoftEdge.exe))) OR ((process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeCore\\\\* OR *\\:\\\\Program\\ Files\\\\Microsoft\\\\EdgeCore\\\\*)) AND (process.executable:(*\\\\msedge.exe OR *\\\\msedgewebview2.exe))) OR process.executable:*\\\\opera.exe OR process.executable:*\\\\safari.exe OR process.executable:*\\\\seamonkey.exe OR process.executable:*\\\\vivaldi.exe OR process.executable:*\\\\whale.exe OR process.executable:*\\\\GoogleUpdate.exe OR process.executable:*\\\\outlook.exe))"
+}

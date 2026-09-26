@@ -1,0 +1,53 @@
+{
+  "id": "9ac01594-8d03-432e-9db5-ed9d0ec07cd2",
+  "name": ".RDP File Created by Outlook Process",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of files with the \".rdp\" extensions in the temporary directory that Outlook uses when opening attachments.\nThis can be used to detect spear-phishing campaigns that use RDP files as attachments.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Whenever someone receives an RDP file as an email attachment and decides to save or open it right from the attachments"
+  ],
+  "from": "now-360s",
+  "rule_id": "884f7c61-de32-42d1-bdd8-77ef5ada85ea",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://thecyberexpress.com/rogue-rdp-files-used-in-ukraine-cyberattacks/",
+    "https://www.microsoft.com/en-us/security/blog/2024/10/29/midnight-blizzard-conducts-large-scale-spear-phishing-campaign-using-rdp-files/",
+    "https://www.linkedin.com/feed/update/urn:li:ugcPost:7257437202706493443?commentUrn=urn%3Ali%3Acomment%3A%28ugcPost%3A7257437202706493443%2C7257522819985543168%29&dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287257522819985543168%2Curn%3Ali%3AugcPost%3A7257437202706493443%29"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*.rdp AND ((file.path:(*\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.Outlook_* OR *\\\\AppData\\\\Local\\\\Microsoft\\\\Olk\\\\Attachments\\\\*)) OR (file.path:*\\\\AppData\\\\Local\\\\Microsoft\\\\Windows\\\\* AND file.path:*\\\\Content.Outlook\\\\*))"
+}

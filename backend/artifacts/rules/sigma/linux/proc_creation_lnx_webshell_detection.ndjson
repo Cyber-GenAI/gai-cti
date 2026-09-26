@@ -1,0 +1,70 @@
+{
+  "id": "ea326fdb-3781-45dd-926c-e15450950049",
+  "name": "Linux Webshell Indicators",
+  "tags": [
+    "attack.persistence",
+    "attack.t1505.003",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious sub processes of web server processes",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Web applications that invoke Linux command line tools"
+  ],
+  "from": "now-360s",
+  "rule_id": "4433b2f1-517d-4adb-942f-9478e1ca8145",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1505",
+          "name": "Server Software Component",
+          "reference": "https://attack.mitre.org/techniques/T1505/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.acunetix.com/blog/articles/web-shells-101-using-php-introduction-web-shells-part-2/",
+    "https://media.defense.gov/2020/Jun/09/2002313081/-1/-1/0/CSI-DETECT-AND-PREVENT-WEB-SHELL-MALWARE-20200422.PDF"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((ParentImage:(*\\/httpd OR *\\/lighttpd OR *\\/nginx OR *\\/apache2 OR *\\/node OR *\\/caddy)) OR (ParentCommandLine:*\\/bin\\/java* AND ParentCommandLine:*tomcat*) OR (ParentCommandLine:*\\/bin\\/java* AND ParentCommandLine:*websphere*)) AND (Image:(*\\/whoami OR *\\/ifconfig OR *\\/ip OR *\\/bin\\/uname OR *\\/bin\\/cat OR *\\/bin\\/crontab OR *\\/hostname OR *\\/iptables OR *\\/netstat OR *\\/pwd OR *\\/route))"
+}

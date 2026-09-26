@@ -1,0 +1,52 @@
+{
+  "id": "5ee1bef7-3b35-4edb-a658-d09761708f8c",
+  "name": "Sysinternals Tools AppX Versions Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of Sysinternals tools via an AppX package. Attackers could install the Sysinternals Suite to get access to tools such as psexec and procdump to avoid detection based on System paths",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of the applications from the Windows Store"
+  ],
+  "from": "now-360s",
+  "rule_id": "05fc1fdf-8f3f-4b8c-83a7-bff6315704cc",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-AppModel\\-Runtime\\/Admin AND (event.code:201 AND (winlog.event_data.ImageName:(procdump.exe OR psloglist.exe OR psexec.exe OR livekd.exe OR ADExplorer.exe)))"
+}

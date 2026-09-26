@@ -1,0 +1,52 @@
+{
+  "id": "941052bd-9a5e-4d7e-acd3-7c8b0e979a2a",
+  "name": "Suspicious Msbuild Execution By Uncommon Parent Process",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious execution of 'Msbuild.exe' by a uncommon parent process",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "593f25c9-931f-40ee-89cd-a0d786bcc856",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://app.any.run/tasks/abdf586e-df0c-4d39-89a7-06bf24913401/",
+    "https://www.echotrail.io/insights/search/msbuild.exe"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\MSBuild.exe OR process.pe.original_file_name:MSBuild.exe) AND (NOT (process.parent.executable:(*\\\\devenv.exe OR *\\\\cmd.exe OR *\\\\msbuild.exe OR *\\\\python.exe OR *\\\\explorer.exe OR *\\\\nuget.exe)))"
+}

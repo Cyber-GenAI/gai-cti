@@ -1,0 +1,71 @@
+{
+  "id": "312b43ec-abaa-443f-8d4c-07bdda3460d9",
+  "name": "Local System Accounts Discovery - Linux",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087.001",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects enumeration of local systeam accounts. This information can help adversaries determine which local accounts exist on a system to aid in follow-on behavior.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "f076315c-e78e-4cd5-a1a9-3d6d3cc6786c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1087.001/T1087.001.md",
+    "https://my.f5.com/manage/s/article/K589",
+    "https://man.freebsd.org/cgi/man.cgi?pwd_mkdb"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*\\/lastlog OR CommandLine:*'x\\:0\\:'* OR ((Image:(*\\/cat OR *\\/ed OR *\\/head OR *\\/more OR *\\/nano OR *\\/tail OR *\\/vi OR *\\/vim OR *\\/less OR *\\/emacs OR *\\/sqlite3 OR *\\/makemap)) AND (CommandLine:(*\\/etc\\/passwd* OR *\\/etc\\/shadow* OR *\\/etc\\/sudoers* OR *\\/etc\\/spwd.db* OR *\\/etc\\/pwd.db* OR *\\/etc\\/master.passwd*))) OR Image:*\\/id OR (Image:*\\/lsof AND CommandLine:*\\-u*)"
+}

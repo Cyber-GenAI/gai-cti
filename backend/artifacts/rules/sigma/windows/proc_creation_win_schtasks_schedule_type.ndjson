@@ -1,0 +1,71 @@
+{
+  "id": "80771531-49e6-44c7-84bb-4879959dcea8",
+  "name": "Suspicious Schtasks Schedule Types",
+  "tags": [
+    "attack.execution",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects scheduled task creations or modification on a suspicious schedule type",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate processes that run at logon. Filter according to your environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "5b26eac0-a3e4-48c3-a550-a04686750782",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-change",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-create",
+    "http://blog.talosintelligence.com/2022/09/lazarus-three-rats.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\schtasks.exe OR process.pe.original_file_name:schtasks.exe) AND (process.command_line:(*\\ ONLOGON\\ * OR *\\ ONSTART\\ * OR *\\ ONCE\\ * OR *\\ ONIDLE\\ *))) AND (NOT (process.command_line:(*NT\\ AUT* OR *\\ SYSTEM* OR *HIGHEST*)))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "3b108b16-23e0-4631-97cc-7fb9800f6b3a",
+  "name": "Regsvr32 DLL Execution With Suspicious File Extension",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.010",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of REGSVR32.exe with DLL files masquerading as other files",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "37ff14bf-38e4-4f02-acd8-b02ab750dc63",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/11/29/continuing-the-bazar-ransomware-story/",
+    "https://blog.talosintelligence.com/2021/10/threat-hunting-in-large-datasets-by.html",
+    "https://guides.lib.umich.edu/c.php?g=282942&p=1885348"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\regsvr32.exe OR process.pe.original_file_name:REGSVR32.EXE) AND (process.command_line:(*.bin OR *.bmp OR *.cr2 OR *.dat OR *.eps OR *.gif OR *.ico OR *.jpeg OR *.jpg OR *.nef OR *.orf OR *.png OR *.raw OR *.sr2 OR *.temp OR *.tif OR *.tiff OR *.tmp OR *.rtf OR *.txt))"
+}

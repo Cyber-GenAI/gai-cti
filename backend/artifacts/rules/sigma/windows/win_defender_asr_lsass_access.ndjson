@@ -1,0 +1,70 @@
+{
+  "id": "bba22598-65fd-48f7-893a-93ae2dcc7781",
+  "name": "LSASS Access Detected via Attack Surface Reduction",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Access to LSASS Process",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Google Chrome GoogleUpdate.exe",
+    "Some Taskmgr.exe related activity"
+  ],
+  "from": "now-360s",
+  "rule_id": "8907ca8c-841d-4322-926d-6c4fc6e8aec4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Windows\\ Defender\\/Operational AND ((event.code:1121 AND winlog.event_data.Path:*\\\\lsass.exe) AND (NOT ((process.executable:C\\:\\\\Windows\\\\Temp\\\\asgard2\\-agent\\\\* AND (process.executable:(*\\\\thor64.exe OR *\\\\thor.exe))) OR (process.executable:(C\\:\\\\Windows\\\\System32\\\\atiesrxx.exe OR C\\:\\\\Windows\\\\System32\\\\CompatTelRunner.exe OR C\\:\\\\Windows\\\\System32\\\\msiexec.exe OR C\\:\\\\Windows\\\\System32\\\\nvwmi64.exe OR C\\:\\\\Windows\\\\System32\\\\svchost.exe OR C\\:\\\\Windows\\\\System32\\\\Taskmgr.exe OR C\\:\\\\Windows\\\\System32\\\\wbem\\\\WmiPrvSE.exe OR C\\:\\\\Windows\\\\SysWOW64\\\\msiexec.exe)) OR (process.executable:(C\\:\\\\Windows\\\\System32\\\\DriverStore\\\\* OR C\\:\\\\WINDOWS\\\\Installer\\\\* OR C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\*)))))"
+}

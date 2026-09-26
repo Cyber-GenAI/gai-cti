@@ -1,0 +1,69 @@
+{
+  "id": "580b3b2c-5aaa-484b-9f9b-0ecf5faa4911",
+  "name": "Interesting Service Enumeration Via Sc.EXE",
+  "tags": [
+    "attack.t1003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the enumeration and query of interesting and in some cases sensitive services on the system via \"sc.exe\".\nAttackers often try to enumerate the services currently running on a system in order to find different attack vectors.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1617d88e-54bb-41d5-9411-3a85cebd4e55",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.n00py.io/2021/05/dumping-plaintext-rdp-credentials-from-svchost-exe/",
+    "https://pentestlab.blog/tag/svchost/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\sc.exe OR process.pe.original_file_name:sc.exe) AND process.command_line:*query* AND process.command_line:*termservice*"
+}

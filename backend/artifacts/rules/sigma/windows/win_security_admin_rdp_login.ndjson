@@ -1,0 +1,73 @@
+{
+  "id": "f07cfd6d-ed4b-409f-ae8b-a6bf63b4c89e",
+  "name": "Admin User Remote Logon",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.initial-access",
+    "attack.t1078.001",
+    "attack.t1078.002",
+    "attack.t1078.003",
+    "car.2016-04-005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect remote login by Administrator user (depending on internal pattern).",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative activity."
+  ],
+  "from": "now-360s",
+  "rule_id": "3910a839-cf1b-41ef-a2fb-41ba8e61ea32",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1078",
+          "name": "Valid Accounts",
+          "reference": "https://attack.mitre.org/techniques/T1078/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://car.mitre.org/wiki/CAR-2016-04-005"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:4624 AND winlog.event_data.LogonType:10 AND winlog.event_data.AuthenticationPackageName:Negotiate AND winlog.event_data.TargetUserName:Admin*)"
+}

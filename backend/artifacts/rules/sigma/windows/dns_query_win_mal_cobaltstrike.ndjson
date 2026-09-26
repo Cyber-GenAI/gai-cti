@@ -1,0 +1,70 @@
+{
+  "id": "a0b1c399-a02b-4dbe-a7ad-4bf40a20eed5",
+  "name": "Suspicious Cobalt Strike DNS Beaconing - Sysmon",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1071.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a program that invoked suspicious DNS queries known from Cobalt Strike beacons",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "36662459-df1a-41e8-b547-a8e9e87da442",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1071/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.icebrg.io/blog/footprints-of-fin7-tracking-actor-patterns",
+    "https://www.sekoia.io/en/hunting-and-detecting-cobalt-strike/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(dns.question.name:(aaa.stage.* OR post.1*)) OR dns.question.name:*.stage.123456.*"
+}

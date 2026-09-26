@@ -1,0 +1,51 @@
+{
+  "id": "95ace3f2-a8cc-4de5-948f-572a6d9d5f8a",
+  "name": "Important Windows Service Terminated Unexpectedly",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects important or interesting Windows services that got terminated unexpectedly.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare false positives could occur since service termination could happen due to multiple reasons"
+  ],
+  "from": "now-360s",
+  "rule_id": "7f022b82-f6e6-4ab3-b986-ebda95bcdb6c",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.randori.com/blog/vulnerability-analysis-queuejumper-cve-2023-21554/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7034) AND (winlog.event_data.param1:*Message\\ Queuing* OR (winlog.event_data.Binary:(*4d0053004d005100* OR *6d0073006d007100*))))"
+}

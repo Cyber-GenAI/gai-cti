@@ -1,0 +1,71 @@
+{
+  "id": "ae5c1c8c-fe43-44bc-b94d-7425694ae87b",
+  "name": "Driver/DLL Installation Via Odbcconf.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.008",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"odbcconf\" with \"INSTALLDRIVER\" which installs a new ODBC driver. Attackers abuse this to install and run malicious DLLs.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate driver DLLs being registered via \"odbcconf\" will generate false positives. Investigate the path of the DLL and its contents to determine if the action is authorized."
+  ],
+  "from": "now-360s",
+  "rule_id": "d4ad422e-87cd-4293-a2f1-56fba3149875",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Odbcconf/",
+    "https://web.archive.org/web/20191023232753/https://twitter.com/Hexacorn/status/1187143326673330176",
+    "https://www.hexacorn.com/blog/2020/08/23/odbcconf-lolbin-trifecta/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\odbcconf.exe OR process.pe.original_file_name:odbcconf.exe) AND (process.command_line:*INSTALLDRIVER\\ * AND process.command_line:*.dll*)"
+}

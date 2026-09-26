@@ -1,0 +1,72 @@
+{
+  "id": "39cd1513-9e89-4490-a0a1-80cc1f67cb5e",
+  "name": "Enumerate All Information With Whoami.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1033",
+    "car.2016-03-001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of \"whoami.exe\" with the \"/all\" flag",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "e967b4fa-17b2-4a50-9159-df554e1f2237",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://brica.de/alerts/alert/public/1247926/agent-tesla-keylogger-delivered-inside-a-power-iso-daa-archive/",
+    "https://app.any.run/tasks/7eaba74e-c1ea-400f-9c17-5e30eee89906/",
+    "https://www.youtube.com/watch?v=DsJ9ByX84o4&t=6s"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\whoami.exe OR process.pe.original_file_name:whoami.exe) AND process.command_line:(*\\ \\-all* OR *\\ \\/all* OR *\\ \u2013all* OR *\\ \u2014all* OR *\\ \u2015all*)"
+}

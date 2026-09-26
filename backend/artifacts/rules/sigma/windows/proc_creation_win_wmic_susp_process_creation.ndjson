@@ -1,0 +1,70 @@
+{
+  "id": "936a9737-303b-4737-9c64-08a0e57a2a1c",
+  "name": "Suspicious Process Created Via Wmic.EXE",
+  "tags": [
+    "attack.execution",
+    "attack.t1047",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects WMIC executing \"process call create\" with suspicious calls to processes such as \"rundll32\", \"regsrv32\", etc.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a0aed449-665d-4061-94ee-32e06cd1318a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1047",
+          "name": "Windows Management Instrumentation",
+          "reference": "https://attack.mitre.org/techniques/T1047/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2020/10/08/ryuks-return/",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/ransomware-hive-conti-avoslocker"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*process\\ * AND process.command_line:*call\\ * AND process.command_line:*create\\ *) AND (process.command_line:(*rundll32* OR *bitsadmin* OR *regsvr32* OR *cmd.exe\\ \\/c\\ * OR *cmd.exe\\ \\/k\\ * OR *cmd.exe\\ \\/r\\ * OR *cmd\\ \\/c\\ * OR *cmd\\ \\/k\\ * OR *cmd\\ \\/r\\ * OR *powershell* OR *pwsh* OR *certutil* OR *cscript* OR *wscript* OR *mshta* OR *\\\\Users\\\\Public\\\\* OR *\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\* OR *%temp%* OR *%tmp%* OR *%ProgramData%* OR *%appdata%* OR *%comspec%* OR *%localappdata%*))"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "0c27a6c6-224a-4541-8568-da58bc998f3f",
+  "name": "Potential Persistence Via Disk Cleanup Handler - Registry",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker modifies values of the Disk Cleanup Handler in the registry to achieve persistence.\nThe disk cleanup manager is part of the operating system. It displays the dialog box [\u2026]\nThe user has the option of enabling or disabling individual handlers by selecting or clearing their check box in the disk cleanup manager's UI.\nAlthough Windows comes with a number of disk cleanup handlers, they aren't designed to handle files produced by other applications.\nInstead, the disk cleanup manager is designed to be flexible and extensible by enabling any developer to implement and register their own disk cleanup handler.\nAny developer can extend the available disk cleanup services by implementing and registering a disk cleanup handler.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate new entry added by windows"
+  ],
+  "from": "now-360s",
+  "rule_id": "44e6d9a7-6449-42d8-a4a8-a086fdedb648",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/diskcleanuphandler.html",
+    "https://www.hexacorn.com/blog/2018/09/02/beyond-good-ol-run-key-part-86/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:CreateKey AND registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\VolumeCaches\\\\*) AND (NOT (registry.path:(*\\\\Active\\ Setup\\ Temp\\ Folders OR *\\\\BranchCache OR *\\\\Content\\ Indexer\\ Cleaner OR *\\\\D3D\\ Shader\\ Cache OR *\\\\Delivery\\ Optimization\\ Files OR *\\\\Device\\ Driver\\ Packages OR *\\\\Diagnostic\\ Data\\ Viewer\\ database\\ files OR *\\\\Downloaded\\ Program\\ Files OR *\\\\DownloadsFolder OR *\\\\Feedback\\ Hub\\ Archive\\ log\\ files OR *\\\\Internet\\ Cache\\ Files OR *\\\\Language\\ Pack OR *\\\\Microsoft\\ Office\\ Temp\\ Files OR *\\\\Offline\\ Pages\\ Files OR *\\\\Old\\ ChkDsk\\ Files OR *\\\\Previous\\ Installations OR *\\\\Recycle\\ Bin OR *\\\\RetailDemo\\ Offline\\ Content OR *\\\\Setup\\ Log\\ Files OR *\\\\System\\ error\\ memory\\ dump\\ files OR *\\\\System\\ error\\ minidump\\ files OR *\\\\Temporary\\ Files OR *\\\\Temporary\\ Setup\\ Files OR *\\\\Temporary\\ Sync\\ Files OR *\\\\Thumbnail\\ Cache OR *\\\\Update\\ Cleanup OR *\\\\Upgrade\\ Discarded\\ Files OR *\\\\User\\ file\\ versions OR *\\\\Windows\\ Defender OR *\\\\Windows\\ Error\\ Reporting\\ Files OR *\\\\Windows\\ ESD\\ installation\\ files OR *\\\\Windows\\ Upgrade\\ Log\\ Files)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "6ea37bd6-fe30-4e67-ae24-83b9cf052f4e",
+  "name": "Potential COM Objects Download Cradles Usage - Process Creation",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1105",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of COM objects that can be abused to download files in PowerShell by CLSID",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the library"
+  ],
+  "from": "now-360s",
+  "rule_id": "8d1da164-b6e8-44f3-a324-6ce4455cdf3a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1105",
+          "name": "Ingress Tool Transfer",
+          "reference": "https://attack.mitre.org/techniques/T1105/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/dotnet/api/system.type.gettypefromclsid?view=net-7.0",
+    "https://speakerdeck.com/heirhabarov/hunting-for-powershell-abuse?slide=57"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*\\[Type\\]\\:\\:GetTypeFromCLSID\\(* AND (process.command_line:(*0002DF01\\-0000\\-0000\\-C000\\-000000000046* OR *F6D90F16\\-9C73\\-11D3\\-B32E\\-00C04F990BB4* OR *F5078F35\\-C551\\-11D3\\-89B9\\-0000F81FE221* OR *88d96a0a\\-f192\\-11d4\\-a65f\\-0040963251e5* OR *AFBA6B42\\-5692\\-48EA\\-8141\\-DC517DCF0EF1* OR *AFB40FFD\\-B609\\-40A3\\-9828\\-F88BBE11E4E3* OR *88d96a0b\\-f192\\-11d4\\-a65f\\-0040963251e5* OR *2087c2f4\\-2cef\\-4953\\-a8ab\\-66779b670495* OR *000209FF\\-0000\\-0000\\-C000\\-000000000046* OR *00024500\\-0000\\-0000\\-C000\\-000000000046*))"
+}

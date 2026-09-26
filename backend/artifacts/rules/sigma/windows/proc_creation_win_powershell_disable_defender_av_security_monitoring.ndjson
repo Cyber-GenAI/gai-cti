@@ -1,0 +1,71 @@
+{
+  "id": "f87a3b86-5b70-42e4-af42-7e54ffe61164",
+  "name": "Disable Windows Defender AV Security Monitoring",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects attackers attempting to disable Windows Defender using Powershell",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Minimal, for some older versions of dev tools, such as pycharm, developers were known to sometimes disable Windows Defender to improve performance, but this generally is not considered a good security practice."
+  ],
+  "from": "now-360s",
+  "rule_id": "59c5c32f-9d38-4969-b616-4e8648ceb3cf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://research.nccgroup.com/2020/06/23/wastedlocker-a-new-ransomware-variant-developed-by-the-evil-corp-group/",
+    "https://rvsec0n.wordpress.com/2020/01/24/malwares-that-bypass-windows-defender/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1562.001/T1562.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND (process.command_line:(*\\-DisableBehaviorMonitoring\\ $true* OR *\\-DisableRuntimeMonitoring\\ $true*))) OR ((process.executable:*\\\\sc.exe OR process.pe.original_file_name:sc.exe) AND ((process.command_line:*stop* AND process.command_line:*WinDefend*) OR (process.command_line:*delete* AND process.command_line:*WinDefend*) OR (process.command_line:*config* AND process.command_line:*WinDefend* AND process.command_line:*start\\=disabled*)))"
+}

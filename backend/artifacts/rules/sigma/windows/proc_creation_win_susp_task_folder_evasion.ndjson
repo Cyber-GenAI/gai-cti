@@ -1,0 +1,88 @@
+{
+  "id": "50acc6bd-d260-4e11-8ee7-64e8b99885cb",
+  "name": "Tasks Folder Evasion",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.persistence",
+    "attack.execution",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "The Tasks folder in system32 and syswow64 are globally writable paths.\nAdversaries can take advantage of this and load or influence any script hosts or ANY .NET Application\nin Tasks to load and execute a custom assembly into cscript, wscript, regsvr32, mshta, eventvwr\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "20f8e824-67f1-4044-9f8c-364aff57bfc9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/subTee/status/1216465628946563073",
+    "https://gist.github.com/am0nsec/8378da08f848424e4ab0cc5b317fdd26"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*echo\\ * OR *copy\\ * OR *type\\ * OR *file\\ createnew*)) AND (process.command_line:(*\\ C\\:\\\\Windows\\\\System32\\\\Tasks\\\\* OR *\\ C\\:\\\\Windows\\\\SysWow64\\\\Tasks\\\\*))"
+}

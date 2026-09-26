@@ -1,0 +1,51 @@
+{
+  "id": "2f472cbe-573f-4ed6-8b18-fb39261fdba3",
+  "name": "Wusa.EXE Executed By Parent Process Located In Suspicious Location",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the \"wusa.exe\" (Windows Update Standalone Installer) utility by a parent process that is located in a suspicious location.\nAttackers could instantiate an instance of \"wusa.exe\" in order to bypass User Account Control (UAC). They can duplicate the access token from \"wusa.exe\" to gain elevated privileges.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "5b2db3ba-52bf-4cb4-8b9f-a3af2d91868e",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.fortinet.com/blog/threat-research/konni-campaign-distributed-via-malicious-document"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\wusa.exe AND ((process.parent.executable:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\Appdata\\\\Local\\\\Temp\\\\* OR *\\\\Temporary\\ Internet*)) OR ((process.parent.executable:*\\:\\\\Users\\\\* AND process.parent.executable:*\\\\Favorites\\\\*) OR (process.parent.executable:*\\:\\\\Users\\\\* AND process.parent.executable:*\\\\Favourites\\\\*) OR (process.parent.executable:*\\:\\\\Users\\\\* AND process.parent.executable:*\\\\Contacts\\\\*) OR (process.parent.executable:*\\:\\\\Users\\\\* AND process.parent.executable:*\\\\Pictures\\\\*))) AND (NOT process.command_line:*.msu*)"
+}

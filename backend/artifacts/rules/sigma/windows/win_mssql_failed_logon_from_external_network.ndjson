@@ -1,0 +1,70 @@
+{
+  "id": "64644e4e-f049-49a3-800e-29b031d41d6a",
+  "name": "MSSQL Server Failed Logon From External Network",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1110",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects failed logon attempts from clients with external network IP to an MSSQL server. This can be a sign of a bruteforce attack.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "7b6a3e26-6aa9-4ab8-924a-9b9eeb0f80ae",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1110",
+          "name": "Brute Force",
+          "reference": "https://attack.mitre.org/techniques/T1110/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://cybersecthreat.com/2020/07/08/enable-mssql-authentication-log-to-eventlog/",
+    "https://www.experts-exchange.com/questions/27800944/EventID-18456-Failed-to-open-the-explicitly-specified-database.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND ((winlog.provider_name:*MSSQL* AND event.code:18456) AND (NOT (winlog.event_data.Data:(*CLIENT\\:\\ 10.* OR *CLIENT\\:\\ 172.16.* OR *CLIENT\\:\\ 172.17.* OR *CLIENT\\:\\ 172.18.* OR *CLIENT\\:\\ 172.19.* OR *CLIENT\\:\\ 172.20.* OR *CLIENT\\:\\ 172.21.* OR *CLIENT\\:\\ 172.22.* OR *CLIENT\\:\\ 172.23.* OR *CLIENT\\:\\ 172.24.* OR *CLIENT\\:\\ 172.25.* OR *CLIENT\\:\\ 172.26.* OR *CLIENT\\:\\ 172.27.* OR *CLIENT\\:\\ 172.28.* OR *CLIENT\\:\\ 172.29.* OR *CLIENT\\:\\ 172.30.* OR *CLIENT\\:\\ 172.31.* OR *CLIENT\\:\\ 192.168.* OR *CLIENT\\:\\ 127.* OR *CLIENT\\:\\ 169.254.*))))"
+}

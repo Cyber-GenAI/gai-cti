@@ -1,0 +1,76 @@
+{
+  "id": "f7a3a553-af2d-426f-b44d-82b5beb8cab8",
+  "name": "WMImplant Hack Tool",
+  "tags": [
+    "attack.execution",
+    "attack.t1047",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects parameters used by WMImplant",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative scripts that use the same keywords."
+  ],
+  "from": "now-360s",
+  "rule_id": "47f01c67-66e6-4352-99a7-f353e629097f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1047",
+          "name": "Windows Management Instrumentation",
+          "reference": "https://attack.mitre.org/techniques/T1047/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/FortyNorthSecurity/WMImplant"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*WMImplant* OR *\\ change_user\\ * OR *\\ gen_cli\\ * OR *\\ command_exec\\ * OR *\\ disable_wdigest\\ * OR *\\ disable_winrm\\ * OR *\\ enable_wdigest\\ * OR *\\ enable_winrm\\ * OR *\\ registry_mod\\ * OR *\\ remote_posh\\ * OR *\\ sched_job\\ * OR *\\ service_mod\\ * OR *\\ process_kill\\ * OR *\\ active_users\\ * OR *\\ basic_info\\ * OR *\\ power_off\\ * OR *\\ vacant_system\\ * OR *\\ logon_events\\ *)"
+}

@@ -1,0 +1,76 @@
+{
+  "id": "1b084fdb-ff4c-4ddc-a29f-ef129999ffc4",
+  "name": "New Connection Initiated To Potential Dead Drop Resolver Domain",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1102",
+    "attack.t1102.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an executable, which is not an internet browser or known application, initiating network connections to legit popular websites, which were seen to be used as dead drop resolvers in previous attacks.\nIn this context attackers leverage known websites such as \"facebook\", \"youtube\", etc. In order to pass through undetected.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "One might need to exclude other internet browsers found in it's network or other applications like ones mentioned above from Microsoft Defender.",
+    "Ninite contacting githubusercontent.com"
+  ],
+  "from": "now-360s",
+  "rule_id": "bcba0708-6f16-43bd-adb6-981b32f6ef1d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20220830134315/https://content.fireeye.com/apt-41/rpt-apt41/",
+    "https://securelist.com/the-tetrade-brazilian-banking-malware/97779/",
+    "https://blog.bushidotoken.net/2021/04/dead-drop-resolvers-espionage-inspired.html",
+    "https://github.com/kleiton0x00/RedditC2",
+    "https://twitter.com/kleiton0x7e/status/1600567316810551296",
+    "https://www.linkedin.com/posts/kleiton-kurti_github-kleiton0x00redditc2-abusing-reddit-activity-7009939662462984192-5DbI/?originalSubdomain=al"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(network.direction:true AND (destination.domain:(*.t.me OR *4shared.com OR *abuse.ch OR *anonfiles.com OR *cdn.discordapp.com OR *cloudflare.com OR *ddns.net OR *discord.com OR *docs.google.com OR *drive.google.com OR *dropbox.com OR *dropmefiles.com OR *facebook.com OR *feeds.rapidfeeds.com OR *fotolog.com OR *ghostbin.co\\/ OR *githubusercontent.com OR *gofile.io OR *hastebin.com OR *imgur.com OR *livejournal.com OR *mediafire.com OR *mega.co.nz OR *mega.nz OR *onedrive.com OR *pages.dev OR *paste.ee OR *pastebin.com OR *pastebin.pl OR *pastetext.net OR *pixeldrain.com OR *privatlab.com OR *privatlab.net OR *reddit.com OR *send.exploit.in OR *sendspace.com OR *steamcommunity.com OR *storage.googleapis.com OR *technet.microsoft.com OR *temp.sh OR *transfer.sh OR *trycloudflare.com OR *twitter.com OR *ufile.io OR *vimeo.com OR *w3spaces.com OR *wetransfer.com OR *workers.dev OR *youtube.com))) AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe)) OR (process.executable:C\\:\\\\Users\\\\* AND process.executable:*\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe) OR (process.executable:(C\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Mozilla\\ Firefox\\\\firefox.exe)) OR (process.executable:C\\:\\\\Users\\\\* AND process.executable:*\\\\AppData\\\\Local\\\\Mozilla\\ Firefox\\\\firefox.exe) OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Internet\\ Explorer\\\\iexplore.exe OR C\\:\\\\Program\\ Files\\\\Internet\\ Explorer\\\\iexplore.exe)) OR (process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\* OR process.executable:*\\\\WindowsApps\\\\MicrosoftEdge.exe OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe))) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeCore\\\\* OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\EdgeCore\\\\*)) AND (process.executable:(*\\\\msedge.exe OR *\\\\msedgewebview2.exe))) OR ((process.executable:(*C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Safari\\\\* OR *C\\:\\\\Program\\ Files\\\\Safari\\\\*)) AND process.executable:*\\\\safari.exe) OR ((process.executable:(*C\\:\\\\Program\\ Files\\\\Windows\\ Defender\\ Advanced\\ Threat\\ Protection\\\\* OR *C\\:\\\\Program\\ Files\\\\Windows\\ Defender\\\\* OR *C\\:\\\\ProgramData\\\\Microsoft\\\\Windows\\ Defender\\\\Platform\\\\*)) AND (process.executable:(*\\\\MsMpEng.exe OR *\\\\MsSense.exe))) OR (process.executable:(*C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\PRTG\\ Network\\ Monitor\\\\PRTG\\ Probe.exe OR *C\\:\\\\Program\\ Files\\\\PRTG\\ Network\\ Monitor\\\\PRTG\\ Probe.exe)) OR (process.executable:C\\:\\\\Program\\ Files\\\\BraveSoftware\\\\* AND process.executable:*\\\\brave.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Maxthon\\\\* AND process.executable:*\\\\maxthon.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Programs\\\\Opera\\\\* AND process.executable:*\\\\opera.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\SeaMonkey\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SeaMonkey\\\\*)) AND process.executable:*\\\\seamonkey.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Vivaldi\\\\* AND process.executable:*\\\\vivaldi.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Naver\\\\Naver\\ Whale\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Naver\\\\Naver\\ Whale\\\\*)) AND process.executable:*\\\\whale.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Waterfox\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Waterfox\\\\*)) AND process.executable:*\\\\Waterfox.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Programs\\\\midori\\-ng\\\\* AND process.executable:*\\\\Midori\\ Next\\ Generation.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\SlimBrowser\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SlimBrowser\\\\*)) AND process.executable:*\\\\slimbrowser.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Flock\\\\* AND process.executable:*\\\\Flock.exe) OR (process.executable:*\\\\AppData\\\\Local\\\\Phoebe\\\\* AND process.executable:*\\\\Phoebe.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Falkon\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Falkon\\\\*)) AND process.executable:*\\\\falkon.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\QtWeb\\\\* OR C\\:\\\\Program\\ Files\\\\QtWeb\\\\*)) AND process.executable:*\\\\QtWeb.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Avant\\ Browser\\\\* OR C\\:\\\\Program\\ Files\\\\Avant\\ Browser\\\\*)) AND process.executable:*\\\\avant.exe) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\WindowsApps\\\\* OR C\\:\\\\Program\\ Files\\\\WindowsApps\\\\*)) AND process.executable:*\\\\WhatsApp.exe AND destination.domain:*facebook.com) OR (process.executable:*\\\\AppData\\\\Roaming\\\\Telegram\\ Desktop\\\\* AND process.executable:*\\\\Telegram.exe AND destination.domain:*.t.me) OR (process.executable:*\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\* AND process.executable:*\\\\OneDrive.exe AND destination.domain:*onedrive.com) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Dropbox\\\\Client\\\\* OR C\\:\\\\Program\\ Files\\\\Dropbox\\\\Client\\\\*)) AND (process.executable:(*\\\\Dropbox.exe OR *\\\\DropboxInstaller.exe)) AND destination.domain:*dropbox.com) OR ((process.executable:(*\\\\MEGAsync.exe OR *\\\\MEGAsyncSetup32_*RC.exe OR *\\\\MEGAsyncSetup32.exe OR *\\\\MEGAsyncSetup64.exe OR *\\\\MEGAupdater.exe)) AND (destination.domain:(*mega.co.nz OR *mega.nz))) OR ((process.executable:(*C\\:\\\\Program\\ Files\\\\Google\\\\Drive\\ File\\ Stream\\\\* OR *C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Drive\\ File\\ Stream\\\\*)) AND process.executable:*GoogleDriveFS.exe AND destination.domain:*drive.google.com) OR (process.executable:*\\\\AppData\\\\Local\\\\Discord\\\\* AND process.executable:*\\\\Discord.exe AND (destination.domain:(*discord.com OR *cdn.discordapp.com))) OR (NOT _exists_:process.executable) OR process.executable:\"\"))"
+}

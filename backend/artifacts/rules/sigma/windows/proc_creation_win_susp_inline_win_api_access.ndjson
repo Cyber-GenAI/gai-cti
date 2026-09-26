@@ -1,0 +1,69 @@
+{
+  "id": "ed860cf0-ada0-46bc-9f39-4a4e35508cd4",
+  "name": "Potential WinAPI Calls Via CommandLine",
+  "tags": [
+    "attack.execution",
+    "attack.t1106",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of WinAPI Functions via the commandline. As seen used by threat actors via the tool winapiexec",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some legitimate action or applications may use these functions. Investigate further to determine the legitimacy of the activity."
+  ],
+  "from": "now-360s",
+  "rule_id": "f19cac06-d236-42e5-b55c-abef4c61dfa0",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1106",
+          "name": "Native API",
+          "reference": "https://attack.mitre.org/techniques/T1106/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/m417z/status/1566674631788007425"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*AddSecurityPackage* OR *AdjustTokenPrivileges* OR *Advapi32* OR *CloseHandle* OR *CreateProcessWithToken* OR *CreatePseudoConsole* OR *CreateRemoteThread* OR *CreateThread* OR *CreateUserThread* OR *DangerousGetHandle* OR *DuplicateTokenEx* OR *EnumerateSecurityPackages* OR *FreeHGlobal* OR *FreeLibrary* OR *GetDelegateForFunctionPointer* OR *GetLogonSessionData* OR *GetModuleHandle* OR *GetProcAddress* OR *GetProcessHandle* OR *GetTokenInformation* OR *ImpersonateLoggedOnUser* OR *kernel32* OR *LoadLibrary* OR *memcpy* OR *MiniDumpWriteDump* OR *ntdll* OR *OpenDesktop* OR *OpenProcess* OR *OpenProcessToken* OR *OpenThreadToken* OR *OpenWindowStation* OR *PtrToString* OR *QueueUserApc* OR *ReadProcessMemory* OR *RevertToSelf* OR *RtlCreateUserThread* OR *secur32* OR *SetThreadToken* OR *VirtualAlloc* OR *VirtualFree* OR *VirtualProtect* OR *WaitForSingleObject* OR *WriteInt32* OR *WriteProcessMemory* OR *ZeroFreeGlobalAllocUnicode*)) AND (NOT ((process.executable:*\\\\MpCmdRun.exe AND process.command_line:*GetLoadLibraryWAddress32*) OR (process.parent.executable:*\\\\CompatTelRunner.exe AND (process.command_line:(*FreeHGlobal* OR *PtrToString* OR *kernel32* OR *CloseHandle*)))))"
+}

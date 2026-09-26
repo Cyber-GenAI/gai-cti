@@ -1,0 +1,69 @@
+{
+  "id": "c8c84dac-6b12-402d-ac61-ab2e34a7561d",
+  "name": "Persistence Via Cron Files",
+  "tags": [
+    "attack.persistence",
+    "attack.t1053.003",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of cron file or files in Cron directories which could indicates potential persistence.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Any legitimate cron file."
+  ],
+  "from": "now-360s",
+  "rule_id": "ce3b91c3-ab51-4747-9499-5296fc0838e5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/microsoft/MSTIC-Sysmon/blob/f1477c0512b0747c1455283069c21faec758e29d/linux/configs/attack-based/persistence/T1053.003_Cron_Activity.xml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(TargetFilename:(\\/etc\\/cron.d\\/* OR \\/etc\\/cron.daily\\/* OR \\/etc\\/cron.hourly\\/* OR \\/etc\\/cron.monthly\\/* OR \\/etc\\/cron.weekly\\/* OR \\/var\\/spool\\/cron\\/crontabs\\/*)) OR (TargetFilename:(*\\/etc\\/cron.allow* OR *\\/etc\\/cron.deny* OR *\\/etc\\/crontab*))"
+}

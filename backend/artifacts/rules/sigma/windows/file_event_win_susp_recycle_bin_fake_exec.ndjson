@@ -1,0 +1,53 @@
+{
+  "id": "e1b47df7-9230-4bb3-9767-c69683b06892",
+  "name": "Suspicious File Creation Activity From Fake Recycle.Bin Folder",
+  "tags": [
+    "attack.persistence",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects file write event from/to a fake recycle bin folder that is often used as a staging directory for malware",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1fae1fe8-779f-4d04-bcf3-2f1dfb8fbb16",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.mandiant.com/resources/blog/infected-usb-steal-secrets",
+    "https://unit42.paloaltonetworks.com/cloaked-ursa-phishing/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*RECYCLERS.BIN\\\\* OR *RECYCLER.BIN\\\\*)) OR (file.path:(*RECYCLERS.BIN\\\\* OR *RECYCLER.BIN\\\\*))"
+}

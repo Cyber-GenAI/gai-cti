@@ -1,0 +1,72 @@
+{
+  "id": "93e15493-9b1d-452b-8b99-1ed45d00a735",
+  "name": "Process Execution From A Potentially Suspicious Folder",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a potentially suspicious execution from an uncommon folder.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c24c194b-6c3b-4791-9cf8-510f4357cafa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/mbevilacqua/appcompatprocessor/blob/6c847937c5a836e2ce2fe2b915f213c345a3c389/AppCompatSearch.txt",
+    "https://www.secureworks.com/research/bronze-butler-targets-japanese-businesses",
+    "https://www.crowdstrike.com/resources/reports/2019-crowdstrike-global-threat-report/",
+    "https://github.com/ThreatHuntingProject/ThreatHunting/blob/cb22598bb70651f88e0285abc8d835757d2cb596/hunts/suspicious_process_creation_via_windows_event_logs.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Users\\\\All\\ Users\\\\* OR *\\:\\\\Users\\\\Default\\\\* OR *\\:\\\\Users\\\\NetworkService\\\\* OR *\\:\\\\Windows\\\\addins\\\\* OR *\\:\\\\Windows\\\\debug\\\\* OR *\\:\\\\Windows\\\\Fonts\\\\* OR *\\:\\\\Windows\\\\Help\\\\* OR *\\:\\\\Windows\\\\IME\\\\* OR *\\:\\\\Windows\\\\Media\\\\* OR *\\:\\\\Windows\\\\repair\\\\* OR *\\:\\\\Windows\\\\security\\\\* OR *\\:\\\\Windows\\\\System32\\\\Tasks\\\\* OR *\\:\\\\Windows\\\\Tasks\\\\* OR *$Recycle.bin* OR *\\\\config\\\\systemprofile\\\\* OR *\\\\Intel\\\\Logs\\\\* OR *\\\\RSA\\\\MachineKeys\\\\*)) AND (NOT (process.executable:C\\:\\\\Users\\\\Public\\\\IBM\\\\ClientSolutions\\\\Start_Programs\\\\* OR (process.executable:C\\:\\\\Windows\\\\SysWOW64\\\\config\\\\systemprofile\\\\Citrix\\\\UpdaterBinaries\\\\* AND process.executable:*\\\\CitrixReceiverUpdater.exe)))"
+}

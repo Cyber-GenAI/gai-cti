@@ -1,0 +1,69 @@
+{
+  "id": "73e42e7c-4904-4f59-ad33-86f027b0f4fb",
+  "name": "Potentially Suspicious CMD Shell Output Redirect",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects inline Windows shell commands redirecting output via the \">\" symbol to a suspicious location.\nThis technique is sometimes used by malicious actors in order to redirect the output of reconnaissance commands such as \"hostname\" and \"dir\" to files for future exfiltration.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate admin or third party scripts used for diagnostic collection might generate some false positives"
+  ],
+  "from": "now-360s",
+  "rule_id": "aeb578a0-d7cb-42ee-a75c-0516176e8682",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/07/11/select-xmrig-from-sqlserver/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\cmd.exe OR process.pe.original_file_name:Cmd.Exe) AND ((process.command_line:(*\\>?%APPDATA%\\\\* OR *\\>?%TEMP%\\\\* OR *\\>?%TMP%\\\\* OR *\\>?%USERPROFILE%\\\\* OR *\\>?C\\:\\\\ProgramData\\\\* OR *\\>?C\\:\\\\Temp\\\\* OR *\\>?C\\:\\\\Users\\\\Public\\\\* OR *\\>?C\\:\\\\Windows\\\\Temp\\\\*)) OR ((process.command_line:(*\\ \\>* OR *\\\"\\>* OR *'\\>*)) AND (process.command_line:*C\\:\\\\Users\\\\* AND process.command_line:*\\\\AppData\\\\Local\\\\*)))"
+}

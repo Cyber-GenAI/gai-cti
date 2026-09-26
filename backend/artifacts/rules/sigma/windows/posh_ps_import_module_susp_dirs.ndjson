@@ -1,0 +1,69 @@
+{
+  "id": "0d42e3da-1591-4df7-b36f-e89c06d5f0e8",
+  "name": "Import PowerShell Modules From Suspicious Directories",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects powershell scripts that import modules from suspicious directories",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2ea4fcbc-5b6a-48bb-b32b-0422afff3a6c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1003.002/T1003.002.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*Import\\-Module\\ \\\"$Env\\:Temp\\\\* OR *Import\\-Module\\ '$Env\\:Temp\\\\* OR *Import\\-Module\\ $Env\\:Temp\\\\* OR *Import\\-Module\\ \\\"$Env\\:Appdata\\\\* OR *Import\\-Module\\ '$Env\\:Appdata\\\\* OR *Import\\-Module\\ $Env\\:Appdata\\\\* OR *Import\\-Module\\ C\\:\\\\Users\\\\Public\\\\* OR *ipmo\\ \\\"$Env\\:Temp\\\\* OR *ipmo\\ '$Env\\:Temp\\\\* OR *ipmo\\ $Env\\:Temp\\\\* OR *ipmo\\ \\\"$Env\\:Appdata\\\\* OR *ipmo\\ '$Env\\:Appdata\\\\* OR *ipmo\\ $Env\\:Appdata\\\\* OR *ipmo\\ C\\:\\\\Users\\\\Public\\\\*)"
+}

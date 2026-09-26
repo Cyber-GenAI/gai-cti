@@ -1,0 +1,51 @@
+{
+  "id": "f7649521-e762-4df9-ab02-07b087b98e5b",
+  "name": "Execution of Suspicious File Type Extension",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects whether the image specified in a process creation event doesn't refer to an \".exe\" (or other known executable extension) file. This can be caused by process ghosting or other unorthodox methods to start a process.\nThis rule might require some initial baselining to align with some third party tooling in the user environment.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "39d8a3e3-f378-4a30-8e7b-fc70cb5a1907",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://pentestlaboratories.com/2021/12/08/process-ghosting/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(NOT (process.executable:(*.bin OR *.cgi OR *.com OR *.exe OR *.scr OR *.tmp))) AND (NOT ((process.executable:(System OR Registry OR MemCompression OR vmmem)) OR process.executable:*\\:\\\\Windows\\\\Installer\\\\MSI* OR process.executable:*\\:\\\\Windows\\\\System32\\\\DriverStore\\\\FileRepository\\\\* OR (process.executable:*\\:\\\\Config.Msi\\\\* AND (process.executable:(*.rbf OR *.rbs))) OR (process.parent.executable:*\\:\\\\Windows\\\\Temp\\\\* OR process.executable:*\\:\\\\Windows\\\\Temp\\\\*) OR process.executable:*\\:\\\\$Extend\\\\$Deleted\\\\* OR (process.executable:(\\- OR \"\")) OR (NOT _exists_:process.executable))) AND (NOT (process.parent.executable:*\\:\\\\ProgramData\\\\Avira\\\\* OR (process.executable:*NVIDIA\\\\NvBackend\\\\* AND process.executable:*.dat) OR ((process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\WINPAKPRO\\\\* OR *\\:\\\\Program\\ Files\\\\WINPAKPRO\\\\*)) AND process.executable:*.ngn) OR (process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\MyQ\\\\Server\\\\pcltool.dll OR *\\:\\\\Program\\ Files\\\\MyQ\\\\Server\\\\pcltool.dll)) OR (process.executable:*\\\\AppData\\\\Local\\\\Packages\\\\* AND process.executable:*\\\\LocalState\\\\rootfs\\\\*) OR process.executable:*\\\\LZMA_EXE OR process.executable:*\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\* OR (process.parent.executable:C\\:\\\\Windows\\\\System32\\\\services.exe AND process.executable:*com.docker.service)))"
+}

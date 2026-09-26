@@ -1,0 +1,71 @@
+{
+  "id": "10a2b010-ed89-4c2c-8d7b-a7a2e35e62d0",
+  "name": "Esentutl Steals Browser Information",
+  "tags": [
+    "attack.collection",
+    "attack.t1005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "One way Qbot steals sensitive information is by extracting browser data from Internet Explorer and Microsoft Edge by using the built-in utility esentutl.exe",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "5af66728-0dff-4088-b7e0-6e528ed914df",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1005",
+          "name": "Data from Local System",
+          "reference": "https://attack.mitre.org/techniques/T1005/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/02/07/qbot-likes-to-move-it-move-it/",
+    "https://redcanary.com/threat-detection-report/threats/qbot/",
+    "https://thedfirreport.com/2022/10/31/follina-exploit-leads-to-domain-compromise/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\esentutl.exe OR process.pe.original_file_name:esentutl.exe) AND process.command_line:(*\\-r* OR *\\/r* OR *\u2013r* OR *\u2014r* OR *\u2015r*) AND process.command_line:*\\\\Windows\\\\WebCache*"
+}

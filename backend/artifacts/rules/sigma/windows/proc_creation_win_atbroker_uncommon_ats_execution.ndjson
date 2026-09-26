@@ -1,0 +1,70 @@
+{
+  "id": "6e5e683c-a6f8-47f7-8a57-f7eb12ee83cc",
+  "name": "Uncommon  Assistive Technology Applications Execution Via AtBroker.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the start of a non built-in assistive technology applications via \"Atbroker.EXE\".",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate, non-default assistive technology applications execution"
+  ],
+  "from": "now-360s",
+  "rule_id": "e740b93d-559c-4aaf-82da-31758c3b572b",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "http://www.hexacorn.com/blog/2016/07/22/beyond-good-ol-run-key-part-42/",
+    "https://lolbas-project.github.io/lolbas/Binaries/Atbroker/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\AtBroker.exe OR process.pe.original_file_name:AtBroker.exe) AND process.command_line:*start*) AND (NOT (process.command_line:(*animations* OR *audiodescription* OR *caretbrowsing* OR *caretwidth* OR *colorfiltering* OR *cursorindicator* OR *cursorscheme* OR *filterkeys* OR *focusborderheight* OR *focusborderwidth* OR *highcontrast* OR *keyboardcues* OR *keyboardpref* OR *livecaptions* OR *magnifierpane* OR *messageduration* OR *minimumhitradius* OR *mousekeys* OR *Narrator* OR *osk* OR *overlappedcontent* OR *showsounds* OR *soundsentry* OR *speechreco* OR *stickykeys* OR *togglekeys* OR *voiceaccess* OR *windowarranging* OR *windowtracking* OR *windowtrackingtimeout* OR *windowtrackingzorder*))) AND (NOT process.command_line:*Oracle_JavaAccessBridge*)"
+}

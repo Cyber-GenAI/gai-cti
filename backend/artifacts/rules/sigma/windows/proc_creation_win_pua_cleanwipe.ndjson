@@ -1,0 +1,69 @@
+{
+  "id": "78b40f71-0381-4bf1-a4d8-ccea1fb378f1",
+  "name": "PUA - CleanWipe Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of CleanWipe a tool usually used to delete Symantec antivirus.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative use (Should be investigated either way)"
+  ],
+  "from": "now-360s",
+  "rule_id": "3262a15c-d121-4221-bab3-751637e7bd12",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/3CORESec/MAL-CL/tree/master/Descriptors/Other/CleanWipe"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\SepRemovalToolNative_x64.exe OR (process.executable:*\\\\CATClean.exe AND process.command_line:*\\-\\-uninstall*) OR (process.executable:*\\\\NetInstaller.exe AND process.command_line:*\\-r*) OR (process.executable:*\\\\WFPUnins.exe AND (process.command_line:*\\/uninstall* AND process.command_line:*\\/enterprise*))"
+}

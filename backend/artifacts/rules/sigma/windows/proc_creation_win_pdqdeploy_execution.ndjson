@@ -1,0 +1,87 @@
+{
+  "id": "3b2fb9de-9cd0-475e-bcb1-b7052d2e31bb",
+  "name": "PDQ Deploy Remote Adminstartion Tool Execution",
+  "tags": [
+    "attack.execution",
+    "attack.lateral-movement",
+    "attack.t1072",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect use of PDQ Deploy remote admin tool",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "db7485ca-586c-418e-b965-89e013714bb1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1072",
+          "name": "Software Deployment Tools",
+          "reference": "https://attack.mitre.org/techniques/T1072/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1072",
+          "name": "Software Deployment Tools",
+          "reference": "https://attack.mitre.org/techniques/T1072/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/9e5b12c4912c07562aec7500447b11fa3e17e254/atomics/T1072/T1072.md",
+    "https://www.pdq.com/pdq-deploy/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.pe.description:PDQ\\ Deploy\\ Console OR process.pe.product:PDQ\\ Deploy OR process.pe.company:PDQ.com OR process.pe.original_file_name:PDQDeployConsole.exe"
+}

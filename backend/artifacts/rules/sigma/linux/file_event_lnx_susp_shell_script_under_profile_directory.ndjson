@@ -1,0 +1,55 @@
+{
+  "id": "129602d1-d56a-47f9-a073-43a6b992ecd3",
+  "name": "Potentially Suspicious Shell Script Creation in Profile Folder",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of shell scripts under the \"profile.d\" path.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate shell scripts in the \"profile.d\" directory could be common in your environment. Apply additional filter accordingly via \"image\", by adding specific filenames you \"trust\" or by correlating it with other events.",
+    "Regular file creation during system update or software installation by the package manager"
+  ],
+  "from": "now-360s",
+  "rule_id": "a19d7d15-3a9a-43c5-8e98-af11dcdcbf18",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://blogs.jpcert.or.jp/en/2023/05/gobrat.html",
+    "https://jstnk9.github.io/jstnk9/research/GobRAT-Malware/",
+    "https://www.virustotal.com/gui/file/60bcd645450e4c846238cf0e7226dc40c84c96eba99f6b2cffcd0ab4a391c8b3/detection",
+    "https://www.virustotal.com/gui/file/3e44c807a25a56f4068b5b8186eee5002eed6f26d665a8b791c472ad154585d1/detection"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "TargetFilename:*\\/etc\\/profile.d\\/* AND (TargetFilename:(*.csh OR *.sh))"
+}

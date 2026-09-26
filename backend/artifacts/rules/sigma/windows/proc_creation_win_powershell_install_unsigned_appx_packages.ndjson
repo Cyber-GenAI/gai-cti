@@ -1,0 +1,53 @@
+{
+  "id": "e9c618f7-6948-4f7c-9cb3-f07ee238312f",
+  "name": "Unsigned AppX Installation Attempt Using Add-AppxPackage",
+  "tags": [
+    "attack.persistence",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the \"Add-AppxPackage\" or it's alias \"Add-AppPackage\" to install unsigned AppX packages",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Installation of unsigned packages for testing purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "210e065c-5f4a-444a-b33b-8c7cd0709e99",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/msix/package/unsigned-package",
+    "https://twitter.com/WindowsDocs/status/1620078135080325122"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND (process.command_line:(*Add\\-AppPackage\\ * OR *Add\\-AppxPackage\\ *)) AND process.command_line:*\\ \\-AllowUnsigned*"
+}

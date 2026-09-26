@@ -1,0 +1,73 @@
+{
+  "id": "1b6f2c26-08d8-4f35-92a9-d99d28eae6c7",
+  "name": "Process Memory Dump via RdrLeakDiag.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the Microsoft Windows Resource Leak Diagnostic tool \"rdrleakdiag.exe\" to dump process memory",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "a72cbd99-c635-426c-b762-d10b774e2b89",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.pureid.io/dumping-abusing-windows-credentials-part-1/",
+    "https://www.crowdstrike.com/blog/overwatch-exposes-aquatic-panda-in-possession-of-log-4-shell-exploit-tools/",
+    "https://lolbas-project.github.io/lolbas/Binaries/Rdrleakdiag/",
+    "https://twitter.com/0gtweet/status/1299071304805560321?s=21",
+    "https://news.sophos.com/en-us/2024/06/05/operation-crimson-palace-a-technical-deep-dive"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\rdrleakdiag.exe OR process.pe.original_file_name:RdrLeakDiag.exe) AND (process.command_line:(*\\-memdmp* OR *\\/memdmp* OR *\u2013memdmp* OR *\u2014memdmp* OR *\u2015memdmp*) OR process.command_line:(*fullmemdmp*)) AND (process.command_line:(*\\ \\-o\\ * OR *\\ \\/o\\ * OR *\\ \u2013o\\ * OR *\\ \u2014o\\ * OR *\\ \u2015o\\ *) OR process.command_line:(*\\ \\-p\\ * OR *\\ \\/p\\ * OR *\\ \u2013p\\ * OR *\\ \u2014p\\ * OR *\\ \u2015p\\ *))"
+}

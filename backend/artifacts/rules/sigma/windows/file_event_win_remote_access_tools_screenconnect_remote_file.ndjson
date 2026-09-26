@@ -1,0 +1,69 @@
+{
+  "id": "3b00f20c-d884-4a80-bad3-8a677a283627",
+  "name": "Remote Access Tool - ScreenConnect Temporary File",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of files in a specific location by ScreenConnect RMM.\nScreenConnect has feature to remotely execute binaries on a target machine. These binaries will be dropped to \":\\Users\\<username>\\Documents\\ConnectWiseControl\\Temp\\\" before execution.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of ScreenConnect"
+  ],
+  "from": "now-360s",
+  "rule_id": "c880d14c-dcbe-4c31-8d2f-50d9c2543a20",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/SigmaHQ/sigma/pull/4467"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\ScreenConnect.WindowsClient.exe AND file.path:*\\\\Documents\\\\ConnectWiseControl\\\\Temp\\\\*"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "5fcd490e-22eb-4ba7-8de8-7b4c59c8d06a",
+  "name": "Disable Windows Event Logging Via Registry",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects tampering with the \"Enabled\" registry key in order to disable Windows logging of a Windows event channel",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare falsepositives may occur from legitimate administrators disabling specific event log for troubleshooting"
+  ],
+  "from": "now-360s",
+  "rule_id": "96cbfef0-9ab2-4744-bd31-73604c0749de",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/WhichbufferArda/status/1543900539280293889",
+    "https://github.com/DebugPrivilege/CPP/blob/c39d365617dbfbcb01fffad200d52b6239b2918c/Windows%20Defender/RestoreDefenderConfig.cpp"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\* AND registry.path:*\\\\Enabled AND winlog.event_data.Details:DWORD\\ \\(0x00000000\\)) AND (NOT (process.executable:C\\:\\\\Windows\\\\system32\\\\wevtutil.exe OR (process.executable:C\\:\\\\Windows\\\\winsxs\\\\* AND process.executable:*\\\\TiWorker.exe) OR (process.executable:C\\:\\\\Windows\\\\System32\\\\svchost.exe AND (registry.path:(*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-FileInfoMinifilter* OR *\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-ASN1\\\\* OR *\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-Kernel\\-AppCompat\\\\* OR *\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-Runtime\\\\Error\\\\* OR *\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-CAPI2\\/Operational\\\\*))) OR (process.executable:C\\:\\\\Windows\\\\servicing\\\\TrustedInstaller.exe AND registry.path:*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-Compat\\-Appraiser*))) AND (NOT (process.executable:\"\" OR (NOT _exists_:process.executable)))"
+}

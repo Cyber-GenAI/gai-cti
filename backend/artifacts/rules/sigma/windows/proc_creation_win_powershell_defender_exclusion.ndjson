@@ -1,0 +1,72 @@
+{
+  "id": "0511eb23-bcbd-4cd6-b12d-c83c3e44a2e8",
+  "name": "Powershell Defender Exclusion",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects requests to exclude files, folders or processes from Antivirus scanning using PowerShell cmdlets",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Possible Admin Activity",
+    "Other Cmdlets that may use the same parameters"
+  ],
+  "from": "now-360s",
+  "rule_id": "f8ac6d05-a898-409a-a9c9-d7af9ebffcc6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/defender-endpoint/configure-process-opened-file-exclusions-microsoft-defender-antivirus",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1562.001/T1562.001.md",
+    "https://twitter.com/AdamTheAnalyst/status/1483497517119590403"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*Add\\-MpPreference\\ * OR *Set\\-MpPreference\\ *)) AND (process.command_line:(*\\ \\-ExclusionPath\\ * OR *\\ \\-ExclusionExtension\\ * OR *\\ \\-ExclusionProcess\\ * OR *\\ \\-ExclusionIpAddress\\ *))"
+}

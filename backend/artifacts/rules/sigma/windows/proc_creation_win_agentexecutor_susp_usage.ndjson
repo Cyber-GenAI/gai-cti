@@ -1,0 +1,72 @@
+{
+  "id": "daaec949-58df-49a8-a620-d78477cedf42",
+  "name": "Suspicious AgentExecutor PowerShell Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the AgentExecutor.exe binary. Which can be abused as a LOLBIN to execute powershell scripts with the ExecutionPolicy \"Bypass\" or any binary named \"powershell.exe\" located in the path provided by 6th positional argument",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "bf5cbaf8-4dfc-414f-9df7-370cb18f1aaa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/lefterispan/status/1286259016436514816",
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Agentexecutor/",
+    "https://learn.microsoft.com/en-us/mem/intune/apps/intune-management-extension",
+    "https://twitter.com/jseerden/status/1247985304667066373/photo/1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\AgentExecutor.exe OR process.pe.original_file_name:AgentExecutor.exe) AND (process.command_line:(*\\ \\-powershell* OR *\\ \\-remediationScript*))) AND (NOT ((process.command_line:(*C\\:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\* OR *C\\:\\\\Windows\\\\SysWOW64\\\\WindowsPowerShell\\\\v1.0\\\\*)) OR process.parent.executable:*\\\\Microsoft.Management.Services.IntuneWindowsAgent.exe))"
+}

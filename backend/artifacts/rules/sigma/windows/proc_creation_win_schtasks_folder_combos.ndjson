@@ -1,0 +1,69 @@
+{
+  "id": "fa101e57-9109-42a5-8031-f0cf4ea9f183",
+  "name": "Schtasks From Suspicious Folders",
+  "tags": [
+    "attack.execution",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects scheduled task creations that have suspicious action command and folder combinations",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "eeb970fe-30cd-43b6-87b4-d4ff1c9f3267",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/lazarus-dream-job-chemical"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\schtasks.exe OR process.pe.original_file_name:schtasks.exe) AND process.command_line:*\\ \\/create\\ * AND (process.command_line:(*powershell* OR *pwsh* OR *cmd\\ \\/c\\ * OR *cmd\\ \\/k\\ * OR *cmd\\ \\/r\\ * OR *cmd.exe\\ \\/c\\ * OR *cmd.exe\\ \\/k\\ * OR *cmd.exe\\ \\/r\\ *)) AND (process.command_line:(*C\\:\\\\ProgramData\\\\* OR *%ProgramData%*))"
+}

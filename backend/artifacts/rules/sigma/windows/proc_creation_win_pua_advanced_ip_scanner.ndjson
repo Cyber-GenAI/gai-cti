@@ -1,0 +1,81 @@
+{
+  "id": "2e9896ba-25eb-438e-ae2c-04cee60376d9",
+  "name": "PUA - Advanced IP Scanner Execution",
+  "tags": [
+    "attack.discovery",
+    "attack.t1046",
+    "attack.t1135",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of Advanced IP Scanner. Seems to be a popular tool for ransomware groups.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative use"
+  ],
+  "from": "now-360s",
+  "rule_id": "2a2d2287-4bc8-4123-b025-c0ff1e977212",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1046",
+          "name": "Network Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1046/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1135",
+          "name": "Network Share Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1135/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://news.sophos.com/en-us/2019/12/09/snatch-ransomware-reboots-pcs-into-safe-mode-to-bypass-protection/",
+    "https://www.fireeye.com/blog/threat-research/2020/05/tactics-techniques-procedures-associated-with-maze-ransomware-incidents.html",
+    "https://labs.f-secure.com/blog/prelude-to-ransomware-systembc",
+    "https://assets.documentcloud.org/documents/20444693/fbi-pin-egregor-ransomware-bc-01062021.pdf",
+    "https://thedfirreport.com/2021/01/18/all-that-for-a-coinminer",
+    "https://github.com/3CORESec/MAL-CL/tree/master/Descriptors/Other/Advanced%20IP%20Scanner"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\advanced_ip_scanner* OR process.pe.original_file_name:*advanced_ip_scanner* OR process.pe.description:*Advanced\\ IP\\ Scanner*) OR (process.command_line:*\\/portable* AND process.command_line:*\\/lng*)"
+}

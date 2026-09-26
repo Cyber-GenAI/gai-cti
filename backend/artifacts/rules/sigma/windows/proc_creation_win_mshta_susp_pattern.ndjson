@@ -1,0 +1,71 @@
+{
+  "id": "b9390547-f685-41d2-9df3-0617613e0ba8",
+  "name": "Suspicious Mshta.EXE Execution Patterns",
+  "tags": [
+    "attack.execution",
+    "attack.t1106",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious mshta process execution patterns",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "24febcf9-1774-46a7-901e-bf483ef0def1",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1106",
+          "name": "Native API",
+          "reference": "https://attack.mitre.org/techniques/T1106/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://en.wikipedia.org/wiki/HTML_Application",
+    "https://www.echotrail.io/insights/search/mshta.exe",
+    "https://app.any.run/tasks/34221348-072d-4b70-93f3-aa71f6ebecad/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\mshta.exe OR process.pe.original_file_name:MSHTA.EXE) AND ((process.parent.executable:(*\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe OR *\\\\wscript.exe)) AND (process.command_line:(*\\\\AppData\\\\Local\\\\* OR *C\\:\\\\ProgramData\\\\* OR *C\\:\\\\Users\\\\Public\\\\* OR *C\\:\\\\Windows\\\\Temp\\\\*)))) OR ((process.executable:*\\\\mshta.exe OR process.pe.original_file_name:MSHTA.EXE) AND (NOT ((process.executable:(C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\*)) OR (process.command_line:(*.htm* OR *.hta*)) OR (process.command_line:(*mshta.exe OR *mshta)))))"
+}

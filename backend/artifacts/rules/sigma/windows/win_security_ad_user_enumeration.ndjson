@@ -1,0 +1,72 @@
+{
+  "id": "7fb9ca1c-596e-4760-9cf9-5092fdfbf752",
+  "name": "Potential AD User Enumeration From Non-Machine Account",
+  "tags": [
+    "attack.discovery",
+    "attack.t1087.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects read access to a domain user from a non-machine account",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrators configuring new users."
+  ],
+  "from": "now-360s",
+  "rule_id": "4fc28977-9bf2-4699-9ebd-c77603bfa9e7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.specterops.io/assets/resources/an_ace_up_the_sleeve.pdf",
+    "http://www.stuffithoughtiknew.com/2019/02/detecting-bloodhound.html",
+    "https://learn.microsoft.com/en-us/windows/win32/adschema/attributes-all",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4662"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4662 AND winlog.event_data.ObjectType:*bf967aba\\-0de6\\-11d0\\-a285\\-00aa003049e2* AND (winlog.event_data.AccessMask:(*1? OR *3? OR *4? OR *7? OR *9? OR *B? OR *D? OR *F?))) AND (NOT (user.name:(*$ OR MSOL_*))))"
+}

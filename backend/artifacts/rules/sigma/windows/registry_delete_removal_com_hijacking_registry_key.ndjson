@@ -1,0 +1,73 @@
+{
+  "id": "d27807ca-724a-4365-8155-55e0e9de36b4",
+  "name": "Removal of Potential COM Hijacking Registry Keys",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects any deletion of entries in \".*\\shell\\open\\command\" registry keys.\nThese registry keys might have been used for COM hijacking activities by a threat actor or an attacker and the deletion could indicate steps to remove its tracks.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate software (un)installations are known to cause some false positives. Please add them as a filter when encountered"
+  ],
+  "from": "now-360s",
+  "rule_id": "92e1bc22-88c0-43e0-a895-ea08b95fa85e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/OTRF/detection-hackathon-apt29/issues/7",
+    "https://github.com/OTRF/ThreatHunter-Playbook/blob/2d4257f630f4c9770f78d0c1df059f891ffc3fec/docs/evals/apt29/detections/3.C.1_22A46621-7A92-48C1-81BF-B3937EB4FDC3.md",
+    "https://learn.microsoft.com/en-us/windows/win32/shell/launch",
+    "https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-iexecutecommand",
+    "https://learn.microsoft.com/en-us/windows/win32/shell/shell-and-managed-code"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:DeleteKey AND registry.path:*\\\\shell\\\\open\\\\command) AND (NOT (process.executable:C\\:\\\\Windows\\\\system32\\\\svchost.exe OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\ClickToRun\\\\* OR C\\:\\\\Program\\ Files\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\ClickToRun\\\\Updates\\\\*)) AND process.executable:*\\\\OfficeClickToRun.exe) OR process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\ Office\\\\root\\\\integration\\\\integrator.exe OR (process.executable:*\\\\Dropbox.exe AND registry.path:*\\\\Dropbox.*) OR (process.executable:*\\\\AppData\\\\Local\\\\Temp\\\\Wireshark_uninstaller.exe AND registry.path:*\\\\wireshark\\-capture\\-file\\\\*) OR ((process.executable:(C\\:\\\\Program\\ Files\\\\Opera\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Opera\\\\*)) AND process.executable:*\\\\installer.exe) OR (process.executable:*peazip* AND registry.path:*\\\\PeaZip.*) OR (process.executable:*\\\\Everything.exe AND registry.path:*\\\\Everything.*) OR process.executable:C\\:\\\\Windows\\\\Installer\\\\MSI* OR (process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Java\\\\* AND process.executable:*\\\\installer.exe AND registry.path:*\\\\Classes\\\\WOW6432Node\\\\CLSID\\\\\\{4299124F\\-F2C3\\-41b4\\-9C73\\-9236B2AD0E8F\\}*)))"
+}

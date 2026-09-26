@@ -1,0 +1,69 @@
+{
+  "id": "625b52f2-99bf-4824-b2f5-47965a7389b3",
+  "name": "Potential DLL Injection Or Execution Using Tracker.exe",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1055.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL injection and execution using \"Tracker.exe\"",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0711c131-0450-471f-9d3e-621ef4ce3342",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Tracker/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\tracker.exe OR process.pe.description:Tracker) AND (process.command_line:(*\\ \\/d\\ * OR *\\ \\/c\\ *))) AND (NOT (process.command_line:*\\ \\/ERRORREPORT\\:PROMPT\\ * OR (process.parent.executable:(*\\\\Msbuild\\\\Current\\\\Bin\\\\MSBuild.exe OR *\\\\Msbuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe))))"
+}

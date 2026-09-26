@@ -1,0 +1,70 @@
+{
+  "id": "0eb17750-acf8-4e76-aa0b-0226541133b2",
+  "name": "Potential Persistence Via Logon Scripts - Registry",
+  "tags": [
+    "attack.t1037.001",
+    "attack.persistence",
+    "attack.lateral-movement",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of \"UserInitMprLogonScript\" registry value which can be used as a persistence method by malicious actors",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Investigate the contents of the \"UserInitMprLogonScript\" value to determine of the added script is legitimate"
+  ],
+  "from": "now-360s",
+  "rule_id": "b559ccaa-b7fb-42bd-af5b-dc3476a5f06f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1037",
+          "name": "Boot or Logon Initialization Scripts",
+          "reference": "https://attack.mitre.org/techniques/T1037/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1037.001/T1037.001.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.EventType:CreateKey AND registry.path:*UserInitMprLogonScript*"
+}

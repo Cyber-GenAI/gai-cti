@@ -1,0 +1,52 @@
+{
+  "id": "a4ff4a42-7288-4cfc-bcf7-3d0c945943f9",
+  "name": "ImagingDevices Unusual Parent/Child Processes",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects unusual parent or children of the ImagingDevices.exe (Windows Contacts) process as seen being used with Bumblebee activity",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c9a1ad59-2b0b-4114-9918-a3015da9232e",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2022/09/26/bumblebee-round-two/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:(*\\\\WmiPrvSE.exe OR *\\\\svchost.exe OR *\\\\dllhost.exe)) AND process.executable:*\\\\ImagingDevices.exe) OR process.parent.executable:*\\\\ImagingDevices.exe"
+}

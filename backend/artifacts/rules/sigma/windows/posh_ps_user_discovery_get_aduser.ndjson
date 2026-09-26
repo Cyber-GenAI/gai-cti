@@ -1,0 +1,70 @@
+{
+  "id": "be1ac257-21ba-4cda-814d-6ba24c0c661c",
+  "name": "User Discovery And Export Via Get-ADUser Cmdlet - PowerShell",
+  "tags": [
+    "attack.discovery",
+    "attack.t1033",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of the Get-ADUser cmdlet to collect user information and output it to a file",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate admin scripts may use the same technique, it's better to exclude specific computers or users who execute these commands or scripts often"
+  ],
+  "from": "now-360s",
+  "rule_id": "3a71f7e7-8ecc-4363-801a-2d16ed826018",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "http://blog.talosintelligence.com/2022/09/lazarus-three-rats.html",
+    "https://www.microsoft.com/en-us/security/blog/2022/10/18/defenders-beware-a-case-for-post-ransomware-investigations/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Get\\-ADUser\\ * AND powershell.file.script_block_text:*\\ \\-Filter\\ \\**) AND (powershell.file.script_block_text:(*\\ \\>\\ * OR *\\ \\|\\ Select\\ * OR *Out\\-File* OR *Set\\-Content* OR *Add\\-Content*))"
+}

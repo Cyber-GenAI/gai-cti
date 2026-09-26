@@ -1,0 +1,70 @@
+{
+  "id": "efdf2d57-a650-4617-bd8d-3f2409e6dc95",
+  "name": "Security Software Discovery Via Powershell Script",
+  "tags": [
+    "attack.discovery",
+    "attack.t1518.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects calls to \"get-process\" where the output is piped to a \"where-object\" filter to search for security solution processes.\nAdversaries may attempt to get a listing of security software, configurations, defensive tools, and sensors that are installed on a system or in a cloud environment. This may include things such as firewall rules and anti-virus\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives might occur due to the nature of the ScriptBlock being ingested as a big blob. Initial tuning is required.",
+    "As the \"selection_cmdlet\" is common in scripts the matching engine might slow down the search. Change into regex or a more accurate string to avoid heavy resource consumption if experienced"
+  ],
+  "from": "now-360s",
+  "rule_id": "8ab03049-0ba9-48c6-86e5-6153b7c4c2f8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1518",
+          "name": "Software Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1518/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1518.001/T1518.001.md#atomic-test-2---security-software-discovery---powershell"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*get\\-process\\ \\|\\ \\?* OR *get\\-process\\ \\|\\ where* OR *gps\\ \\|\\ \\?* OR *gps\\ \\|\\ where*)) AND (powershell.file.script_block_text:(*Company\\ \\-like* OR *Description\\ \\-like* OR *Name\\ \\-like* OR *Path\\ \\-like* OR *Product\\ \\-like*)) AND (powershell.file.script_block_text:(*\\*avira\\** OR *\\*carbonblack\\** OR *\\*cylance\\** OR *\\*defender\\** OR *\\*kaspersky\\** OR *\\*malware\\** OR *\\*sentinel\\** OR *\\*symantec\\** OR *\\*virus\\**))"
+}

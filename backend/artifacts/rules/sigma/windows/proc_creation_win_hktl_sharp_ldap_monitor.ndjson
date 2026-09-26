@@ -1,0 +1,51 @@
+{
+  "id": "473254b1-808b-477d-8ff5-6cf819d09fba",
+  "name": "HackTool - SharpLDAPmonitor Execution",
+  "tags": [
+    "attack.discovery",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the SharpLDAPmonitor. Which can monitor the creation, deletion and changes to LDAP objects.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "bb8c5a89-8783-4b85-9f78-19e0f1337890",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/p0dalirius/LDAPmonitor"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\SharpLDAPmonitor.exe OR process.pe.original_file_name:SharpLDAPmonitor.exe) OR (process.command_line:*\\/user\\:* AND process.command_line:*\\/pass\\:* AND process.command_line:*\\/dcip\\:*)"
+}

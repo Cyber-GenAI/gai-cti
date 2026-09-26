@@ -1,0 +1,51 @@
+{
+  "id": "3cadcffb-26d6-4c13-8bf2-438dc7084d17",
+  "name": "Assembly DLL Creation Via AspNetCompiler",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of new DLL assembly files by \"aspnet_compiler.exe\", which could be a sign of \"aspnet_compiler\" abuse to proxy execution through a build provider.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate assembly compilation using a build provider"
+  ],
+  "from": "now-360s",
+  "rule_id": "c0a0ed00-6b98-4a13-be77-0f9e3ce485de",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\aspnet_compiler.exe AND (file.path:*\\\\Temporary\\ ASP.NET\\ Files\\\\* AND file.path:*\\\\assembly\\\\tmp\\\\* AND file.path:*.dll*)"
+}

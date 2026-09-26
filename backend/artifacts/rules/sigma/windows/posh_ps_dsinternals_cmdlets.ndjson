@@ -1,0 +1,69 @@
+{
+  "id": "52cbb00f-56fd-4d3b-9c74-7c8ad168467d",
+  "name": "DSInternals Suspicious PowerShell Cmdlets - ScriptBlock",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution and usage of the DSInternals PowerShell module. Which can be used to perform what might be considered as suspicious activity such as dumping DPAPI backup keys or manipulating NTDS.DIT files.\nThe DSInternals PowerShell Module exposes several internal features of Active Directory and Azure Active Directory. These include FIDO2 and NGC key auditing, offline ntds.dit file manipulation, password auditing, DC recovery from IFM backups and password hash calculation.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of DSInternals for administration or audit purpose."
+  ],
+  "from": "now-360s",
+  "rule_id": "ad631d64-0f3f-41d1-b027-baaf37c16e85",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/MichaelGrafnetter/DSInternals/blob/39ee8a69bbdc1cfd12c9afdd7513b4788c4895d4/Src/DSInternals.PowerShell/DSInternals.psd1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*Add\\-ADDBSidHistory* OR *Add\\-ADNgcKey* OR *Add\\-ADReplNgcKey* OR *ConvertFrom\\-ADManagedPasswordBlob* OR *ConvertFrom\\-GPPrefPassword* OR *ConvertFrom\\-ManagedPasswordBlob* OR *ConvertFrom\\-UnattendXmlPassword* OR *ConvertFrom\\-UnicodePassword* OR *ConvertTo\\-AADHash* OR *ConvertTo\\-GPPrefPassword* OR *ConvertTo\\-KerberosKey* OR *ConvertTo\\-LMHash* OR *ConvertTo\\-MsoPasswordHash* OR *ConvertTo\\-NTHash* OR *ConvertTo\\-OrgIdHash* OR *ConvertTo\\-UnicodePassword* OR *Disable\\-ADDBAccount* OR *Enable\\-ADDBAccount* OR *Get\\-ADDBAccount* OR *Get\\-ADDBBackupKey* OR *Get\\-ADDBDomainController* OR *Get\\-ADDBGroupManagedServiceAccount* OR *Get\\-ADDBKdsRootKey* OR *Get\\-ADDBSchemaAttribute* OR *Get\\-ADDBServiceAccount* OR *Get\\-ADDefaultPasswordPolicy* OR *Get\\-ADKeyCredential* OR *Get\\-ADPasswordPolicy* OR *Get\\-ADReplAccount* OR *Get\\-ADReplBackupKey* OR *Get\\-ADReplicationAccount* OR *Get\\-ADSIAccount* OR *Get\\-AzureADUserEx* OR *Get\\-BootKey* OR *Get\\-KeyCredential* OR *Get\\-LsaBackupKey* OR *Get\\-LsaPolicy* OR *Get\\-SamPasswordPolicy* OR *Get\\-SysKey* OR *Get\\-SystemKey* OR *New\\-ADDBRestoreFromMediaScript* OR *New\\-ADKeyCredential* OR *New\\-ADNgcKey* OR *New\\-NTHashSet* OR *Remove\\-ADDBObject* OR *Save\\-DPAPIBlob* OR *Set\\-ADAccountPasswordHash* OR *Set\\-ADDBAccountPassword* OR *Set\\-ADDBBootKey* OR *Set\\-ADDBDomainController* OR *Set\\-ADDBPrimaryGroup* OR *Set\\-ADDBSysKey* OR *Set\\-AzureADUserEx* OR *Set\\-LsaPolicy* OR *Set\\-SamAccountPasswordHash* OR *Set\\-WinUserPasswordHash* OR *Test\\-ADDBPasswordQuality* OR *Test\\-ADPasswordQuality* OR *Test\\-ADReplPasswordQuality* OR *Test\\-PasswordQuality* OR *Unlock\\-ADDBAccount* OR *Write\\-ADNgcKey* OR *Write\\-ADReplNgcKey*)"
+}

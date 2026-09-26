@@ -1,0 +1,73 @@
+{
+  "id": "d9849f52-cc82-4c54-a164-b748d6ef2de7",
+  "name": "Compressed File Creation Via Tar.EXE",
+  "tags": [
+    "attack.collection",
+    "attack.exfiltration",
+    "attack.t1560",
+    "attack.t1560.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"tar.exe\" in order to create a compressed file.\nAdversaries may abuse various utilities to compress or encrypt data before exfiltration.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Likely"
+  ],
+  "from": "now-360s",
+  "rule_id": "410e3d39-b243-4447-9546-9822145d253f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1560",
+          "name": "Archive Collected Data",
+          "reference": "https://attack.mitre.org/techniques/T1560/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://unit42.paloaltonetworks.com/chromeloader-malware/",
+    "https://lolbas-project.github.io/lolbas/Binaries/Tar/",
+    "https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/cicada-apt10-japan-espionage"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\tar.exe OR process.pe.original_file_name:bsdtar) AND (process.command_line:(*\\-c* OR *\\-r* OR *\\-u*))"
+}

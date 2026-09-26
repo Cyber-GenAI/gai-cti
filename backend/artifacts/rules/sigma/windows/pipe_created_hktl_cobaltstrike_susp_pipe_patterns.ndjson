@@ -1,0 +1,89 @@
+{
+  "id": "7610cf34-c4fc-4e06-b13b-fea483cd5393",
+  "name": "CobaltStrike Named Pipe Patterns",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1055",
+    "stp.1k",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a named pipe with a pattern found in CobaltStrike malleable C2 profiles",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Chrome instances using the exact same pipe name \"mojo.xxx\"",
+    "Websense Endpoint using the pipe name \"DserNamePipe(R|W)\\d{1,5}\""
+  ],
+  "from": "now-360s",
+  "rule_id": "25009e75-81d4-4a83-a03e-7efb76b0657f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://svch0st.medium.com/guide-to-named-pipes-and-hunting-for-cobalt-strike-pipes-dc46b2c5f575",
+    "https://gist.github.com/MHaggis/6c600e524045a6d49c35291a21e10752"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(((file.name:(\\\\DserNamePipe* OR \\\\f4c3* OR \\\\f53f* OR \\\\fullduplex_* OR \\\\mojo.5688.8052.183894939787088877* OR \\\\mojo.5688.8052.35780273329370473* OR \\\\MsFteWds* OR \\\\msrpc_* OR \\\\mypipe\\-f* OR \\\\mypipe\\-h* OR \\\\ntsvcs* OR \\\\PGMessagePipe* OR \\\\rpc_* OR \\\\scerpc* OR \\\\SearchTextHarvester* OR \\\\spoolss* OR \\\\win_svc* OR \\\\win\\\\msrpc_* OR \\\\windows.update.manager* OR \\\\wkssvc*)) OR (file.name:(\\\\demoagent_11 OR \\\\demoagent_22))) OR (file.name:\\\\Winsock2\\\\CatalogChangeListener\\-* AND file.name:*\\-0,)) AND (NOT (file.name:(\\\\wkssvc OR \\\\spoolss OR \\\\scerpc OR \\\\ntsvcs OR \\\\SearchTextHarvester OR \\\\PGMessagePipe OR \\\\MsFteWds))) AND (NOT ((process.executable:(*\\:\\\\Program\\ Files\\\\Websense\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Websense\\\\*)) AND (file.name:(\\\\DserNamePipeR* OR \\\\DserNamePipeW*))))"
+}

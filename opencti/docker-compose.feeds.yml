@@ -1,0 +1,151 @@
+services:
+  stopforumspam:
+    environment:
+    - OPENCTI_URL=http://opencti:8080/open-cti
+    - OPENCTI_TOKEN=f3ca64ff-9082-4757-9e87-880be59462d1
+    - CONNECTOR_ID=2c3f9788-0eee-5c95-ac2e-e5934caebf09
+    - CONNECTOR_NAME=Stopforumspam
+    - CONNECTOR_SCOPE=stopforumspam
+    - CONNECTOR_LOG_LEVEL=error
+    - STOPFORUMSPAM_URL=https://www.stopforumspam.com/downloads/toxic_domains_whole_filtered_50000.txt
+    - STOPFORUMSPAM_CREATE_INDICATORS=true
+    - STOPFORUMSPAM_INTERVAL=3
+    image: docker.arvancloud.ir/opencti/connector-stopforumspam:6.7.11
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy
+  malwarebazaar:
+    environment:
+    - OPENCTI_URL=http://opencti:8080/open-cti
+    - OPENCTI_TOKEN=f3ca64ff-9082-4757-9e87-880be59462d1
+    - CONNECTOR_ID=8a4a6047-0a7c-5635-aa4b-eb14b7bad010
+    - CONNECTOR_TYPE=EXTERNAL_IMPORT
+    - CONNECTOR_NAME=MalwareBazaar
+    - CONNECTOR_SCOPE=StixFile
+    - CONNECTOR_LOG_LEVEL=info
+    - CONNECTOR_DURATION_PERIOD=PT50M
+    - MALWAREBAZAAR_API_BASE_URL=https://mb-api.abuse.ch/api/v1/
+    - MALWAREBAZAAR_API_KEY=c5b4c83c88ed49afeb22ac586439b8a736de229584273e3f
+    - MALWAREBAZAAR_TLP_LEVEL=clear
+    - MALWAREBAZAAR_X_OPENCTI_SCORE=100
+    - MALWAREBAZAAR_INCLUDE_TAGS=exe,dll,docm,docx,doc,xls,xlsx,xlsm,js
+    - MALWAREBAZAAR_INCLUDE_REPORTERS=
+    - MALWAREBAZAAR_LABELS=malware-bazaar
+    image: docker.arvancloud.ir/opencti/connector-malwarebazaar:6.7.11
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy
+  threatfox:
+    environment:
+    - OPENCTI_URL=http://opencti:8080/open-cti
+    - OPENCTI_TOKEN=f3ca64ff-9082-4757-9e87-880be59462d1
+    - CONNECTOR_ID=55d27bba-3666-5dbc-8d30-e19259a96679
+    - "CONNECTOR_NAME=Abuse.ch | ThreatFox"
+    - CONNECTOR_SCOPE=ThreatFox
+    - CONNECTOR_LOG_LEVEL=error
+    - THREATFOX_CSV_URL=https://threatfox.abuse.ch/export/csv/recent/
+    - THREATFOX_IMPORT_OFFLINE=true
+    - THREATFOX_CREATE_INDICATORS=true
+    - THREATFOX_DEFAULT_X_OPENCTI_SCORE=50
+    - THREATFOX_X_OPENCTI_SCORE_IP=60
+    - THREATFOX_X_OPENCTI_SCORE_DOMAIN=70
+    - THREATFOX_X_OPENCTI_SCORE_URL=75
+    - THREATFOX_X_OPENCTI_SCORE_HASH=80
+    - THREATFOX_INTERVAL=3
+    - THREATFOX_IOC_TO_IMPORT=ip:port,domain,url
+    image: docker.arvancloud.ir/opencti/connector-threatfox:6.7.11
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy
+  alienvault:
+    environment:
+    - OPENCTI_URL=http://opencti:8080/open-cti
+    - OPENCTI_TOKEN=f3ca64ff-9082-4757-9e87-880be59462d1
+    - CONNECTOR_ID=44f23ef3-07ea-5448-ba7f-905d3b3ec298
+    - CONNECTOR_NAME=AlienVault
+    - CONNECTOR_SCOPE=alienvault
+    - CONNECTOR_LOG_LEVEL=error
+    - CONNECTOR_DURATION_PERIOD=PT30M
+    - ALIENVAULT_BASE_URL=https://otx.alienvault.com
+    - ALIENVAULT_API_KEY=3a48279a584e4ca9033fdd6d2d6599c33fa5e1e4247401aebc5ad86f2b7942a0
+    - ALIENVAULT_TLP=White
+    - ALIENVAULT_CREATE_OBSERVABLES=true
+    - ALIENVAULT_CREATE_INDICATORS=true
+    - ALIENVAULT_PULSE_START_TIMESTAMP=2022-05-01T00:00:00
+    - ALIENVAULT_REPORT_TYPE=threat-report
+    - ALIENVAULT_REPORT_STATUS=New
+    - ALIENVAULT_GUESS_MALWARE=false
+    - ALIENVAULT_GUESS_CVE=false
+    - ALIENVAULT_EXCLUDED_PULSE_INDICATOR_TYPES=FileHash-MD5,FileHash-SHA1
+    - ALIENVAULT_ENABLE_RELATIONSHIPS=true
+    - ALIENVAULT_ENABLE_ATTACK_PATTERNS_INDICATES=false
+    - ALIENVAULT_INTERVAL_SEC=1800
+    - ALIENVAULT_DEFAULT_X_OPENCTI_SCORE=50
+    - ALIENVAULT_X_OPENCTI_SCORE_IP=60
+    - ALIENVAULT_X_OPENCTI_SCORE_DOMAIN=70
+    - ALIENVAULT_X_OPENCTI_SCORE_HOSTNAME=75
+    - ALIENVAULT_X_OPENCTI_SCORE_EMAIL=70
+    - ALIENVAULT_X_OPENCTI_SCORE_FILE=85
+    - ALIENVAULT_X_OPENCTI_SCORE_URL=80
+    - ALIENVAULT_X_OPENCTI_SCORE_MUTEX=60
+    - ALIENVAULT_X_OPENCTI_SCORE_CRYPTOCURRENCY_WALLET=80
+    image: docker.arvancloud.ir/opencti/connector-alienvault:6.7.11
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy
+  mitre:
+    environment:
+    - OPENCTI_URL=http://opencti:8080/open-cti
+    - OPENCTI_TOKEN=f3ca64ff-9082-4757-9e87-880be59462d1
+    - CONNECTOR_ID=59d71d25-3b09-5d8c-97bf-3ce6edab7e6c
+    - "CONNECTOR_NAME=MITRE Datasets"
+    - CONNECTOR_SCOPE=tool,report,malware,identity,campaign,intrusion-set,attack-pattern,course-of-action,x-mitre-data-source,x-mitre-data-component,x-mitre-matrix,x-mitre-tactic,x-mitre-collection
+    - CONNECTOR_RUN_AND_TERMINATE=false
+    - CONNECTOR_LOG_LEVEL=error
+    - MITRE_REMOVE_STATEMENT_MARKING=true
+    - MITRE_INTERVAL=7
+    image: docker.arvancloud.ir/opencti/connector-mitre:6.7.11
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy
+  abuseipdb-ipblacklist:
+    environment:
+    - OPENCTI_URL=http://opencti:8080/open-cti
+    - OPENCTI_TOKEN=f3ca64ff-9082-4757-9e87-880be59462d1
+    - CONNECTOR_ID=b2f5fefa-aa01-5e9a-966b-aa649bd36fd8
+    - "CONNECTOR_NAME=AbuseIPDB IP Blacklist"
+    - CONNECTOR_SCOPE=abuseipdb
+    - CONNECTOR_LOG_LEVEL=error
+    - CONNECTOR_DURATION_PERIOD=PT12H
+    - ABUSEIPDB_API_KEY=ed8ede605c4447575c304d57ff0bd5505fd640fbe7e78557c7185294988ac61bcfdab0be3ad89812
+    - ABUSEIPDB_IPVERSION=mixed
+    - ABUSEIPDB_TLP_LEVEL=clear
+    - ABUSEIPDB_SCORE=75
+    - ABUSEIPDB_API_URL=https://api.abuseipdb.com/api/v2/blacklist	
+    image: docker.arvancloud.ir/opencti/connector-abuseipdb-ipblacklist:6.7.11
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy
+  vxvault:
+    environment:
+    - OPENCTI_URL=http://opencti:8080/open-cti
+    - OPENCTI_TOKEN=f3ca64ff-9082-4757-9e87-880be59462d1
+    - CONNECTOR_ID=98ceb916-80ad-543b-ba0f-0944929c46f5
+    - "CONNECTOR_NAME=VX Vault URL list"
+    - CONNECTOR_SCOPE=vxvault
+    - CONNECTOR_LOG_LEVEL=error
+    - VXVAULT_URL=https://vxvault.net/URL_List.php
+    - VXVAULT_CREATE_INDICATORS=true
+    - VXVAULT_INTERVAL=3
+    - VXVAULT_SSL_VERIFY=False
+    image: docker.arvancloud.ir/opencti/connector-vxvault:6.7.11
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy

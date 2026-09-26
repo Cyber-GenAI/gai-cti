@@ -1,0 +1,69 @@
+{
+  "id": "0160abf6-87e7-47a8-b0d9-b3a520a5b11f",
+  "name": "Potentially Suspicious Wuauclt Network Connection",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the Windows Update Client binary (wuauclt.exe) to proxy execute code and making network connections.\nOne could easily make the DLL spawn a new process and inject to it to proxy the network connection and bypass this rule.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "352d8b32-70d0-4aaa-be49-411ab84e2f78",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://dtm.uk/wuauclt/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*wuauclt* AND winlog.event_data.CommandLine:*\\ \\/RunHandlerComServer*) AND (NOT ((destination.ip:127.0.0.0\\/8 OR destination.ip:10.0.0.0\\/8 OR destination.ip:169.254.0.0\\/16 OR destination.ip:172.16.0.0\\/12 OR destination.ip:192.168.0.0\\/16 OR destination.ip:\\:\\:1\\/128 OR destination.ip:fe80\\:\\:\\/10 OR destination.ip:fc00\\:\\:\\/7) OR (destination.ip:20.184.0.0\\/13 OR destination.ip:20.192.0.0\\/10 OR destination.ip:23.79.0.0\\/16 OR destination.ip:51.10.0.0\\/15 OR destination.ip:51.103.0.0\\/16 OR destination.ip:51.104.0.0\\/15 OR destination.ip:52.224.0.0\\/11) OR (winlog.event_data.CommandLine:(*\\:\\\\Windows\\\\UUS\\\\Packages\\\\Preview\\\\amd64\\\\updatedeploy.dll\\ \\/ClassId* OR *\\:\\\\Windows\\\\UUS\\\\amd64\\\\UpdateDeploy.dll\\ \\/ClassId*)) OR (winlog.event_data.CommandLine:*\\:\\\\Windows\\\\WinSxS\\\\* AND winlog.event_data.CommandLine:*\\\\UpdateDeploy.dll\\ \\/ClassId\\ *) OR (NOT _exists_:winlog.event_data.CommandLine) OR winlog.event_data.CommandLine:\"\"))"
+}

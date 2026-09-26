@@ -1,0 +1,69 @@
+{
+  "id": "9d8f42de-9eb3-4d90-9df3-ff036eacb948",
+  "name": "Uncommon AddinUtil.EXE CommandLine Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of the Add-In deployment cache updating utility (AddInutil.exe) with uncommon Addinroot or Pipelineroot paths. An adversary may execute AddinUtil.exe with uncommon Addinroot/Pipelineroot paths that point to the adversaries Addins.Store payload.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "75a1f290-bd5c-4968-a81e-4f233f5ef616",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.blue-prints.blog/content/blog/posts/lolbin/addinutil-lolbas.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\addinutil.exe OR process.pe.original_file_name:AddInUtil.exe) AND (process.command_line:(*\\-AddInRoot\\:* OR *\\-PipelineRoot\\:*))) AND (NOT (process.command_line:(*\\-AddInRoot\\:\\\"C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\VSTA* OR *\\-AddInRoot\\:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\VSTA* OR *\\-PipelineRoot\\:\\\"C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\VSTA* OR *\\-PipelineRoot\\:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Common\\ Files\\\\Microsoft\\ Shared\\\\VSTA*)))"
+}

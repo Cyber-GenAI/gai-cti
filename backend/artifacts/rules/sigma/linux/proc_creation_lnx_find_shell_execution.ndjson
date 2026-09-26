@@ -1,0 +1,70 @@
+{
+  "id": "646e9009-9e3c-417f-bf0a-a65c22d60e3d",
+  "name": "Shell Execution via Find - Linux",
+  "tags": [
+    "attack.discovery",
+    "attack.t1083",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the find command to execute a shell. Such behavior may be associated with privilege escalation, unauthorized command execution, or exploitation attempt.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f05d1aab-53ac-43fa-9965-152fee011225",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1083",
+          "name": "File and Directory Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1083/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://gtfobins.github.io/gtfobins/find/#shell",
+    "https://www.elastic.co/guide/en/security/current/linux-restricted-shell-breakout-via-linux-binary-s.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:*\\/find AND (CommandLine:*\\ .\\ * AND CommandLine:*\\-exec*)) AND (CommandLine:(*\\/bin\\/bash* OR *\\/bin\\/dash* OR *\\/bin\\/fish* OR *\\/bin\\/sh* OR *\\/bin\\/zsh*))"
+}

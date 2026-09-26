@@ -1,0 +1,70 @@
+{
+  "id": "95cc71e9-9157-46ba-843e-d88f3a99c873",
+  "name": "Suspicious Modification Of Scheduled Tasks",
+  "tags": [
+    "attack.execution",
+    "attack.t1053.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker tries to modify an already existing scheduled tasks to run from a suspicious location\nAttackers can create a simple looking task in order to avoid detection on creation as it's often the most focused on\nInstead they modify the task after creation to include their malicious payload\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "27707196-481b-4e58-a088-ecd68a0a4e2c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1053",
+          "name": "Scheduled Task/Job",
+          "reference": "https://attack.mitre.org/techniques/T1053/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\schtasks.exe AND (process.command_line:*\\ \\/Change\\ * AND process.command_line:*\\ \\/TN\\ *)) AND (process.command_line:(*\\\\AppData\\\\Local\\\\Temp* OR *\\\\AppData\\\\Roaming\\\\* OR *\\\\Users\\\\Public\\\\* OR *\\\\WINDOWS\\\\Temp\\\\* OR *\\\\Desktop\\\\* OR *\\\\Downloads\\\\* OR *\\\\Temporary\\ Internet* OR *C\\:\\\\ProgramData\\\\* OR *C\\:\\\\Perflogs\\\\* OR *%ProgramData%* OR *%appdata%* OR *%comspec%* OR *%localappdata%*)) AND (process.command_line:(*regsvr32* OR *rundll32* OR *cmd\\ \\/c\\ * OR *cmd\\ \\/k\\ * OR *cmd\\ \\/r\\ * OR *cmd.exe\\ \\/c\\ * OR *cmd.exe\\ \\/k\\ * OR *cmd.exe\\ \\/r\\ * OR *powershell* OR *mshta* OR *wscript* OR *cscript* OR *certutil* OR *bitsadmin* OR *bash.exe* OR *bash\\ * OR *scrcons* OR *wmic\\ * OR *wmic.exe* OR *forfiles* OR *scriptrunner* OR *hh.exe* OR *hh\\ *))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "9dc5fb4e-3a5a-4d3b-84d7-bde0b27dcc61",
+  "name": "Commands to Clear or Remove the Syslog - Builtin",
+  "tags": [
+    "attack.impact",
+    "attack.t1565.001",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects specific commands commonly used to remove or empty the syslog",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Log rotation"
+  ],
+  "from": "now-360s",
+  "rule_id": "bb89f5e9-849e-4bfd-96f0-6dfd828bd45c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1565",
+          "name": "Data Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1565/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.virustotal.com/gui/file/fc614fb4bda24ae8ca2c44e812d12c0fab6dd7a097472a35dd12ded053ab8474"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(*rm\\ \\/var\\/log\\/syslog* OR *rm\\ \\-r\\ \\/var\\/log\\/syslog* OR *rm\\ \\-f\\ \\/var\\/log\\/syslog* OR *rm\\ \\-rf\\ \\/var\\/log\\/syslog* OR *mv\\ \\/var\\/log\\/syslog* OR *\\ \\>\\/var\\/log\\/syslog* OR *\\ \\>\\ \\/var\\/log\\/syslog*) AND (NOT *\\/syslog.*)"
+}

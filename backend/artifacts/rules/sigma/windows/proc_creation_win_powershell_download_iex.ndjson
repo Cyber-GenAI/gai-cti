@@ -1,0 +1,70 @@
+{
+  "id": "8ea0433a-43f0-4285-8acb-0ce12fd394f2",
+  "name": "PowerShell Download and Execution Cradles",
+  "tags": [
+    "attack.execution",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell download and execution cradles.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Some PowerShell installers were seen using similar combinations. Apply filters accordingly"
+  ],
+  "from": "now-360s",
+  "rule_id": "7e0d0f91-e9c2-4c98-ba85-2d9f947c7e63",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/VirtualAlllocEx/Payload-Download-Cradles/blob/88e8eca34464a547c90d9140d70e9866dcbc6a12/Download-Cradles.cmd",
+    "https://labs.withsecure.com/publications/fin7-target-veeam-servers"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*.DownloadString\\(* OR *.DownloadFile\\(* OR *Invoke\\-WebRequest\\ * OR *iwr\\ *)) AND (process.command_line:(*;iex\\ $* OR *\\|\\ IEX* OR *\\|IEX\\ * OR *I`E`X* OR *I`EX* OR *IE`X* OR *iex\\ * OR *IEX\\ \\(* OR *IEX\\(* OR *Invoke\\-Expression*))"
+}

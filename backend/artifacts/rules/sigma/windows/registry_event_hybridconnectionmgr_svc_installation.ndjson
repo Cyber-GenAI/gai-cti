@@ -1,0 +1,69 @@
+{
+  "id": "036dd5e9-9f7f-4497-afa1-f2cbf8af2c5c",
+  "name": "HybridConnectionManager Service Installation - Registry",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1608",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the installation of the Azure Hybrid Connection Manager service to allow remote code execution from Azure function.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "ff842ec8-5f11-49a0-a349-63a37ee89c7d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1608",
+          "name": "Stage Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1608/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Cyb3rWard0g/status/1381642789369286662"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Services\\\\HybridConnectionManager* OR (winlog.event_data.EventType:SetValue AND winlog.event_data.Details:*Microsoft.HybridConnectionManager.Listener.exe*)"
+}

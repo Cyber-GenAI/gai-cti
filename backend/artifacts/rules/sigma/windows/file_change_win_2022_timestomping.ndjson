@@ -1,0 +1,69 @@
+{
+  "id": "c086ba93-cff7-4442-872a-07c394dbb3d8",
+  "name": "File Creation Date Changed to Another Year",
+  "tags": [
+    "attack.t1070.006",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Attackers may change the file creation time of a backdoor to make it look like it was installed with the operating system.\nNote that many processes legitimately change the creation time of a file; it does not necessarily indicate malicious activity.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Changes made to or by the local NTP service"
+  ],
+  "from": "now-360s",
+  "rule_id": "4e7e874d-29a3-47e2-b1d2-044a5548cfdf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.inversecos.com/2022/04/defence-evasion-technique-timestomping.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((winlog.event_data.PreviousCreationUtcTime:2022* AND (NOT winlog.event_data.CreationUtcTime:2022*)) OR (winlog.event_data.PreviousCreationUtcTime:202* AND (NOT winlog.event_data.CreationUtcTime:202*))) AND (NOT (((process.executable:(C\\:\\\\Windows\\\\system32\\\\ProvTool.exe OR C\\:\\\\Windows\\\\System32\\\\usocoreworker.exe OR C\\:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe)) OR file.path:C\\:\\\\ProgramData\\\\USOPrivate\\\\UpdateStore\\\\* OR (file.path:(*.tmp OR *.temp))) OR (process.executable:C\\:\\\\WINDOWS\\\\* AND process.executable:*\\\\TiWorker.exe AND file.path:*.cab)))"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "f3ee7e6c-61be-405a-9b16-55171398313c",
+  "name": "Suspicious Child Process Of Manage Engine ServiceDesk",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1102",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious child processes of the \"Manage Engine ServiceDesk Plus\" Java web service",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate sub processes started by Manage Engine ServiceDesk Pro"
+  ],
+  "from": "now-360s",
+  "rule_id": "fc1abdf8-6cef-4ffa-865b-3e45057e0eda",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1102",
+          "name": "Web Service",
+          "reference": "https://attack.mitre.org/techniques/T1102/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.horizon3.ai/manageengine-cve-2022-47966-technical-deep-dive/",
+    "https://github.com/horizon3ai/CVE-2022-47966/blob/3a51c6b72ebbd87392babd955a8fbeaee2090b35/CVE-2022-47966.py",
+    "https://blog.viettelcybersecurity.com/saml-show-stopper/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:*\\\\ManageEngine\\\\ServiceDesk\\\\* AND process.parent.executable:*\\\\java.exe*) AND (process.executable:(*\\\\AppVLP.exe OR *\\\\bash.exe OR *\\\\bitsadmin.exe OR *\\\\calc.exe OR *\\\\certutil.exe OR *\\\\cscript.exe OR *\\\\curl.exe OR *\\\\forfiles.exe OR *\\\\mftrace.exe OR *\\\\mshta.exe OR *\\\\net.exe OR *\\\\net1.exe OR *\\\\notepad.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\query.exe OR *\\\\reg.exe OR *\\\\schtasks.exe OR *\\\\scrcons.exe OR *\\\\sh.exe OR *\\\\systeminfo.exe OR *\\\\whoami.exe OR *\\\\wmic.exe OR *\\\\wscript.exe))) AND (NOT ((process.executable:(*\\\\net.exe OR *\\\\net1.exe)) AND process.command_line:*\\ stop*))"
+}

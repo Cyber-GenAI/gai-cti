@@ -1,0 +1,69 @@
+{
+  "id": "ae4b6cd7-a9c5-46f1-b022-a6cb4a95b8f6",
+  "name": "Linux Crypto Mining Indicators",
+  "tags": [
+    "attack.impact",
+    "attack.t1496",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command line parameters or strings often used by crypto miners",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of crypto miners"
+  ],
+  "from": "now-360s",
+  "rule_id": "298df016-b35a-48be-9b88-0cfb0afba962",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "reference": "https://attack.mitre.org/techniques/T1496/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.poolwatch.io/coin/monero"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "CommandLine:(*\\ \\-\\-cpu\\-priority\\=* OR *\\-\\-donate\\-level\\=0* OR *\\ \\-o\\ pool.* OR *\\ \\-\\-nicehash* OR *\\ \\-\\-algo\\=rx\\/0\\ * OR *stratum\\+tcp\\:\\/\\/* OR *stratum\\+udp\\:\\/\\/* OR *sh\\ \\-c\\ \\/sbin\\/modprobe\\ msr\\ allow_writes\\=on* OR *LS1kb25hdGUtbGV2ZWw9* OR *0tZG9uYXRlLWxldmVsP* OR *tLWRvbmF0ZS1sZXZlbD* OR *c3RyYXR1bSt0Y3A6Ly* OR *N0cmF0dW0rdGNwOi8v* OR *zdHJhdHVtK3RjcDovL* OR *c3RyYXR1bSt1ZHA6Ly* OR *N0cmF0dW0rdWRwOi8v* OR *zdHJhdHVtK3VkcDovL*)"
+}

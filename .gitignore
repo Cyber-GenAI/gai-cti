@@ -1,0 +1,5 @@
+*.mp4
+.env
+backend/x.py
+backend/tools/gql2python/input.json
+*:Zone.Identifier

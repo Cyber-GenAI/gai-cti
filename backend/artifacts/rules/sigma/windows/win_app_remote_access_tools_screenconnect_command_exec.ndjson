@@ -1,0 +1,70 @@
+{
+  "id": "f3249ae5-a67d-480b-b00c-2004f2676825",
+  "name": "Remote Access Tool - ScreenConnect Command Execution",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command execution via ScreenConnect RMM",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of ScreenConnect"
+  ],
+  "from": "now-360s",
+  "rule_id": "8eb20580-4b59-4ed2-8bb2-50cb504afe65",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.huntandhackett.com/blog/revil-the-usage-of-legitimate-remote-admin-tooling",
+    "https://github.com/SigmaHQ/sigma/pull/4467"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (winlog.provider_name:ScreenConnect AND event.code:200 AND winlog.event_data.Data:*Executed\\ command\\ of\\ length*)"
+}

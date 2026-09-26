@@ -1,0 +1,69 @@
+{
+  "id": "714bef07-4dbe-4bf1-bb15-50630ec98a00",
+  "name": "AD Groups Or Users Enumeration Using PowerShell - PoshModule",
+  "tags": [
+    "attack.discovery",
+    "attack.t1069.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may attempt to find domain-level groups and permission settings.\nThe knowledge of domain-level permission groups can help adversaries determine which groups exist and which users belong to a particular group.\nAdversaries may use this information to determine which users have elevated permissions, such as domain administrators.\n",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator script"
+  ],
+  "from": "now-360s",
+  "rule_id": "a1edfb8a-5e35-42b7-9319-9500b440966e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1069",
+          "name": "Permission Groups Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1069/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1069.002/T1069.002.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*get\\-ADPrincipalGroupMembership* OR winlog.event_data.ContextInfo:*get\\-ADPrincipalGroupMembership*) OR ((powershell.file.script_block_text:*get\\-aduser* AND powershell.file.script_block_text:*\\-f\\ * AND powershell.file.script_block_text:*\\-pr\\ * AND powershell.file.script_block_text:*DoesNotRequirePreAuth*) OR (winlog.event_data.ContextInfo:*get\\-aduser* AND winlog.event_data.ContextInfo:*\\-f\\ * AND winlog.event_data.ContextInfo:*\\-pr\\ * AND winlog.event_data.ContextInfo:*DoesNotRequirePreAuth*))"
+}

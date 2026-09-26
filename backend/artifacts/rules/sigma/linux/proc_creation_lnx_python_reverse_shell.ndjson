@@ -1,0 +1,51 @@
+{
+  "id": "94f41125-037f-4e36-9094-7df6bfcfe5be",
+  "name": "Python Reverse Shell Execution Via PTY And Socket Modules",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of python with calls to the socket and pty module in order to connect and spawn a potential reverse shell.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6a502b26-4bfa-4d38-8c17-bdd007f43e79",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.revshells.com/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "Image:*python* AND (CommandLine:*\\ \\-c\\ * AND CommandLine:*import* AND CommandLine:*pty* AND CommandLine:*socket* AND CommandLine:*spawn* AND CommandLine:*.connect*)"
+}

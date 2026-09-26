@@ -1,0 +1,73 @@
+{
+  "id": "78014b2d-b7d3-4ccb-8045-48de0f2ce033",
+  "name": "Potential Data Stealing Via Chromium Headless Debugging",
+  "tags": [
+    "attack.credential-access",
+    "attack.collection",
+    "attack.t1185",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects chromium based browsers starting in headless and debugging mode and pointing to a user profile. This could be a sign of data stealing or remote control",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9462764c-c566-435e-9478-5e6eb0f54b88",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1185",
+          "name": "Browser Session Hijacking",
+          "reference": "https://attack.mitre.org/techniques/T1185/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/defaultnamehere/cookie_crimes/",
+    "https://mango.pdf.zone/stealing-chrome-cookies-without-a-password",
+    "https://embracethered.com/blog/posts/2020/cookie-crimes-on-mirosoft-edge/",
+    "https://embracethered.com/blog/posts/2020/chrome-spy-remote-control/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.command_line:*\\-\\-remote\\-debugging\\-* AND process.command_line:*\\-\\-user\\-data\\-dir* AND process.command_line:*\\-\\-headless*"
+}

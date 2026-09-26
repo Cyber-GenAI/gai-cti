@@ -1,0 +1,70 @@
+{
+  "id": "ad8b34f1-e098-40e7-ada9-d486a055dd7f",
+  "name": "File With Uncommon Extension Created By An Office Application",
+  "tags": [
+    "attack.t1204.002",
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of files with an executable or script extension by an Office application.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "724963bc-6406-40e7-a3ef-a673e1f53879",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1204",
+          "name": "User Execution",
+          "reference": "https://attack.mitre.org/techniques/T1204/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/03/29/sodinokibi-aka-revil-ransomware/",
+    "https://github.com/vadim-hunter/Detection-Ideas-Rules/blob/02bcbfc2bfb8b4da601bb30de0344ae453aa1afe/Threat%20Intelligence/The%20DFIR%20Report/20210329_Sodinokibi_(aka_REvil)_Ransomware.yaml"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\excel.exe OR *\\\\msaccess.exe OR *\\\\mspub.exe OR *\\\\powerpnt.exe OR *\\\\visio.exe OR *\\\\winword.exe)) AND (file.path:(*.bat OR *.cmd OR *.com OR *.dll OR *.exe OR *.hta OR *.ocx OR *.proj OR *.ps1 OR *.scf OR *.scr OR *.sys OR *.vbe OR *.vbs OR *.wsf OR *.wsh))) AND (NOT (file.path:*\\\\AppData\\\\Local\\\\assembly\\\\tmp\\\\* AND file.path:*.dll)) AND (NOT (((file.path:*C\\:\\\\Users\\\\* AND file.path:*\\\\AppData\\\\Local\\\\Microsoft\\\\Office\\\\* AND file.path:*\\\\WebServiceCache\\\\AllUsers*) AND file.path:*.com) OR (process.executable:*\\\\winword.exe AND file.path:*\\\\AppData\\\\Local\\\\Temp\\\\webexdelta\\\\* AND (file.path:(*.dll OR *.exe)))))"
+}

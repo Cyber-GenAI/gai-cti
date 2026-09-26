@@ -1,0 +1,42 @@
+services:
+  redis-backend:
+    extends:
+      file: ../../docker-compose.common.yml
+      service: redis-backend
+      
+  redis-auth:
+    extends:
+      file: ../../docker-compose.common.yml
+      service: redis-auth
+
+  geo-ip:
+    extends:
+      file: ../../docker-compose.common.yml
+      service: geo-ip
+
+
+  celery_worker:
+    extends:
+      file: ../../docker-compose.common.yml
+      service: celery_worker
+    build:
+      context: ../
+      dockerfile: celery.devel.Dockerfile
+    volumes:
+      - ../:/app:cached
+
+  celery_beat:
+    extends:
+      file: ../../docker-compose.common.yml
+      service: celery_beat
+    build:
+      context: ../
+      dockerfile: celery.devel.Dockerfile
+    volumes:
+      - ../:/app:cached
+
+    
+volumes:
+  redis_auth_data:
+    driver: local
+

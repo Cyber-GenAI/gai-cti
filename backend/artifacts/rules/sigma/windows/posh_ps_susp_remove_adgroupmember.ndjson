@@ -1,0 +1,69 @@
+{
+  "id": "53e95d13-481d-4ed9-9e2b-c384e7b40c37",
+  "name": "Remove Account From Domain Admin Group",
+  "tags": [
+    "attack.impact",
+    "attack.t1531",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may interrupt availability of system and network resources by inhibiting access to accounts utilized by legitimate users.\nAccounts may be deleted, locked, or manipulated (ex: changed credentials) to remove access to accounts.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d1680a8a-4063-43fd-80d9-08a2b826d882",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1531",
+          "name": "Account Access Removal",
+          "reference": "https://attack.mitre.org/techniques/T1531/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1531/T1531.md#atomic-test-3---remove-account-from-domain-admin-group"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:*Remove\\-ADGroupMember* AND powershell.file.script_block_text:*\\-Identity\\ * AND powershell.file.script_block_text:*\\-Members\\ *"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "354d9cbf-8b56-4d94-a509-b2299c58635d",
+  "name": "Suspicious Use of CSharp Interactive Console",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1127",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of CSharp interactive console by PowerShell",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Possible depending on environment. Pair with other factors such as net connections, command-line args, etc."
+  ],
+  "from": "now-360s",
+  "rule_id": "4a85238e-f62d-42d6-be2a-6db6f14b8f94",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1127",
+          "name": "Trusted Developer Utilities Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1127/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/detecting-attacks-leveraging-the-net-framework/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\csi.exe AND (process.parent.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\powershell_ise.exe)) AND process.pe.original_file_name:csi.exe"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "d05d7d12-896a-453f-a4f8-b45c027874af",
+  "name": "Potential File Extension Spoofing Using Right-to-Left Override",
+  "tags": [
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1036.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious filenames that contain a right-to-left override character and a potentially spoofed file extensions.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Filenames that contains scriptures such as arabic or hebrew might make use of this character"
+  ],
+  "from": "now-360s",
+  "rule_id": "7f3e15e4-95e4-4339-ad7b-0b25f200332c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/right-to-left-override/",
+    "https://www.malwarebytes.com/blog/news/2014/01/the-rtlo-method"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\u202e* AND (file.path:(*fpd..* OR *nls..* OR *vsc..* OR *xcod.* OR *xslx.*))"
+}

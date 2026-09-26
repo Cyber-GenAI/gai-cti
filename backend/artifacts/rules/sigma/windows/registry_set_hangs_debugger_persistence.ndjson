@@ -1,0 +1,52 @@
+{
+  "id": "be4318fc-a45a-4943-9ca1-5d31ab0978f2",
+  "name": "Add Debugger Entry To Hangs Key For Persistence",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker adds a new \"Debugger\" value to the \"Hangs\" key in order to achieve persistence which will get invoked when an application crashes",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "This value is not set by default but could be rarly used by administrators"
+  ],
+  "from": "now-360s",
+  "rule_id": "36627f61-9a56-4f1d-98fd-54bb0d1e9556",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/wer_debugger.html",
+    "https://www.hexacorn.com/blog/2019/09/20/beyond-good-ol-run-key-part-116/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\Windows\\ Error\\ Reporting\\\\Hangs\\\\Debugger*"
+}

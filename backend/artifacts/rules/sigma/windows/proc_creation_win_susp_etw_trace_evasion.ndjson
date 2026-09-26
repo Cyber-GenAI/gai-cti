@@ -1,0 +1,79 @@
+{
+  "id": "e115ce2d-0e70-43f6-8fa1-0b9903304200",
+  "name": "ETW Trace Evasion Activity",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070",
+    "attack.t1562.006",
+    "car.2016-04-002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects command line activity that tries to clear or disable any ETW trace log which could be a sign of logging evasion.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0caf4283-d63a-4fc1-8d7c-964f5f21c649",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/wevtutil",
+    "https://abuse.io/lockergoga.txt",
+    "https://medium.com/palantir/tampering-with-windows-event-tracing-background-offense-and-defense-4be7ac62ac63"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:*cl* AND process.command_line:*\\/Trace*) OR (process.command_line:*clear\\-log* AND process.command_line:*\\/Trace*) OR (process.command_line:*sl* AND process.command_line:*\\/e\\:false*) OR (process.command_line:*set\\-log* AND process.command_line:*\\/e\\:false*) OR (process.command_line:*logman* AND process.command_line:*update* AND process.command_line:*trace* AND process.command_line:*\\-\\-p* AND process.command_line:*\\-ets*) OR process.command_line:*Remove\\-EtwTraceProvider* OR (process.command_line:*Set\\-EtwTraceProvider* AND process.command_line:*0x11*)"
+}

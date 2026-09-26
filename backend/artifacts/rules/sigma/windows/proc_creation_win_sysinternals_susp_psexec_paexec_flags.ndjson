@@ -1,0 +1,72 @@
+{
+  "id": "98fc1299-4f9d-46f5-bee8-70055b663a03",
+  "name": "Potential Privilege Escalation To LOCAL SYSTEM",
+  "tags": [
+    "attack.resource-development",
+    "attack.t1587.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects unknown program using commandline flags usually used by tools such as PsExec and PAExec to start programs with SYSTEM Privileges",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Weird admins that rename their tools",
+    "Software companies that bundle PsExec/PAExec with their software and rename it, so that it is less embarrassing"
+  ],
+  "from": "now-360s",
+  "rule_id": "534c2487-810e-4bec-9f1e-b55fe019dcaf",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0042",
+        "name": "Resource Development",
+        "reference": "https://attack.mitre.org/tactics/TA0042/"
+      },
+      "technique": [
+        {
+          "id": "T1587",
+          "name": "Develop Capabilities",
+          "reference": "https://attack.mitre.org/techniques/T1587/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/psexec",
+    "https://www.poweradmin.com/paexec/",
+    "https://www.fireeye.com/blog/threat-research/2020/10/kegtap-and-singlemalt-with-a-ransomware-chaser.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\ \\-s\\ cmd* OR *\\ \\/s\\ cmd* OR *\\ \u2013s\\ cmd* OR *\\ \u2014s\\ cmd* OR *\\ \u2015s\\ cmd*) OR process.command_line:(*\\ \\-s\\ \\-i\\ cmd* OR *\\ \\-s\\ \\/i\\ cmd* OR *\\ \\-s\\ \u2013i\\ cmd* OR *\\ \\-s\\ \u2014i\\ cmd* OR *\\ \\-s\\ \u2015i\\ cmd* OR *\\ \\/s\\ \\-i\\ cmd* OR *\\ \\/s\\ \\/i\\ cmd* OR *\\ \\/s\\ \u2013i\\ cmd* OR *\\ \\/s\\ \u2014i\\ cmd* OR *\\ \\/s\\ \u2015i\\ cmd* OR *\\ \u2013s\\ \\-i\\ cmd* OR *\\ \u2013s\\ \\/i\\ cmd* OR *\\ \u2013s\\ \u2013i\\ cmd* OR *\\ \u2013s\\ \u2014i\\ cmd* OR *\\ \u2013s\\ \u2015i\\ cmd* OR *\\ \u2014s\\ \\-i\\ cmd* OR *\\ \u2014s\\ \\/i\\ cmd* OR *\\ \u2014s\\ \u2013i\\ cmd* OR *\\ \u2014s\\ \u2014i\\ cmd* OR *\\ \u2014s\\ \u2015i\\ cmd* OR *\\ \u2015s\\ \\-i\\ cmd* OR *\\ \u2015s\\ \\/i\\ cmd* OR *\\ \u2015s\\ \u2013i\\ cmd* OR *\\ \u2015s\\ \u2014i\\ cmd* OR *\\ \u2015s\\ \u2015i\\ cmd*) OR process.command_line:(*\\ \\-i\\ \\-s\\ cmd* OR *\\ \\-i\\ \\/s\\ cmd* OR *\\ \\-i\\ \u2013s\\ cmd* OR *\\ \\-i\\ \u2014s\\ cmd* OR *\\ \\-i\\ \u2015s\\ cmd* OR *\\ \\/i\\ \\-s\\ cmd* OR *\\ \\/i\\ \\/s\\ cmd* OR *\\ \\/i\\ \u2013s\\ cmd* OR *\\ \\/i\\ \u2014s\\ cmd* OR *\\ \\/i\\ \u2015s\\ cmd* OR *\\ \u2013i\\ \\-s\\ cmd* OR *\\ \u2013i\\ \\/s\\ cmd* OR *\\ \u2013i\\ \u2013s\\ cmd* OR *\\ \u2013i\\ \u2014s\\ cmd* OR *\\ \u2013i\\ \u2015s\\ cmd* OR *\\ \u2014i\\ \\-s\\ cmd* OR *\\ \u2014i\\ \\/s\\ cmd* OR *\\ \u2014i\\ \u2013s\\ cmd* OR *\\ \u2014i\\ \u2014s\\ cmd* OR *\\ \u2014i\\ \u2015s\\ cmd* OR *\\ \u2015i\\ \\-s\\ cmd* OR *\\ \u2015i\\ \\/s\\ cmd* OR *\\ \u2015i\\ \u2013s\\ cmd* OR *\\ \u2015i\\ \u2014s\\ cmd* OR *\\ \u2015i\\ \u2015s\\ cmd*) OR process.command_line:(*\\ \\-s\\ pwsh* OR *\\ \\/s\\ pwsh* OR *\\ \u2013s\\ pwsh* OR *\\ \u2014s\\ pwsh* OR *\\ \u2015s\\ pwsh*) OR process.command_line:(*\\ \\-s\\ \\-i\\ pwsh* OR *\\ \\-s\\ \\/i\\ pwsh* OR *\\ \\-s\\ \u2013i\\ pwsh* OR *\\ \\-s\\ \u2014i\\ pwsh* OR *\\ \\-s\\ \u2015i\\ pwsh* OR *\\ \\/s\\ \\-i\\ pwsh* OR *\\ \\/s\\ \\/i\\ pwsh* OR *\\ \\/s\\ \u2013i\\ pwsh* OR *\\ \\/s\\ \u2014i\\ pwsh* OR *\\ \\/s\\ \u2015i\\ pwsh* OR *\\ \u2013s\\ \\-i\\ pwsh* OR *\\ \u2013s\\ \\/i\\ pwsh* OR *\\ \u2013s\\ \u2013i\\ pwsh* OR *\\ \u2013s\\ \u2014i\\ pwsh* OR *\\ \u2013s\\ \u2015i\\ pwsh* OR *\\ \u2014s\\ \\-i\\ pwsh* OR *\\ \u2014s\\ \\/i\\ pwsh* OR *\\ \u2014s\\ \u2013i\\ pwsh* OR *\\ \u2014s\\ \u2014i\\ pwsh* OR *\\ \u2014s\\ \u2015i\\ pwsh* OR *\\ \u2015s\\ \\-i\\ pwsh* OR *\\ \u2015s\\ \\/i\\ pwsh* OR *\\ \u2015s\\ \u2013i\\ pwsh* OR *\\ \u2015s\\ \u2014i\\ pwsh* OR *\\ \u2015s\\ \u2015i\\ pwsh*) OR process.command_line:(*\\ \\-i\\ \\-s\\ pwsh* OR *\\ \\-i\\ \\/s\\ pwsh* OR *\\ \\-i\\ \u2013s\\ pwsh* OR *\\ \\-i\\ \u2014s\\ pwsh* OR *\\ \\-i\\ \u2015s\\ pwsh* OR *\\ \\/i\\ \\-s\\ pwsh* OR *\\ \\/i\\ \\/s\\ pwsh* OR *\\ \\/i\\ \u2013s\\ pwsh* OR *\\ \\/i\\ \u2014s\\ pwsh* OR *\\ \\/i\\ \u2015s\\ pwsh* OR *\\ \u2013i\\ \\-s\\ pwsh* OR *\\ \u2013i\\ \\/s\\ pwsh* OR *\\ \u2013i\\ \u2013s\\ pwsh* OR *\\ \u2013i\\ \u2014s\\ pwsh* OR *\\ \u2013i\\ \u2015s\\ pwsh* OR *\\ \u2014i\\ \\-s\\ pwsh* OR *\\ \u2014i\\ \\/s\\ pwsh* OR *\\ \u2014i\\ \u2013s\\ pwsh* OR *\\ \u2014i\\ \u2014s\\ pwsh* OR *\\ \u2014i\\ \u2015s\\ pwsh* OR *\\ \u2015i\\ \\-s\\ pwsh* OR *\\ \u2015i\\ \\/s\\ pwsh* OR *\\ \u2015i\\ \u2013s\\ pwsh* OR *\\ \u2015i\\ \u2014s\\ pwsh* OR *\\ \u2015i\\ \u2015s\\ pwsh*) OR process.command_line:(*\\ \\-s\\ powershell* OR *\\ \\/s\\ powershell* OR *\\ \u2013s\\ powershell* OR *\\ \u2014s\\ powershell* OR *\\ \u2015s\\ powershell*) OR process.command_line:(*\\ \\-s\\ \\-i\\ powershell* OR *\\ \\-s\\ \\/i\\ powershell* OR *\\ \\-s\\ \u2013i\\ powershell* OR *\\ \\-s\\ \u2014i\\ powershell* OR *\\ \\-s\\ \u2015i\\ powershell* OR *\\ \\/s\\ \\-i\\ powershell* OR *\\ \\/s\\ \\/i\\ powershell* OR *\\ \\/s\\ \u2013i\\ powershell* OR *\\ \\/s\\ \u2014i\\ powershell* OR *\\ \\/s\\ \u2015i\\ powershell* OR *\\ \u2013s\\ \\-i\\ powershell* OR *\\ \u2013s\\ \\/i\\ powershell* OR *\\ \u2013s\\ \u2013i\\ powershell* OR *\\ \u2013s\\ \u2014i\\ powershell* OR *\\ \u2013s\\ \u2015i\\ powershell* OR *\\ \u2014s\\ \\-i\\ powershell* OR *\\ \u2014s\\ \\/i\\ powershell* OR *\\ \u2014s\\ \u2013i\\ powershell* OR *\\ \u2014s\\ \u2014i\\ powershell* OR *\\ \u2014s\\ \u2015i\\ powershell* OR *\\ \u2015s\\ \\-i\\ powershell* OR *\\ \u2015s\\ \\/i\\ powershell* OR *\\ \u2015s\\ \u2013i\\ powershell* OR *\\ \u2015s\\ \u2014i\\ powershell* OR *\\ \u2015s\\ \u2015i\\ powershell*) OR process.command_line:(*\\ \\-i\\ \\-s\\ powershell* OR *\\ \\-i\\ \\/s\\ powershell* OR *\\ \\-i\\ \u2013s\\ powershell* OR *\\ \\-i\\ \u2014s\\ powershell* OR *\\ \\-i\\ \u2015s\\ powershell* OR *\\ \\/i\\ \\-s\\ powershell* OR *\\ \\/i\\ \\/s\\ powershell* OR *\\ \\/i\\ \u2013s\\ powershell* OR *\\ \\/i\\ \u2014s\\ powershell* OR *\\ \\/i\\ \u2015s\\ powershell* OR *\\ \u2013i\\ \\-s\\ powershell* OR *\\ \u2013i\\ \\/s\\ powershell* OR *\\ \u2013i\\ \u2013s\\ powershell* OR *\\ \u2013i\\ \u2014s\\ powershell* OR *\\ \u2013i\\ \u2015s\\ powershell* OR *\\ \u2014i\\ \\-s\\ powershell* OR *\\ \u2014i\\ \\/s\\ powershell* OR *\\ \u2014i\\ \u2013s\\ powershell* OR *\\ \u2014i\\ \u2014s\\ powershell* OR *\\ \u2014i\\ \u2015s\\ powershell* OR *\\ \u2015i\\ \\-s\\ powershell* OR *\\ \u2015i\\ \\/s\\ powershell* OR *\\ \u2015i\\ \u2013s\\ powershell* OR *\\ \u2015i\\ \u2014s\\ powershell* OR *\\ \u2015i\\ \u2015s\\ powershell*)) AND (NOT (process.command_line:(*paexec* OR *PsExec* OR *accepteula*)))"
+}

@@ -1,0 +1,72 @@
+{
+  "id": "ce848748-8c0c-4018-9c66-9db4b362e8cf",
+  "name": "Sysmon Channel Reference Deletion",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Potential threat actor tampering with Sysmon manifest and eventually disabling it",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c8a1982c-b111-455b-8907-531d262693a3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Flangvik/status/1283054508084473861",
+    "https://twitter.com/SecurityJosh/status/1283027365770276866",
+    "https://securityjosh.github.io/2020/04/23/Mute-Sysmon.html",
+    "https://gist.github.com/Cyb3rWard0g/cf08c38c61f7e46e8404b38201ca01c8"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:4657 AND (winlog.event_data.ObjectName:(*WINEVT\\\\Publishers\\\\\\{5770385f\\-c22a\\-43e0\\-bf4c\\-06f5698ffbd9\\}* OR *WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-Sysmon\\/Operational*)) AND winlog.event_data.ObjectValueName:Enabled AND winlog.event_data.NewValue:0) OR (event.code:4663 AND (winlog.event_data.ObjectName:(*WINEVT\\\\Publishers\\\\\\{5770385f\\-c22a\\-43e0\\-bf4c\\-06f5698ffbd9\\}* OR *WINEVT\\\\Channels\\\\Microsoft\\-Windows\\-Sysmon\\/Operational*)) AND winlog.event_data.AccessMask:65536))"
+}

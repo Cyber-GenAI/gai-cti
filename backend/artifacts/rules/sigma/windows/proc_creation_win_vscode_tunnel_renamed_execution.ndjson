@@ -1,0 +1,71 @@
+{
+  "id": "aa63feed-1700-4edb-b99a-97f3c9283244",
+  "name": "Renamed Visual Studio Code Tunnel Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1071.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects renamed Visual Studio Code tunnel execution. Attackers can abuse this functionality to establish a C2 channel",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "fd4bef8e-a50a-4c54-841c-3ba4c14f2733",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1071",
+          "name": "Application Layer Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1071/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://ipfyx.fr/post/visual-studio-code-tunnel/",
+    "https://badoption.eu/blog/2023/01/31/code_c2.html",
+    "https://code.visualstudio.com/docs/remote/tunnels"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((((NOT _exists_:process.pe.original_file_name) AND process.command_line:*.exe\\ tunnel) OR (process.command_line:*.exe\\ tunnel* AND process.command_line:*\\-\\-name\\ * AND process.command_line:*\\-\\-accept\\-server\\-license\\-terms*) OR (process.command_line:*tunnel\\ * AND process.command_line:*service* AND process.command_line:*internal\\-run* AND process.command_line:*tunnel\\-service.log*)) AND (NOT (process.executable:(*\\\\code\\-tunnel.exe OR *\\\\code.exe)))) OR ((process.parent.command_line:*\\ tunnel AND process.executable:*\\\\cmd.exe AND (process.command_line:*\\/d\\ \\/c\\ * AND process.command_line:*\\\\servers\\\\Stable\\-* AND process.command_line:*code\\-server.cmd*)) AND (NOT (process.parent.executable:(*\\\\code\\-tunnel.exe OR *\\\\code.exe))))"
+}

@@ -1,0 +1,72 @@
+{
+  "id": "705f4fdd-9c59-4fa4-8e30-23992cb69d9c",
+  "name": "Potential Arbitrary File Download Using Office Application",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1202",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential arbitrary file download using a Microsoft Office application",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f3c71d8a-9569-4191-ad35-1f0977fad681",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1202",
+          "name": "Indirect Command Execution",
+          "reference": "https://attack.mitre.org/techniques/T1202/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Winword/",
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Powerpnt/",
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Excel/",
+    "https://medium.com/@reegun/unsanitized-file-validation-leads-to-malicious-payload-download-via-office-binaries-202d02db7191"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\EXCEL.EXE OR *\\\\POWERPNT.EXE OR *\\\\WINWORD.exe)) OR (process.pe.original_file_name:(Excel.exe OR POWERPNT.EXE OR WinWord.exe))) AND (process.command_line:(*http\\:\\/\\/* OR *https\\:\\/\\/*))"
+}

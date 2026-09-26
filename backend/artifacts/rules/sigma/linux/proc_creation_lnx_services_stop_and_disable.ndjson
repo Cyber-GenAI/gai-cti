@@ -1,0 +1,51 @@
+{
+  "id": "50191522-ed59-47db-8ba8-d3ce9804368e",
+  "name": "Disable Or Stop Services",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of utilities such as 'systemctl', 'service'...etc to stop or disable tools and services",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "ef60faf0-4793-4592-a075-0a01a7938de7",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.trendmicro.com/pl_pl/research/20/i/the-evolution-of-malicious-shell-scripts.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/service OR *\\/systemctl OR *\\/chkconfig)) AND (CommandLine:(*stop* OR *disable*))"
+}

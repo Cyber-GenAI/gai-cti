@@ -1,0 +1,71 @@
+{
+  "id": "554b930a-237c-4f75-bcba-bb4a3e9aa5dc",
+  "name": "Office Macro File Download",
+  "tags": [
+    "attack.initial-access",
+    "attack.t1566.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a new office macro files on the systems via an application (browser, mail client).",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate macro files downloaded from the internet",
+    "Legitimate macro files sent as attachments via emails"
+  ],
+  "from": "now-360s",
+  "rule_id": "38d73bef-def5-42cb-9b14-b700655d0b01",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0001",
+        "name": "Initial Access",
+        "reference": "https://attack.mitre.org/tactics/TA0001/"
+      },
+      "technique": [
+        {
+          "id": "T1566",
+          "name": "Phishing",
+          "reference": "https://attack.mitre.org/techniques/T1566/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1566.001/T1566.001.md",
+    "https://learn.microsoft.com/en-us/deployoffice/compat/office-file-format-reference"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\RuntimeBroker.exe OR *\\\\outlook.exe OR *\\\\thunderbird.exe OR *\\\\brave.exe OR *\\\\chrome.exe OR *\\\\firefox.exe OR *\\\\iexplore.exe OR *\\\\maxthon.exe OR *\\\\MicrosoftEdge.exe OR *\\\\msedge.exe OR *\\\\msedgewebview2.exe OR *\\\\opera.exe OR *\\\\safari.exe OR *\\\\seamonkey.exe OR *\\\\vivaldi.exe OR *\\\\whale.exe)) AND ((file.path:(*.docm OR *.dotm OR *.xlsm OR *.xltm OR *.potm OR *.pptm)) OR (file.path:(*.docm\\:Zone* OR *.dotm\\:Zone* OR *.xlsm\\:Zone* OR *.xltm\\:Zone* OR *.potm\\:Zone* OR *.pptm\\:Zone*)))"
+}

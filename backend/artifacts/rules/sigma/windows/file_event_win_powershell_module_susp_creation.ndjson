@@ -1,0 +1,52 @@
+{
+  "id": "a5426dae-a0d4-4a3c-8658-75601633f345",
+  "name": "Potential Suspicious PowerShell Module File Created",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a new PowerShell module in the first folder of the module directory structure \"\\WindowsPowerShell\\Modules\\malware\\malware.psm1\". This is somewhat an uncommon practice as legitimate modules often includes a version folder.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positive rate will vary depending on the environments. Additional filters might be required to make this logic usable in production."
+  ],
+  "from": "now-360s",
+  "rule_id": "5f589a3a-8f4e-468e-825f-a424dcc302b7",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://learn.microsoft.com/en-us/powershell/scripting/developer/module/understanding-a-windows-powershell-module?view=powershell-7.3"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:(*\\\\WindowsPowerShell\\\\Modules\\\\*\\\\.ps OR *\\\\WindowsPowerShell\\\\Modules\\\\*\\\\.dll)"
+}

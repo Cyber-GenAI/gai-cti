@@ -1,0 +1,70 @@
+{
+  "id": "8ff5b15e-0647-4b2e-a29d-66f40f2d9a5e",
+  "name": "Potential Credential Dumping Via WER",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential credential dumping via Windows Error Reporting LSASS Shtinkering technique which uses the Windows Error Reporting to dump lsass",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Windows Error Reporting might produce similar behavior. In that case, check the PID associated with the \"-p\" parameter in the CommandLine."
+  ],
+  "from": "now-360s",
+  "rule_id": "53aae8eb-a199-4781-b586-0b046496df18",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/deepinstinct/Lsass-Shtinkering",
+    "https://media.defcon.org/DEF%20CON%2030/DEF%20CON%2030%20presentations/Asaf%20Gilboa%20-%20LSASS%20Shtinkering%20Abusing%20Windows%20Error%20Reporting%20to%20Dump%20LSASS.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\Werfault.exe OR process.pe.original_file_name:WerFault.exe) AND ((winlog.event_data.ParentUser:(*AUTHORI* OR *AUTORI*)) AND (user.name:(*AUTHORI* OR *AUTORI*)) AND (process.command_line:*\\ \\-u\\ \\-p\\ * AND process.command_line:*\\ \\-ip\\ * AND process.command_line:*\\ \\-s\\ *))) AND (NOT process.parent.executable:C\\:\\\\Windows\\\\System32\\\\lsass.exe)"
+}

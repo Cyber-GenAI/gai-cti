@@ -1,0 +1,69 @@
+{
+  "id": "e41362e3-8ee9-4b8e-a81e-21783920f294",
+  "name": "Commands to Clear or Remove the Syslog",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1070.002",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects specific commands commonly used to remove or empty the syslog. Which is often used by attacker as a method to hide their tracks",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Log rotation."
+  ],
+  "from": "now-360s",
+  "rule_id": "3bb0b1c1-2cfb-4d21-8eec-0c7853be9032",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1070",
+          "name": "Indicator Removal",
+          "reference": "https://attack.mitre.org/techniques/T1070/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1070.002/T1070.002.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "CommandLine:(*rm\\ \\/var\\/log\\/syslog* OR *rm\\ \\-r\\ \\/var\\/log\\/syslog* OR *rm\\ \\-f\\ \\/var\\/log\\/syslog* OR *rm\\ \\-rf\\ \\/var\\/log\\/syslog* OR *unlink\\ \\/var\\/log\\/syslog* OR *unlink\\ \\-r\\ \\/var\\/log\\/syslog* OR *unlink\\ \\-f\\ \\/var\\/log\\/syslog* OR *unlink\\ \\-rf\\ \\/var\\/log\\/syslog* OR *mv\\ \\/var\\/log\\/syslog* OR *\\ \\>\\/var\\/log\\/syslog* OR *\\ \\>\\ \\/var\\/log\\/syslog*)"
+}

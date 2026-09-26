@@ -1,0 +1,69 @@
+{
+  "id": "40ce3808-ad62-4694-9130-d25da1813b09",
+  "name": "HackTool - CrackMapExec Process Patterns",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious process patterns found in logs when CrackMapExec is used",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "f12b732f-8514-4929-bfbe-6d2442fde0b8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://mpgn.gitbook.io/crackmapexec/smb-protocol/obtaining-credentials/dump-lsass"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:*tasklist\\ \\/fi\\ * AND process.command_line:*Imagename\\ eq\\ lsass.exe*) AND (process.command_line:(*cmd.exe\\ \\/c\\ * OR *cmd.exe\\ \\/r\\ * OR *cmd.exe\\ \\/k\\ * OR *cmd\\ \\/c\\ * OR *cmd\\ \\/r\\ * OR *cmd\\ \\/k\\ *)) AND (user.name:(*AUTHORI* OR *AUTORI*))) OR (process.command_line:*do\\ rundll32.exe\\ C\\:\\\\windows\\\\System32\\\\comsvcs.dll,\\ MiniDump* AND process.command_line:*\\\\Windows\\\\Temp\\\\* AND process.command_line:*\\ full* AND process.command_line:*%%B*) OR (process.command_line:*tasklist\\ \\/v\\ \\/fo\\ csv* AND process.command_line:*findstr\\ \\/i\\ \\\"lsass\\\"*)"
+}

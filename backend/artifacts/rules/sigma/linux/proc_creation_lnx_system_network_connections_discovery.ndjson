@@ -1,0 +1,69 @@
+{
+  "id": "79bbb515-d198-4f2a-99bc-6972aaee0a50",
+  "name": "System Network Connections Discovery - Linux",
+  "tags": [
+    "attack.discovery",
+    "attack.t1049",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of system utilities to discover system network connections",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "37d88c94-b3c8-42ba-8efa-a0412d1d41d4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1049",
+          "name": "System Network Connections Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1049/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1049/T1049.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/who OR *\\/w OR *\\/last OR *\\/lsof OR *\\/netstat)) AND (NOT (ParentCommandLine:*\\/usr\\/bin\\/landscape\\-sysinfo* AND Image:*\\/who))"
+}

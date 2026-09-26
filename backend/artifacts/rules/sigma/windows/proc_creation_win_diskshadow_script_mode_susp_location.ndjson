@@ -1,0 +1,75 @@
+{
+  "id": "66397b6d-e2d4-4143-b7c5-f3d069c40ff9",
+  "name": "Diskshadow Script Mode - Execution From Potential Suspicious Location",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"Diskshadow.exe\" in script mode using the \"/s\" flag where the script is located in a potentially suspicious location.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "False positives may occur if you execute the script from one of the paths mentioned in the rule. Apply additional filters that fits your org needs."
+  ],
+  "from": "now-360s",
+  "rule_id": "0c6894d0-975a-468a-b545-e85cfe1311ca",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://bohops.com/2018/03/26/diskshadow-the-return-of-vss-evasion-persistence-and-active-directory-database-extraction/",
+    "https://www.ired.team/offensive-security/credential-access-and-credential-dumping/ntds.dit-enumeration",
+    "https://medium.com/@cyberjyot/lolbin-execution-via-diskshadow-f6ff681a27a4",
+    "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/diskshadow",
+    "https://www.lifars.com/wp-content/uploads/2022/01/GriefRansomware_Whitepaper-2.pdf",
+    "https://www.zscaler.com/blogs/security-research/technical-analysis-crytox-ransomware",
+    "https://research.checkpoint.com/2022/evilplayout-attack-against-irans-state-broadcaster/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.original_file_name:diskshadow.exe OR process.executable:*\\\\diskshadow.exe) AND process.command_line:(*\\-s\\ * OR *\\/s\\ * OR *\u2013s\\ * OR *\u2014s\\ * OR *\u2015s\\ *) AND (process.command_line:(*\\:\\\\Temp\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\* OR *\\\\AppData\\\\Roaming\\\\* OR *\\\\ProgramData\\\\* OR *\\\\Users\\\\Public\\\\*))"
+}

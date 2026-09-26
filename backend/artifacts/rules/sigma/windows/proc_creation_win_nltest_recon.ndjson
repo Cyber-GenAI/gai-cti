@@ -1,0 +1,83 @@
+{
+  "id": "1b6f83fd-1dd6-40c9-9934-4123bba52f13",
+  "name": "Potential Recon Activity Via Nltest.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1016",
+    "attack.t1482",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects nltest commands that can be used for information discovery",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration use but user and host must be investigated"
+  ],
+  "from": "now-360s",
+  "rule_id": "43b7bc76-4a5d-4641-b69e-636818da53ae",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1016",
+          "name": "System Network Configuration Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1016/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1482",
+          "name": "Domain Trust Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1482/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc731935(v=ws.11)",
+    "https://thedfirreport.com/2021/08/16/trickbot-leads-up-to-fake-1password-installation/",
+    "https://thedfirreport.com/2020/10/18/ryuk-in-5-hours/",
+    "https://book.hacktricks.xyz/windows/basic-cmd-for-pentesters",
+    "https://research.nccgroup.com/2022/08/19/back-in-black-unlocking-a-lockbit-3-0-ransomware-attack/",
+    "https://eqllib.readthedocs.io/en/latest/analytics/03e231a6-74bc-467a-acb1-e5676b0fb55e.html",
+    "https://redcanary.com/blog/how-one-hospital-thwarted-a-ryuk-ransomware-outbreak/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/5360c9d9ffa3b25f6495f7a16e267b719eba2c37/atomics/T1482/T1482.md#atomic-test-2---windows---discover-domain-trusts-with-nltest"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\nltest.exe OR process.pe.original_file_name:nltestrk.exe) AND ((process.command_line:*server* AND process.command_line:*query*) OR (process.command_line:(*\\/user* OR *all_trusts* OR *dclist\\:* OR *dnsgetdc\\:* OR *domain_trusts* OR *dsgetdc\\:* OR *parentdomain* OR *trusted_domains*)))"
+}

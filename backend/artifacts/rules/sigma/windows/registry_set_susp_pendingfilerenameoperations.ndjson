@@ -1,0 +1,73 @@
+{
+  "id": "6272a75b-dcac-4f25-b6c3-46a73d89c3ad",
+  "name": "Potential PendingFileRenameOperations Tampering",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect changes to the \"PendingFileRenameOperations\" registry key from uncommon or suspicious images locations to stage currently used files for rename or deletion after reboot.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Installers and updaters may set currently in use files for rename or deletion after a reboot."
+  ],
+  "from": "now-360s",
+  "rule_id": "a33a2afd-4718-4409-8cab-7e0e6e5e8ec4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://any.run/report/3ecd4763ffc944fdc67a9027e459cd4f448b1a8d1b36147977afaf86bbf2a261/64b0ba45-e7ce-423b-9a1d-5b4ea59521e6",
+    "https://devblogs.microsoft.com/scripting/determine-pending-reboot-statuspowershell-style-part-1/",
+    "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc960241(v=technet.10)?redirectedfrom=MSDN",
+    "https://www.trendmicro.com/en_us/research/21/j/purplefox-adds-new-backdoor-that-uses-websockets.html",
+    "https://www.trendmicro.com/en_us/research/19/i/purple-fox-fileless-malware-with-rookit-component-delivered-by-rig-exploit-kit-now-abuses-powershell.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:SetValue AND registry.path:*\\\\CurrentControlSet\\\\Control\\\\Session\\ Manager\\\\PendingFileRenameOperations*) AND ((process.executable:(*\\\\AppData\\\\Local\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\*)) OR (process.executable:(*\\\\reg.exe OR *\\\\regedit.exe)))"
+}

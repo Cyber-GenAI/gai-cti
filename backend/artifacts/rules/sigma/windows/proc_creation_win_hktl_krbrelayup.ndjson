@@ -1,0 +1,87 @@
+{
+  "id": "a9d8ac5f-b848-4848-b4a7-c5aa59b75dbf",
+  "name": "HackTool - KrbRelayUp Execution",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1558.003",
+    "attack.lateral-movement",
+    "attack.t1550.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects KrbRelayUp used to perform a universal no-fix local privilege escalation in Windows domain environments where LDAP signing is not enforced",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "1bb9bb99-e374-4374-bffc-6ce3b1e924aa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1558",
+          "name": "Steal or Forge Kerberos Tickets",
+          "reference": "https://attack.mitre.org/techniques/T1558/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1550",
+          "name": "Use Alternate Authentication Material",
+          "reference": "https://attack.mitre.org/techniques/T1550/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/Dec0ne/KrbRelayUp"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\KrbRelayUp.exe OR process.pe.original_file_name:KrbRelayUp.exe) OR (process.command_line:*\\ relay\\ * AND process.command_line:*\\ \\-Domain\\ * AND process.command_line:*\\ \\-ComputerName\\ *) OR (process.command_line:*\\ krbscm\\ * AND process.command_line:*\\ \\-sc\\ *) OR (process.command_line:*\\ spawn\\ * AND process.command_line:*\\ \\-d\\ * AND process.command_line:*\\ \\-cn\\ * AND process.command_line:*\\ \\-cp\\ *)"
+}

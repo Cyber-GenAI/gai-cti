@@ -1,0 +1,70 @@
+{
+  "id": "e0fc7201-fceb-4289-8042-836edac3ef3f",
+  "name": "PowerShell Set-Acl On Windows Folder - PsScript",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1222",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell scripts to set the ACL to a file in the Windows folder",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "c242b21e-2d06-4e72-8859-9b4f676048b6",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1222",
+          "name": "File and Directory Permissions Modification",
+          "reference": "https://attack.mitre.org/techniques/T1222/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/74438b0237d141ee9c99747976447dc884cb1a39/atomics/T1505.005/T1505.005.md",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-acl?view=powershell-5.1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Set\\-Acl\\ * AND powershell.file.script_block_text:*\\-AclObject\\ *) AND (powershell.file.script_block_text:(*\\-Path\\ \\\"C\\:\\\\Windows* OR *\\-Path\\ \\\"C\\:\\/Windows* OR *\\-Path\\ 'C\\:\\\\Windows* OR *\\-Path\\ 'C\\:\\/Windows* OR *\\-Path\\ C\\:\\\\Windows* OR *\\-Path\\ C\\:\\/Windows* OR *\\-Path\\ $env\\:windir* OR *\\-Path\\ \\\"$env\\:windir* OR *\\-Path\\ '$env\\:windir*)) AND (powershell.file.script_block_text:(*FullControl* OR *Allow*))"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "a12cea4d-8fd9-4ffe-9b4a-0022ec9321b6",
+  "name": "Tap Installer Execution",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1048",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Well-known TAP software installation. Possible preparation for data exfiltration using tunneling techniques",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate OpenVPN TAP installation"
+  ],
+  "from": "now-360s",
+  "rule_id": "df536a74-fa06-47f0-8289-4aef3116f0f8",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1048",
+          "name": "Exfiltration Over Alternative Protocol",
+          "reference": "https://attack.mitre.org/techniques/T1048/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://community.openvpn.net/openvpn/wiki/ManagingWindowsTAPDrivers"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\tapinstall.exe AND (NOT ((process.executable:(*\\:\\\\Program\\ Files\\\\Avast\\ Software\\\\SecureLine\\ VPN\\\\* OR *\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Avast\\ Software\\\\SecureLine\\ VPN\\\\*)) OR process.executable:*\\:\\\\Program\\ Files\\\\OpenVPN\\ Connect\\\\drivers\\\\tap\\\\* OR process.executable:*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Proton\\ Technologies\\\\ProtonVPNTap\\\\installer\\\\*))"
+}

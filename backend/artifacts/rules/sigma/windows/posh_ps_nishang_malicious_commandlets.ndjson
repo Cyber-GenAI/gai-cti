@@ -1,0 +1,69 @@
+{
+  "id": "434d075c-edf2-4d21-b3c8-dc00eaab327e",
+  "name": "Malicious Nishang PowerShell Commandlets",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects Commandlet names and arguments from the Nishang exploitation framework",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "db132ed5-6d10-4eb6-9773-d7c826b612cd",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/samratashok/nishang"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "powershell.file.script_block_text:(*Add\\-ConstrainedDelegationBackdoor* OR *Copy\\-VSS* OR *Create\\-MultipleSessions* OR *DataToEncode* OR *DNS_TXT_Pwnage* OR *Do\\-Exfiltration\\-Dns* OR *Download_Execute* OR *Download\\-Execute\\-PS* OR *DownloadAndExtractFromRemoteRegistry* OR *DumpCerts* OR *DumpCreds* OR *DumpHashes* OR *Enable\\-DuplicateToken* OR *Enable\\-Duplication* OR *Execute\\-Command\\-MSSQL* OR *Execute\\-DNSTXT\\-Code* OR *Execute\\-OnTime* OR *ExetoText* OR *exfill* OR *ExfilOption* OR *FakeDC* OR *FireBuster* OR *FireListener* OR *Get\\-Information\\ * OR *Get\\-PassHints* OR *Get\\-Web\\-Credentials* OR *Get\\-WebCredentials* OR *Get\\-WLAN\\-Keys* OR *HTTP\\-Backdoor* OR *Invoke\\-AmsiBypass* OR *Invoke\\-BruteForce* OR *Invoke\\-CredentialsPhish* OR *Invoke\\-Decode* OR *Invoke\\-Encode* OR *Invoke\\-Interceptor* OR *Invoke\\-JSRatRegsvr* OR *Invoke\\-JSRatRundll* OR *Invoke\\-MimikatzWDigestDowngrade* OR *Invoke\\-NetworkRelay* OR *Invoke\\-PowerShellIcmp* OR *Invoke\\-PowerShellUdp* OR *Invoke\\-Prasadhak* OR *Invoke\\-PSGcat* OR *Invoke\\-PsGcatAgent* OR *Invoke\\-SessionGopher* OR *Invoke\\-SSIDExfil* OR *LoggedKeys* OR *Nishang* OR *NotAllNameSpaces* OR *Out\\-CHM* OR *OUT\\-DNSTXT* OR *Out\\-HTA* OR *Out\\-RundllCommand* OR *Out\\-SCF* OR *Out\\-SCT* OR *Out\\-Shortcut* OR *Out\\-WebQuery* OR *Out\\-Word* OR *Parse_Keys* OR *Password\\-List* OR *Powerpreter* OR *Remove\\-Persistence* OR *Remove\\-PoshRat* OR *Remove\\-Update* OR *Run\\-EXEonRemote* OR *Set\\-DCShadowPermissions* OR *Set\\-RemotePSRemoting* OR *Set\\-RemoteWMI* OR *Shellcode32* OR *Shellcode64* OR *StringtoBase64* OR *TexttoExe*)"
+}

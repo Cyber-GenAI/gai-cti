@@ -1,0 +1,72 @@
+{
+  "id": "83ff7ba5-04c5-4a0b-a908-b652ce71efe3",
+  "name": "Potential Credential Dumping Via LSASS Process Clone",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious LSASS process process clone that could be a sign of credential dumping activity",
+  "risk_score": 100,
+  "severity": "critical",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "78eaeb77-5a3e-49df-9687-83742712aeed",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.matteomalvica.com/blog/2019/12/02/win-defender-atp-cred-bypass/",
+    "https://twitter.com/Hexacorn/status/1420053502554951689",
+    "https://twitter.com/SBousseaden/status/1464566846594691073?s=20"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\Windows\\\\System32\\\\lsass.exe AND process.executable:*\\\\Windows\\\\System32\\\\lsass.exe"
+}

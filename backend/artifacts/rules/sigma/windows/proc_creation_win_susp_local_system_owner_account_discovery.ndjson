@@ -1,0 +1,76 @@
+{
+  "id": "ee027a92-7e23-4fe8-a26e-bd561b2ebc00",
+  "name": "Local Accounts Discovery",
+  "tags": [
+    "attack.discovery",
+    "attack.t1033",
+    "attack.t1087.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Local accounts, System Owner/User discovery using operating systems utilities",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrator or user enumerates local users for legitimate reason"
+  ],
+  "from": "now-360s",
+  "rule_id": "288e09e4-1ae6-4568-8ecb-6ddc688cb974",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1033",
+          "name": "System Owner/User Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1033/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1087",
+          "name": "Account Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1087/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1033/T1033.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\cmd.exe AND (process.command_line:*\\ \\/c* AND process.command_line:*dir\\ * AND process.command_line:*\\\\Users\\\\*)) AND (NOT process.command_line:*\\ rmdir\\ *)) OR (((process.executable:(*\\\\net.exe OR *\\\\net1.exe)) AND process.command_line:*user*) AND (NOT (process.command_line:(*\\/domain* OR *\\/add* OR *\\/delete* OR *\\/active* OR *\\/expires* OR *\\/passwordreq* OR *\\/scriptpath* OR *\\/times* OR *\\/workstations*)))) OR ((process.executable:(*\\\\whoami.exe OR *\\\\quser.exe OR *\\\\qwinsta.exe)) OR (process.executable:*\\\\wmic.exe AND (process.command_line:*useraccount* AND process.command_line:*get*)) OR (process.executable:*\\\\cmdkey.exe AND process.command_line:*\\ \\/l*))"
+}

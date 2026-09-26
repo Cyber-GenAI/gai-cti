@@ -1,0 +1,51 @@
+{
+  "id": "66e06e33-6496-4e15-85a5-19e854097e05",
+  "name": "DNS Query To Put.io - DNS Client",
+  "tags": [
+    "attack.command-and-control",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects DNS queries for subdomains related to \"Put.io\" sharing website.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate DNS queries and usage of Put.io"
+  ],
+  "from": "now-360s",
+  "rule_id": "b6c19299-20f9-404d-912e-b99b269ac62b",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://darkatlas.io/blog/medusa-ransomware-group-opsec-failure"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-DNS\\ Client\\ Events\\/Operational AND (event.code:3008 AND (dns.question.name:(*api.put.io* OR *upload.put.io*)))"
+}

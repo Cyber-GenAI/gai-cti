@@ -1,0 +1,51 @@
+{
+  "id": "75c34119-4483-438e-8a4b-e828de8cf56a",
+  "name": "Uncommon Child Processes Of SndVol.exe",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially uncommon child processes of SndVol.exe (the Windows volume mixer)",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "9acbc4f3-2aa9-49b2-9cb4-77ab890727a2",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://twitter.com/Max_Mal_/status/1661322732456353792"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:*\\\\SndVol.exe AND (NOT (process.executable:*\\\\rundll32.exe AND process.command_line:*\\ shell32.dll,Control_RunDLL\\ *))"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "c63cebd9-f910-4fab-98d4-9a2ad50ccbc5",
+  "name": "Potential Malicious AppX Package Installation Attempts",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential installation or installation attempts of known malicious appx packages",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare occasions where a malicious package uses the exact same name and version as a legtimate application"
+  ],
+  "from": "now-360s",
+  "rule_id": "d1e4c1e1-ed15-4a72-85f4-7c048dfb94da",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.sentinelone.com/labs/inside-malicious-windows-apps-for-malware-deployment/",
+    "https://news.sophos.com/en-us/2021/11/11/bazarloader-call-me-back-attack-abuses-windows-10-apps-mechanism/",
+    "https://forensicitguy.github.io/analyzing-magnitude-magniber-appx/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-AppXDeploymentServer\\/Operational AND ((event.code:(400 OR 401)) AND winlog.event_data.PackageFullName:*3669e262\\-ec02\\-4e9d\\-bcb4\\-3d008b4afac9*)"
+}

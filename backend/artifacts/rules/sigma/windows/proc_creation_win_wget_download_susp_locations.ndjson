@@ -1,0 +1,51 @@
+{
+  "id": "12435cb5-47f3-4022-b45e-9f47e91b3b4e",
+  "name": "Suspicious File Download From IP Via Wget.EXE - Paths",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious file downloads directly from IP addresses and stored in suspicious locations using Wget.exe",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "aece0525-c5b8-469d-be4e-97eb1fc678d2",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.gnu.org/software/wget/manual/wget.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\wget.exe OR process.pe.original_file_name:wget.exe) AND process.command_line:/:\\/\\/[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}/ AND process.command_line:*http* AND (process.command_line:/\\s-O\\s/ OR process.command_line:*\\-\\-output\\-document*) AND ((process.command_line:(*\\:\\\\PerfLogs\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Help\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\Temporary\\ Internet*)) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favorites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Favourites\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Contacts\\\\*) OR (process.command_line:*\\:\\\\Users\\\\* AND process.command_line:*\\\\Pictures\\\\*))"
+}

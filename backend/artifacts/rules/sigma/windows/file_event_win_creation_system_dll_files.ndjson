@@ -1,0 +1,69 @@
+{
+  "id": "9cac1326-277b-467c-b64a-10d5571da6b7",
+  "name": "Files With System DLL Name In Unsuspected Locations",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a file with the \".dll\" extension that has the name of a System DLL in uncommon or unsuspected locations. (Outisde of \"System32\", \"SysWOW64\", etc.).\nIt is highly recommended to perform an initial baseline before using this rule in production.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Third party software might bundle specific versions of system DLLs."
+  ],
+  "from": "now-360s",
+  "rule_id": "b9aa0cef-b2aa-4571-a1fa-054e71907559",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\secur32.dll OR *\\\\tdh.dll)) AND (NOT (file.path:(*C\\:\\\\$WINDOWS.\\~BT\\\\* OR *C\\:\\\\$WinREAgent\\\\* OR *C\\:\\\\Windows\\\\SoftwareDistribution\\\\* OR *C\\:\\\\Windows\\\\System32\\\\* OR *C\\:\\\\Windows\\\\SysWOW64\\\\* OR *C\\:\\\\Windows\\\\WinSxS\\\\* OR *C\\:\\\\Windows\\\\uus\\\\*)))"
+}

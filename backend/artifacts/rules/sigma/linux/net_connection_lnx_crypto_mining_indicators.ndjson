@@ -1,0 +1,69 @@
+{
+  "id": "63255607-063f-4520-a660-5449682abbae",
+  "name": "Linux Crypto Mining Pool Connections",
+  "tags": [
+    "attack.impact",
+    "attack.t1496",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects process connections to a Monero crypto mining pool",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of crypto miners"
+  ],
+  "from": "now-360s",
+  "rule_id": "8f1b8bb2-bf6e-4a0c-b0ea-145b4d4b37da",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0040",
+        "name": "Impact",
+        "reference": "https://attack.mitre.org/tactics/TA0040/"
+      },
+      "technique": [
+        {
+          "id": "T1496",
+          "name": "Resource Hijacking",
+          "reference": "https://attack.mitre.org/techniques/T1496/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.poolwatch.io/coin/monero"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "DestinationHostname:(pool.minexmr.com OR fr.minexmr.com OR de.minexmr.com OR sg.minexmr.com OR ca.minexmr.com OR us\\-west.minexmr.com OR pool.supportxmr.com OR mine.c3pool.com OR xmr\\-eu1.nanopool.org OR xmr\\-eu2.nanopool.org OR xmr\\-us\\-east1.nanopool.org OR xmr\\-us\\-west1.nanopool.org OR xmr\\-asia1.nanopool.org OR xmr\\-jp1.nanopool.org OR xmr\\-au1.nanopool.org OR xmr.2miners.com OR xmr.hashcity.org OR xmr.f2pool.com OR xmrpool.eu OR pool.hashvault.pro OR moneroocean.stream OR monerocean.stream)"
+}

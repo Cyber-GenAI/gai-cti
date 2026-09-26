@@ -1,0 +1,70 @@
+{
+  "id": "c2f820a7-d4ae-438e-b4b2-2ca3db232d1a",
+  "name": "VeeamBackup Database Credentials Dump Via Sqlcmd.EXE",
+  "tags": [
+    "attack.collection",
+    "attack.t1005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects dump of credentials in VeeamBackup dbo",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "5977589c-26b0-4205-bb77-973fc245a07c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1005",
+          "name": "Data from Local System",
+          "reference": "https://attack.mitre.org/techniques/T1005/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://thedfirreport.com/2021/12/13/diavol-ransomware/",
+    "https://forums.veeam.com/veeam-backup-replication-f2/recover-esxi-password-in-veeam-t34630.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\sqlcmd.exe AND (process.command_line:*SELECT* AND process.command_line:*TOP* AND process.command_line:*\\[VeeamBackup\\].\\[dbo\\].\\[Credentials\\]*)"
+}

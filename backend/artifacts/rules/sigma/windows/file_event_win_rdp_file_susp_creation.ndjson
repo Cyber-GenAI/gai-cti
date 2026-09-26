@@ -1,0 +1,52 @@
+{
+  "id": "eccae2ec-33a8-42fb-811c-c41a61334623",
+  "name": ".RDP File Created By Uncommon Application",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects creation of a file with an \".rdp\" extension by an application that doesn't commonly create such files.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "1ed6fc88-7404-49f2-8864-7b784b5f1b01",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.blackhillsinfosec.com/rogue-rdp-revisiting-initial-access-methods/",
+    "https://web.archive.org/web/20230726144748/https://blog.thickmints.dev/mintsights/detecting-rogue-rdp/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*.rdp AND (process.executable:(*\\\\brave.exe OR *\\\\CCleaner\\ Browser\\\\Application\\\\CCleanerBrowser.exe OR *\\\\chromium.exe OR *\\\\firefox.exe OR *\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR *\\\\iexplore.exe OR *\\\\microsoftedge.exe OR *\\\\msedge.exe OR *\\\\Opera.exe OR *\\\\Vivaldi.exe OR *\\\\Whale.exe OR *\\\\olk.exe OR *\\\\Outlook.exe OR *\\\\RuntimeBroker.exe OR *\\\\Thunderbird.exe OR *\\\\Discord.exe OR *\\\\Keybase.exe OR *\\\\msteams.exe OR *\\\\Slack.exe OR *\\\\teams.exe))"
+}

@@ -1,0 +1,76 @@
+{
+  "id": "9a17d775-60b6-4325-a0ec-e7e0feaef773",
+  "name": "Potential Configuration And Service Reconnaissance Via Reg.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1012",
+    "attack.t1007",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the usage of \"reg.exe\" in order to query reconnaissance information from the registry. Adversaries may interact with the Windows registry to gather information about credentials, the system, configuration, and installed software.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Discord"
+  ],
+  "from": "now-360s",
+  "rule_id": "8dd67cff-c01d-455c-a7ce-0ea1150d602f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1012",
+          "name": "Query Registry",
+          "reference": "https://attack.mitre.org/techniques/T1012/",
+          "subtechnique": []
+        },
+        {
+          "id": "T1007",
+          "name": "System Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1007/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1012/T1012.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\reg.exe OR process.pe.original_file_name:reg.exe) AND process.command_line:*query* AND (process.command_line:(*currentVersion\\\\windows* OR *winlogon\\\\* OR *currentVersion\\\\shellServiceObjectDelayLoad* OR *currentVersion\\\\run* OR *currentVersion\\\\policies\\\\explorer\\\\run* OR *currentcontrolset\\\\services*))"
+}

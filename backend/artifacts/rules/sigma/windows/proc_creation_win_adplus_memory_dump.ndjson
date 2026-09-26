@@ -1,0 +1,73 @@
+{
+  "id": "b6eb9e65-4473-474a-be06-9eb0f7839399",
+  "name": "Potential Adplus.EXE Abuse",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.execution",
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of \"AdPlus.exe\", a binary that is part of the Windows SDK that can be used as a LOLBIN in order to dump process memory and execute arbitrary commands.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of Adplus for debugging purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "3436e1eb-96a5-49d8-b1a9-bf74d426dbb9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/OtherMSBinaries/Adplus/",
+    "https://twitter.com/nas_bench/status/1534916659676422152",
+    "https://twitter.com/nas_bench/status/1534915321856917506"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\adplus.exe OR process.pe.original_file_name:Adplus.exe) AND (process.command_line:(*\\ \\-hang\\ * OR *\\ \\-pn\\ * OR *\\ \\-pmn\\ * OR *\\ \\-p\\ * OR *\\ \\-po\\ * OR *\\ \\-c\\ * OR *\\ \\-sc\\ *))"
+}

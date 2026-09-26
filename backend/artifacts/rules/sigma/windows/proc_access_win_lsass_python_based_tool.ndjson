@@ -1,0 +1,71 @@
+{
+  "id": "314bb90d-a43b-4c09-990f-61756fc218b0",
+  "name": "Credential Dumping Activity By Python Based Tool",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "attack.s0349",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects LSASS process access for potential credential dumping by a Python-like tool such as LaZagne or Pypykatz.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6daca586-8b8e-4e7b-a0cf-4a5d82327018",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/bh4b3sh/status/1303674603819081728",
+    "https://github.com/skelsec/pypykatz"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.TargetImage:*\\\\lsass.exe AND (winlog.event_data.CallTrace:*_ctypes.pyd\\+* AND winlog.event_data.CallTrace:*\\:\\\\Windows\\\\System32\\\\KERNELBASE.dll\\+* AND winlog.event_data.CallTrace:*\\:\\\\Windows\\\\SYSTEM32\\\\ntdll.dll\\+*) AND (winlog.event_data.CallTrace:(*python27.dll\\+* OR *python3*.dll\\+*)) AND winlog.event_data.GrantedAccess:0x1FFFFF"
+}

@@ -1,0 +1,73 @@
+{
+  "id": "e438564a-2af9-43ad-a009-5efb7c55ae7a",
+  "name": "Program Executed Using Proxy/Local Command Via SSH.EXE",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detect usage of the \"ssh.exe\" binary as a proxy to launch other programs.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage for administration purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "a971c036-2bf4-454e-b60d-3d4e6d402118",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://lolbas-project.github.io/lolbas/Binaries/Ssh/",
+    "https://github.com/LOLBAS-Project/LOLBAS/pull/211/files",
+    "https://gtfobins.github.io/gtfobins/ssh/",
+    "https://man.openbsd.org/ssh_config#ProxyCommand",
+    "https://man.openbsd.org/ssh_config#LocalCommand"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.parent.executable:C\\:\\\\Windows\\\\System32\\\\OpenSSH\\\\sshd.exe OR (process.executable:*\\\\ssh.exe AND (process.command_line:*ProxyCommand\\=* OR (process.command_line:*PermitLocalCommand* AND process.command_line:*LocalCommand*)))"
+}

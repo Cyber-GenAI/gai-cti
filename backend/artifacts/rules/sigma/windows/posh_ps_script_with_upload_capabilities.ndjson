@@ -1,0 +1,71 @@
+{
+  "id": "1afe9731-0363-4e0a-8af9-b4a8590e485c",
+  "name": "PowerShell Script With File Upload Capabilities",
+  "tags": [
+    "attack.exfiltration",
+    "attack.t1020",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects PowerShell scripts leveraging the \"Invoke-WebRequest\" cmdlet to send data via either \"PUT\" or \"POST\" method.",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "5162b10e-9196-4b1e-b7b1-fb09c6c76aa4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0010",
+        "name": "Exfiltration",
+        "reference": "https://attack.mitre.org/tactics/TA0010/"
+      },
+      "technique": [
+        {
+          "id": "T1020",
+          "name": "Automated Exfiltration",
+          "reference": "https://attack.mitre.org/techniques/T1020/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1020/T1020.md",
+    "https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.4"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*Invoke\\-WebRequest* OR *iwr\\ *)) AND (powershell.file.script_block_text:(*\\-Method\\ Put* OR *\\-Method\\ Post*))"
+}

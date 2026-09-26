@@ -1,0 +1,53 @@
+{
+  "id": "8501386e-9124-49e4-bd09-e015b3b1cff2",
+  "name": "Potential Persistence Via Security Descriptors - ScriptBlock",
+  "tags": [
+    "attack.persistence",
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of certain functions and keywords that are used to manipulate security descriptors in order to potentially set a backdoor. As seen used in the DAMP project.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4068b5e8-d56a-4eb4-91ab-8d564b1604f6",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://github.com/HarmJ0y/DAMP"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*win32_Trustee* AND powershell.file.script_block_text:*win32_Ace* AND powershell.file.script_block_text:*.AccessMask* AND powershell.file.script_block_text:*.AceType* AND powershell.file.script_block_text:*.SetSecurityDescriptor*) AND (powershell.file.script_block_text:(*\\\\Lsa\\\\JD* OR *\\\\Lsa\\\\Skew1* OR *\\\\Lsa\\\\Data* OR *\\\\Lsa\\\\GBG*))"
+}

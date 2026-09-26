@@ -1,0 +1,72 @@
+{
+  "id": "58de9783-2394-4461-a64e-22ec89836b3a",
+  "name": "Network Connection Initiated Via Notepad.EXE",
+  "tags": [
+    "attack.command-and-control",
+    "attack.execution",
+    "attack.defense-evasion",
+    "attack.t1055",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a network connection that is initiated by the \"notepad.exe\" process.\nThis might be a sign of process injection from a beacon process or something similar.\nNotepad rarely initiates a network communication except when printing documents for example.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Printing documents via notepad might cause communication with the printer via port 9100 or similar."
+  ],
+  "from": "now-360s",
+  "rule_id": "acae3e55-cd79-4b6d-967d-01040d34ef4f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1055",
+          "name": "Process Injection",
+          "reference": "https://attack.mitre.org/techniques/T1055/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://web.archive.org/web/20200219102749/https://www.sans.org/cyber-security-summit/archives/file/summit-archive-1492186586.pdf",
+    "https://www.cobaltstrike.com/blog/why-is-notepad-exe-connecting-to-the-internet"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\notepad.exe AND (NOT destination.port:9100)"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "69d689e6-4075-4891-9361-f27872e58d2f",
+  "name": "Python Initiated Connection",
+  "tags": [
+    "attack.discovery",
+    "attack.t1046",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a Python process initiating a network connection. While this often relates to package installation, it can also indicate a potential malicious script communicating with a C&C server.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate python scripts using the socket library or similar will trigger this. Apply additional filters and perform an initial baseline before deploying."
+  ],
+  "from": "now-360s",
+  "rule_id": "2f887f93-7444-4f89-ab4e-9d1966a1f496",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1046",
+          "name": "Network Service Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1046/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1046/T1046.md#atomic-test-4---port-scan-using-python",
+    "https://pypi.org/project/scapy/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(network.direction:true AND (process.executable:*\\\\python* AND process.executable:*.exe*)) AND (NOT ((destination.ip:127.0.0.1 AND source.ip:127.0.0.1) OR (winlog.event_data.CommandLine:*pip.exe* AND winlog.event_data.CommandLine:*install*))) AND (NOT ((process.parent.executable:C\\:\\\\ProgramData\\\\Anaconda3\\\\Scripts\\\\conda.exe AND (winlog.event_data.CommandLine:*\\:\\\\ProgramData\\\\Anaconda3\\\\Scripts\\\\conda\\-script.py* AND winlog.event_data.CommandLine:*update*)) OR (process.parent.executable:C\\:\\\\ProgramData\\\\Anaconda3\\\\python.exe AND winlog.event_data.CommandLine:*C\\:\\\\ProgramData\\\\Anaconda3\\\\Scripts\\\\jupyter\\-notebook\\-script.py*)))"
+}

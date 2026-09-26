@@ -1,0 +1,86 @@
+{
+  "id": "0763dcbf-92b6-4fe0-811d-57a477aaa221",
+  "name": "Potential Network Sniffing Activity Using Network Tools",
+  "tags": [
+    "attack.credential-access",
+    "attack.discovery",
+    "attack.t1040",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential network sniffing via use of network tools such as \"tshark\", \"windump\".\nNetwork sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection.\nAn adversary may place a network interface into promiscuous mode to passively access data in transit over the network, or use span ports to capture a larger amount of data.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activity to troubleshoot network issues"
+  ],
+  "from": "now-360s",
+  "rule_id": "aa260750-1dd6-4e94-a62c-cb82c19aba12",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1040",
+          "name": "Network Sniffing",
+          "reference": "https://attack.mitre.org/techniques/T1040/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1040",
+          "name": "Network Sniffing",
+          "reference": "https://attack.mitre.org/techniques/T1040/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1040/T1040.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\tshark.exe AND process.command_line:*\\-i*) OR process.executable:*\\\\windump.exe"
+}

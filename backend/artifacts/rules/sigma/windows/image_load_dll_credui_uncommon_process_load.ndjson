@@ -1,0 +1,89 @@
+{
+  "id": "24db6494-8003-4a73-a240-3f3960c2aa3b",
+  "name": "CredUI.DLL Loaded By Uncommon Process",
+  "tags": [
+    "attack.credential-access",
+    "attack.collection",
+    "attack.t1056.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects loading of \"credui.dll\" and related DLLs by an uncommon process. Attackers might leverage this DLL for potential use of \"CredUIPromptForCredentials\" or \"CredUnPackAuthenticationBufferW\".",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other legitimate processes loading those DLLs in your environment."
+  ],
+  "from": "now-360s",
+  "rule_id": "cb12ce9a-d388-40c6-b9b9-fdabaa9373a4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1056",
+          "name": "Input Capture",
+          "reference": "https://attack.mitre.org/techniques/T1056/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1056",
+          "name": "Input Capture",
+          "reference": "https://attack.mitre.org/techniques/T1056/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://securitydatasets.com/notebooks/atomic/windows/credential_access/SDWIN-201020013208.html",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1056.002/T1056.002.md#atomic-test-2---powershell---prompt-user-for-password",
+    "https://learn.microsoft.com/en-us/windows/win32/api/wincred/nf-wincred-creduipromptforcredentialsa",
+    "https://github.com/S12cybersecurity/RDPCredentialStealer"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((file.path:(*\\\\credui.dll OR *\\\\wincredui.dll)) OR (file.pe.original_file_name:(credui.dll OR wincredui.dll))) AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Windows\\\\SysWOW64\\\\*)) OR (process.executable:(C\\:\\\\Windows\\\\explorer.exe OR C\\:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe OR C\\:\\\\Windows\\\\regedit.exe)))) AND (NOT (process.executable:*\\\\opera_autoupdate.exe OR (process.executable:(*\\\\procexp64.exe OR *\\\\procexp.exe)) OR (process.executable:C\\:\\\\Users\\\\* AND process.executable:*\\\\AppData\\\\Local\\\\Microsoft\\\\Teams\\\\* AND process.executable:*\\\\Teams.exe) OR (process.executable:C\\:\\\\Users\\\\* AND process.executable:*\\\\AppData\\\\Local\\\\Microsoft\\\\OneDrive\\\\*)))"
+}

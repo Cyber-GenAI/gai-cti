@@ -1,0 +1,69 @@
+{
+  "id": "4082ed3b-2a19-4311-b711-c11dc5aa499c",
+  "name": "New Generic Credentials Added Via Cmdkey.EXE",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of \"cmdkey.exe\" to add generic credentials.\nAs an example, this can be used before connecting to an RDP session via command line interface.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage for administration purposes"
+  ],
+  "from": "now-360s",
+  "rule_id": "fae20e76-afdc-4e78-a623-85f1ee8b977a",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1021.001/T1021.001.md#t1021001---remote-desktop-protocol"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\cmdkey.exe OR process.pe.original_file_name:cmdkey.exe) AND process.command_line:(*\\ \\-g* OR *\\ \\/g* OR *\\ \u2013g* OR *\\ \u2014g* OR *\\ \u2015g*) AND process.command_line:(*\\ \\-u* OR *\\ \\/u* OR *\\ \u2013u* OR *\\ \u2014u* OR *\\ \u2015u*) AND process.command_line:(*\\ \\-p* OR *\\ \\/p* OR *\\ \u2013p* OR *\\ \u2014p* OR *\\ \u2015p*)"
+}

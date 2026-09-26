@@ -1,0 +1,70 @@
+{
+  "id": "ed7f1e67-1f57-4bc3-96d8-2646ec570d14",
+  "name": "Print History File Contents",
+  "tags": [
+    "attack.reconnaissance",
+    "attack.t1592.004",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects events in which someone prints the contents of history files to the commandline or redirects it to a file for reconnaissance",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administration activities"
+  ],
+  "from": "now-360s",
+  "rule_id": "9fc9f064-9665-460a-863b-e09564380eca",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0043",
+        "name": "Reconnaissance",
+        "reference": "https://attack.mitre.org/tactics/TA0043/"
+      },
+      "technique": [
+        {
+          "id": "T1592",
+          "name": "Gather Victim Host Information",
+          "reference": "https://attack.mitre.org/techniques/T1592/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/sleventyeleven/linuxprivchecker/",
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1552.003/T1552.003.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(Image:(*\\/cat OR *\\/head OR *\\/tail OR *\\/more)) AND ((CommandLine:(*\\/.bash_history* OR *\\/.zsh_history*)) OR (CommandLine:(*_history OR *.history OR *zhistory)))"
+}

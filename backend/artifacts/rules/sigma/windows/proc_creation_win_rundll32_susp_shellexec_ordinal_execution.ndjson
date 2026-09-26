@@ -1,0 +1,72 @@
+{
+  "id": "6e138507-24de-4d48-81ac-ef4e3f9cada6",
+  "name": "Suspicious ShellExec_RunDLL Call Via Ordinal",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious call to the \"ShellExec_RunDLL\" exported function of SHELL32.DLL through the ordinal number to launch other commands.\nAdversary might only use the ordinal number in order to bypass existing detection that alert on usage of ShellExec_RunDLL on CommandLine.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "99a1f790-f97d-4993-ab13-5188f0186e95",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/raspberry-robin/",
+    "https://www.microsoft.com/en-us/security/blog/2022/10/27/raspberry-robin-worm-part-of-larger-ecosystem-facilitating-pre-ransomware-activity/",
+    "https://github.com/SigmaHQ/sigma/issues/1009",
+    "https://strontic.github.io/xcyclopedia/library/shell32.dll-65DA072F25DE83D9F83653E3FEA3644D.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.command_line:*SHELL32.DLL* AND (process.parent.command_line:(*#568* OR *#570* OR *#572* OR *#576*))) AND (((process.parent.command_line:(*comspec* OR *iex* OR *Invoke\\-* OR *msiexec* OR *odbcconf* OR *regsvr32*)) OR (process.parent.command_line:(*\\\\Desktop\\\\* OR *\\\\ProgramData\\\\* OR *\\\\Temp\\\\* OR *\\\\Users\\\\Public\\\\*))) OR (process.executable:(*\\\\bash.exe OR *\\\\bitsadmin.exe OR *\\\\cmd.exe OR *\\\\cscript.exe OR *\\\\curl.exe OR *\\\\mshta.exe OR *\\\\msiexec.exe OR *\\\\msxsl.exe OR *\\\\odbcconf.exe OR *\\\\powershell.exe OR *\\\\pwsh.exe OR *\\\\regsvr32.exe OR *\\\\schtasks.exe OR *\\\\wmic.exe OR *\\\\wscript.exe)))"
+}

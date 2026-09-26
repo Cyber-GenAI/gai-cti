@@ -1,0 +1,69 @@
+{
+  "id": "2e628f4c-2f8f-48f1-b00f-cd728adc4cf9",
+  "name": "First Time Seen Remote Named Pipe",
+  "tags": [
+    "attack.lateral-movement",
+    "attack.t1021.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "This detection excludes known namped pipes accessible remotely and notify on newly observed ones, may help to detect lateral movement and remote exec using named pipes",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Update the excluded named pipe to filter out any newly observed legit named pipe"
+  ],
+  "from": "now-360s",
+  "rule_id": "c106c912-44ea-4af3-b33e-2f84daccaf46",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0008",
+        "name": "Lateral Movement",
+        "reference": "https://attack.mitre.org/tactics/TA0008/"
+      },
+      "technique": [
+        {
+          "id": "T1021",
+          "name": "Remote Services",
+          "reference": "https://attack.mitre.org/techniques/T1021/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/menasec1/status/1104489274387451904"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:5145 AND winlog.event_data.ShareName:\\\\\\\\\\*\\\\IPC$) AND (NOT (winlog.event_data.RelativeTargetName:(atsvc OR samr OR lsarpc OR lsass OR winreg OR netlogon OR srvsvc OR protected_storage OR wkssvc OR browser OR netdfs OR svcctl OR spoolss OR ntsvcs OR LSM_API_service OR HydraLsPipe OR TermSrv_API_service OR MsFteWds OR sql\\\\query OR eventlog))))"
+}

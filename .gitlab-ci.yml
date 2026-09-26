@@ -1,0 +1,31 @@
+stages:
+  - deploy
+
+variables:
+  GIT_STRATEGY: fetch
+  GIT_DEPTH: 1000
+
+deploy_project:
+  stage: deploy
+  tags:
+    - gai-cti-deploy
+  only:
+    - main
+  script:
+    - echo "Starting deployment process..."
+    - export GAI_CTI_AVALAI_API_KEY="aa-dfwaKNSbTS2JWEO3VHkSCMzNHIZAmsyob7nFjtR5ssmemOYd"
+    - export GAI_CTI_BASE_URL="http://gai-cti.amnafzar.ir"
+    - export GAI_CTI_PIP_MIRROR_HOST="https://mirror-pypi.runflare.com"
+    - export GAI_CTI_YARN_REGISTRY_DOMAIN="mirror-npm.runflare.com"
+    - export GAI_CTI_OPENCTI_ES_MEM=8G
+    - sed -i 's/^ELASTICSEARCH_HEAP=.*/ELASTICSEARCH_HEAP=4096m/' ./elastdocker/.env
+    - echo "Getting large files"
+    # - git lfs install --local # make sure that git-lfs package is installed on the OS
+    # - git lfs pull 
+    - echo "Removing old instances..."
+    - docker compose down --remove-orphans
+    - echo "Building and deploying new version..."
+    - docker compose up -d --build
+    - echo "Verifying deployment..."
+    - docker ps
+    - echo "Deployment completed successfully."

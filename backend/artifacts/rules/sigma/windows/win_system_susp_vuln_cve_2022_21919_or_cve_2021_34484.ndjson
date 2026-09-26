@@ -1,0 +1,51 @@
+{
+  "id": "c97fc366-3352-46d2-9bc8-337206721848",
+  "name": "Suspicious Usage of CVE_2021_34484 or CVE 2022_21919",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "During exploitation of this vulnerability, two logs (Provider_Name:Microsoft-Windows-User Profiles Service) with EventID 1511 and 1515 (maybe lot of false positives with this event) are created. Moreover, it appears the directory \\Users\\TEMP is created may be created during the exploitation. Viewed on 2008 Server",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Corrupted user profiles - https://social.technet.microsoft.com/wiki/contents/articles/3571.windows-user-profiles-service-event-1511-windows-cannot-find-the-local-profile-and-is-logging-you-on-with-a-temporary-profile.aspx"
+  ],
+  "from": "now-360s",
+  "rule_id": "72d4765a-eb66-46cb-ae34-a4f74e385462",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://packetstormsecurity.com/files/166692/Windows-User-Profile-Service-Privlege-Escalation.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Application AND (event.code:1511 AND winlog.provider_name:Microsoft\\-Windows\\-User\\ Profiles\\ Service)"
+}

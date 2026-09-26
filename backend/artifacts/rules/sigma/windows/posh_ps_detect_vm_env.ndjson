@@ -1,0 +1,70 @@
+{
+  "id": "bc6c33c2-b66b-490c-8d13-8a5ca167b88f",
+  "name": "Powershell Detect Virtualization Environment",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1497.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Adversaries may employ various system checks to detect and avoid virtualization and analysis environments.\nThis may include changing behaviors based on the results of checks for the presence of artifacts indicative of a virtual machine environment (VME) or sandbox\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "34edc186-4f72-4e6e-a4d2-a17667d639a9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1497",
+          "name": "Virtualization/Sandbox Evasion",
+          "reference": "https://attack.mitre.org/techniques/T1497/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1497.001/T1497.001.md",
+    "https://techgenix.com/malicious-powershell-scripts-evade-detection/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:(*Get\\-WmiObject* OR *gwmi*)) AND (powershell.file.script_block_text:(*MSAcpi_ThermalZoneTemperature* OR *Win32_ComputerSystem*))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "74190596-7606-4e9d-b021-c0dac8e25e1f",
+  "name": "Windows Defender Configuration Changes",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious changes to the Windows Defender configuration",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator activity (must be investigated)"
+  ],
+  "from": "now-360s",
+  "rule_id": "7a0ea7ac-f547-4470-876d-415633fe77f9",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-microsoft-defender-antivirus?view=o365-worldwide",
+    "https://bidouillesecurity.com/disable-windows-defender-in-powershell/#DisableAntiSpyware"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-Windows\\ Defender\\/Operational AND (event.code:5007 AND (winlog.event_data.NewValue:(*\\\\Windows\\ Defender\\\\DisableAntiSpyware\\ * OR *\\\\Windows\\ Defender\\\\Scan\\\\DisableRemovableDriveScanning\\ * OR *\\\\Windows\\ Defender\\\\Scan\\\\DisableScanningMappedNetworkDrivesForFullScan\\ * OR *\\\\Windows\\ Defender\\\\SpyNet\\\\DisableBlockAtFirstSeen\\ * OR *\\\\Real\\-Time\\ Protection\\\\SpyNetReporting\\ *)))"
+}

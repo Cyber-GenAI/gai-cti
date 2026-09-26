@@ -1,0 +1,55 @@
+{
+  "id": "e1bf6243-40f5-4f79-938f-6e8c2d5590c3",
+  "name": "Renamed Remote Utilities RAT (RURAT) Execution",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.collection",
+    "attack.command-and-control",
+    "attack.discovery",
+    "attack.s0592",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects execution of renamed Remote Utilities (RURAT) via Product PE header field",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "95f52019-0c16-4382-a78f-f46eaf67f27f",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/blog/misbehaving-rats/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.pe.product:Remote\\ Utilities AND (NOT (process.executable:(*\\\\rutserv.exe OR *\\\\rfusclient.exe)))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "6d8e5772-5fe4-4ed5-aa70-c1167e4f0606",
+  "name": "Suspicious desktop.ini Action",
+  "tags": [
+    "attack.persistence",
+    "attack.t1547.009",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects unusual processes accessing desktop.ini, which can be leveraged to alter how Explorer displays a folder's content (i.e. renaming files) without changing them on disk.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Operations performed through Windows SCCM or equivalent",
+    "Read only access list authority"
+  ],
+  "from": "now-360s",
+  "rule_id": "fcdf03e8-e7a2-412f-86f0-f1b9550ce180",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1547",
+          "name": "Boot or Logon Autostart Execution",
+          "reference": "https://attack.mitre.org/techniques/T1547/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://isc.sans.edu/forums/diary/Desktopini+as+a+postexploitation+tool/25912/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "file.path:*\\\\desktop.ini AND (NOT ((process.executable:(C\\:\\\\Windows\\\\* OR C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\*)) OR (process.executable:*\\\\AppData\\\\Local\\\\JetBrains\\\\Toolbox\\\\bin\\\\7z.exe AND file.path:*\\\\JetBrains\\\\apps\\\\*) OR file.path:C\\:\\\\$WINDOWS.\\~BT\\\\NewOS\\\\*))"
+}

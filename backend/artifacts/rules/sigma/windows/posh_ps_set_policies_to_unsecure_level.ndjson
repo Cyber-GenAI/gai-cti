@@ -1,0 +1,71 @@
+{
+  "id": "d0296a56-475f-4585-892a-3fb95a96a042",
+  "name": "Change PowerShell Policies to an Insecure Level - PowerShell",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changing the PowerShell script execution policy to a potentially insecure level using the \"Set-ExecutionPolicy\" cmdlet.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrator script"
+  ],
+  "from": "now-360s",
+  "rule_id": "570a2848-de5c-480f-a3d1-a8cc8487d6da",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.4",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4",
+    "https://adsecurity.org/?p=2604"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Set\\-ExecutionPolicy* AND (powershell.file.script_block_text:(*Unrestricted* OR *bypass*))) AND (NOT (powershell.file.script_block_text:(*\\(New\\-Object\\ System.Net.WebClient\\).DownloadString\\('https\\:\\/\\/community.chocolatey.org\\/install.ps1'\\)* OR *\\(New\\-Object\\ System.Net.WebClient\\).DownloadString\\('https\\:\\/\\/chocolatey.org\\/install.ps1'\\)*)))"
+}

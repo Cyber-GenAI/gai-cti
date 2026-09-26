@@ -1,0 +1,52 @@
+{
+  "id": "063f3bb0-be32-4dd1-9f07-f06c052bf48f",
+  "name": "Suspicious File Download From File Sharing Domain Via Curl.EXE",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious file download from file sharing domains using curl.exe",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "37be54e3-99d4-43fb-9dfc-3a7b519150bb",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://labs.withsecure.com/publications/fin7-target-veeam-servers",
+    "https://github.com/WithSecureLabs/iocs/blob/344203de742bb7e68bd56618f66d34be95a9f9fc/FIN7VEEAM/iocs.csv"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\curl.exe OR process.pe.original_file_name:curl.exe) AND (process.command_line:(*.githubusercontent.com* OR *anonfiles.com* OR *cdn.discordapp.com* OR *ddns.net* OR *dl.dropboxusercontent.com* OR *ghostbin.co* OR *glitch.me* OR *gofile.io* OR *hastebin.com* OR *mediafire.com* OR *mega.nz* OR *onrender.com* OR *pages.dev* OR *paste.ee* OR *pastebin.com* OR *pastebin.pl* OR *pastetext.net* OR *pixeldrain.com* OR *privatlab.com* OR *privatlab.net* OR *send.exploit.in* OR *sendspace.com* OR *storage.googleapis.com* OR *storjshare.io* OR *supabase.co* OR *temp.sh* OR *transfer.sh* OR *trycloudflare.com* OR *ufile.io* OR *w3spaces.com* OR *workers.dev*)) AND process.command_line:*http* AND (process.command_line:(*\\ \\-O* OR *\\-\\-remote\\-name* OR *\\-\\-output*)) AND (process.command_line:(*.ps1 OR *.ps1' OR *.ps1\\\" OR *.dat OR *.dat' OR *.dat\\\" OR *.msi OR *.msi' OR *.msi\\\" OR *.bat OR *.bat' OR *.bat\\\" OR *.exe OR *.exe' OR *.exe\\\" OR *.vbs OR *.vbs' OR *.vbs\\\" OR *.vbe OR *.vbe' OR *.vbe\\\" OR *.hta OR *.hta' OR *.hta\\\" OR *.dll OR *.dll' OR *.dll\\\" OR *.psm1 OR *.psm1' OR *.psm1\\\"))"
+}

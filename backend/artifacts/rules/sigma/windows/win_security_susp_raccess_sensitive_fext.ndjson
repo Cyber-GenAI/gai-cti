@@ -1,0 +1,70 @@
+{
+  "id": "ee1623a0-1d64-4354-b6a4-6da16822b172",
+  "name": "Suspicious Access to Sensitive File Extensions",
+  "tags": [
+    "attack.collection",
+    "attack.t1039",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects known sensitive file extensions accessed on a network share",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Help Desk operator doing backup or re-imaging end user machine or backup software",
+    "Users working with these data types or exchanging message files"
+  ],
+  "from": "now-360s",
+  "rule_id": "33d6ecfd-5492-41c6-aa50-bcc3110e376d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0009",
+        "name": "Collection",
+        "reference": "https://attack.mitre.org/tactics/TA0009/"
+      },
+      "technique": [
+        {
+          "id": "T1039",
+          "name": "Data from Network Shared Drive",
+          "reference": "https://attack.mitre.org/techniques/T1039/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND (event.code:5145 AND (winlog.event_data.RelativeTargetName:(*.bak OR *.dmp OR *.edb OR *.kirbi OR *.msg OR *.nsf OR *.nst OR *.oab OR *.ost OR *.pst OR *.rdp OR *\\\\groups.xml)))"
+}

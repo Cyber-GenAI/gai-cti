@@ -1,0 +1,51 @@
+{
+  "id": "be63956b-ae80-4552-8b00-86d634aef639",
+  "name": "Space After Filename",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_LINUX"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects space after filename",
+  "risk_score": 20,
+  "severity": "low",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Typos"
+  ],
+  "from": "now-360s",
+  "rule_id": "2347ab6c-a00b-45cd-a854-c5c1210acb09",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://attack.mitre.org/techniques/T1064"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "*echo\\ \\\"*\\\"\\ \\>\\ *\\ \\&\\&\\ chmod\\ \\+x\\ ** AND *mv\\ *\\ \\\"*\\ \\\"*"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "e4768528-f878-454c-91b4-43401b54e919",
+  "name": "Potential Persistence Via New AMSI Providers - Registry",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when an attacker registers a new AMSI provider in order to achieve persistence",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate security products adding their own AMSI providers. Filter these according to your environment"
+  ],
+  "from": "now-360s",
+  "rule_id": "58d96a7a-e591-4996-94c9-6ec594c85621",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://persistence-info.github.io/Data/amsi.html",
+    "https://github.com/gtworek/PSBits/blob/8d767892f3b17eefa4d0668f5d2df78e844f01d8/FakeAMSI/FakeAMSI.c"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.EventType:CreateKey AND (registry.path:(*\\\\SOFTWARE\\\\Microsoft\\\\AMSI\\\\Providers\\\\* OR *\\\\SOFTWARE\\\\WOW6432Node\\\\Microsoft\\\\AMSI\\\\Providers\\\\*))) AND (NOT (process.executable:(C\\:\\\\Windows\\\\System32\\\\* OR C\\:\\\\Program\\ Files\\\\* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\*)))"
+}

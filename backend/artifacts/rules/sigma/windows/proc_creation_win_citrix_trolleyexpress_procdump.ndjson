@@ -1,0 +1,88 @@
+{
+  "id": "b3d0252c-037f-468d-9f12-f0bd132d5f13",
+  "name": "Process Access via TrolleyExpress Exclusion",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.011",
+    "attack.credential-access",
+    "attack.t1003.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a possible process memory dump that uses the white-listed Citrix TrolleyExpress.exe filename as a way to dump the lsass process memory",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "14e9be2a-b40f-4989-96ff-499c320ee563",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/_xpn_/status/1491557187168178176",
+    "https://www.youtube.com/watch?v=Ie831jF0bb0"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.command_line:(*\\\\TrolleyExpress\\ 7* OR *\\\\TrolleyExpress\\ 8* OR *\\\\TrolleyExpress\\ 9* OR *\\\\TrolleyExpress.exe\\ 7* OR *\\\\TrolleyExpress.exe\\ 8* OR *\\\\TrolleyExpress.exe\\ 9* OR *\\\\TrolleyExpress.exe\\ \\-ma\\ *)) OR (process.executable:*\\\\TrolleyExpress.exe AND (NOT (process.pe.original_file_name:*CtxInstall* OR (NOT _exists_:process.pe.original_file_name))))"
+}

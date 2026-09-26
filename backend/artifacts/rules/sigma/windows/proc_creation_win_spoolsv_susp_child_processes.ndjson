@@ -1,0 +1,87 @@
+{
+  "id": "3be68794-47c7-4b2c-85df-cde636e51e5a",
+  "name": "Suspicious Spool Service Child Process",
+  "tags": [
+    "attack.execution",
+    "attack.t1203",
+    "attack.privilege-escalation",
+    "attack.t1068",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious print spool service (spoolsv.exe) child processes.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6fd4731f-a1fb-411e-bc57-d790a9e0940d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1203",
+          "name": "Exploitation for Client Execution",
+          "reference": "https://attack.mitre.org/techniques/T1203/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1068",
+          "name": "Exploitation for Privilege Escalation",
+          "reference": "https://attack.mitre.org/techniques/T1068/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/microsoft/Microsoft-365-Defender-Hunting-Queries/blob/efa17a600b43c897b4b7463cc8541daa1987eeb4/Exploits/Print%20Spooler%20RCE/Suspicious%20Spoolsv%20Child%20Process.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.parent.executable:*\\\\spoolsv.exe AND (winlog.event_data.IntegrityLevel:(System OR S\\-1\\-16\\-16384))) AND ((process.executable:(*\\\\gpupdate.exe OR *\\\\whoami.exe OR *\\\\nltest.exe OR *\\\\taskkill.exe OR *\\\\wmic.exe OR *\\\\taskmgr.exe OR *\\\\sc.exe OR *\\\\findstr.exe OR *\\\\curl.exe OR *\\\\wget.exe OR *\\\\certutil.exe OR *\\\\bitsadmin.exe OR *\\\\accesschk.exe OR *\\\\wevtutil.exe OR *\\\\bcdedit.exe OR *\\\\fsutil.exe OR *\\\\cipher.exe OR *\\\\schtasks.exe OR *\\\\write.exe OR *\\\\wuauclt.exe OR *\\\\systeminfo.exe OR *\\\\reg.exe OR *\\\\query.exe)) OR ((process.executable:(*\\\\net.exe OR *\\\\net1.exe)) AND (NOT process.command_line:*start*)) OR (process.executable:*\\\\cmd.exe AND (NOT (process.command_line:(*.spl* OR *route\\ add* OR *program\\ files*)))) OR (process.executable:*\\\\netsh.exe AND (NOT (process.command_line:(*add\\ portopening* OR *rule\\ name*)))) OR ((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) AND (NOT process.command_line:*.spl*)) OR ((process.executable:*\\\\rundll32.exe OR process.pe.original_file_name:RUNDLL32.EXE) AND process.command_line:*rundll32.exe))"
+}

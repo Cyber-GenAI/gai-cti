@@ -1,0 +1,51 @@
+{
+  "id": "0d08eb0a-adee-4f53-b3ab-74fdaca5845d",
+  "name": "Suspicious PowerShell Invocations - Specific - ProcessCreation",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious PowerShell invocation command parameters",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "61ce2bb3-69c0-44bb-96ca-6706fbbf29d9",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.command_line:*\\-nop* AND process.command_line:*\\ \\-w\\ * AND process.command_line:*hidden* AND process.command_line:*\\ \\-c\\ * AND process.command_line:*\\[Convert\\]\\:\\:FromBase64String*) OR (process.command_line:*\\ \\-w\\ * AND process.command_line:*hidden* AND process.command_line:*\\-noni* AND process.command_line:*\\-nop* AND process.command_line:*\\ \\-c\\ * AND process.command_line:*iex* AND process.command_line:*New\\-Object*) OR (process.command_line:*\\ \\-w\\ * AND process.command_line:*hidden* AND process.command_line:*\\-ep* AND process.command_line:*bypass* AND process.command_line:*\\-Enc*) OR (process.command_line:*powershell* AND process.command_line:*reg* AND process.command_line:*add* AND process.command_line:*\\\\software\\\\*) OR (process.command_line:*bypass* AND process.command_line:*\\-noprofile* AND process.command_line:*\\-windowstyle* AND process.command_line:*hidden* AND process.command_line:*new\\-object* AND process.command_line:*system.net.webclient* AND process.command_line:*.download*) OR (process.command_line:*iex* AND process.command_line:*New\\-Object* AND process.command_line:*Net.WebClient* AND process.command_line:*.Download*)) AND (NOT (process.command_line:(*\\(New\\-Object\\ System.Net.WebClient\\).DownloadString\\('https\\:\\/\\/community.chocolatey.org\\/install.ps1* OR *Write\\-ChocolateyWarning*)))"
+}

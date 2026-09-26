@@ -1,0 +1,70 @@
+{
+  "id": "6faff331-da64-466b-8916-74c8e90495a1",
+  "name": "Run Once Task Configuration in Registry",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1112",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Rule to detect the configuration of Run Once registry key. Configured payload can be run by runonce.exe /AlternateShellStartup",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate modification of the registry key by legitimate program"
+  ],
+  "from": "now-360s",
+  "rule_id": "f748212e-cd57-4bf9-bdf2-e373cd2a623d",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1112",
+          "name": "Modify Registry",
+          "reference": "https://attack.mitre.org/techniques/T1112/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/pabraeken/status/990717080805789697",
+    "https://lolbas-project.github.io/lolbas/Binaries/Runonce/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Microsoft\\\\Active\\ Setup\\\\Installed\\ Components* AND registry.path:*\\\\StubPath) AND (NOT ((winlog.event_data.Details:*C\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\* AND winlog.event_data.Details:*\\\\Installer\\\\chrmstp.exe\\\"\\ \\-\\-configure\\-user\\-settings\\ \\-\\-verbose\\-logging\\ \\-\\-system\\-level*) OR ((winlog.event_data.Details:(*C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\* OR *C\\:\\\\Program\\ Files\\\\Microsoft\\\\Edge\\\\Application\\\\*)) AND winlog.event_data.Details:*\\\\Installer\\\\setup.exe\\\"\\ \\-\\-configure\\-user\\-settings\\ \\-\\-verbose\\-logging\\ \\-\\-system\\-level\\ \\-\\-msedge\\ \\-\\-channel\\=stable)))"
+}

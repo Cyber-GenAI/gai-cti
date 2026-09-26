@@ -1,0 +1,71 @@
+{
+  "id": "0b464065-438a-452b-bf5f-06948bece9dd",
+  "name": "Potentially Suspicious Execution Of Regasm/Regsvcs With Uncommon Extension",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1218.009",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious execution of the Regasm/Regsvcs utilities with an uncommon extension.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "b66858d6-94b1-4ac7-8006-f0baf2e0ddfa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.fortiguard.com/threat-signal-report/4718?s=09",
+    "https://lolbas-project.github.io/lolbas/Binaries/Regasm/",
+    "https://lolbas-project.github.io/lolbas/Binaries/Regsvcs/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\Regsvcs.exe OR *\\\\Regasm.exe)) OR (process.pe.original_file_name:(RegSvcs.exe OR RegAsm.exe))) AND (process.command_line:(*.dat* OR *.gif* OR *.jpeg* OR *.jpg* OR *.png* OR *.txt*))"
+}

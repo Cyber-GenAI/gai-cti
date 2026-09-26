@@ -1,0 +1,70 @@
+{
+  "id": "b37cdfbf-c211-4390-933d-9a792bc386ae",
+  "name": "Suspicious PowerShell Invocations - Specific - PowerShell Module",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious PowerShell invocation command parameters",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "6b0156f5-c905-4cf4-8cfe-c42fa7e60e36",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://github.com/HackTricks-wiki/hacktricks/blob/e4c7b21b8f36c97c35b7c622732b38a189ce18f7/src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-with-autorun-binaries.md"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((winlog.event_data.ContextInfo:*\\-nop* AND winlog.event_data.ContextInfo:*\\ \\-w\\ * AND winlog.event_data.ContextInfo:*hidden* AND winlog.event_data.ContextInfo:*\\ \\-c\\ * AND winlog.event_data.ContextInfo:*\\[Convert\\]\\:\\:FromBase64String*) OR (winlog.event_data.ContextInfo:*\\ \\-w\\ * AND winlog.event_data.ContextInfo:*hidden* AND winlog.event_data.ContextInfo:*\\-noni* AND winlog.event_data.ContextInfo:*\\-nop* AND winlog.event_data.ContextInfo:*\\ \\-c\\ * AND winlog.event_data.ContextInfo:*iex* AND winlog.event_data.ContextInfo:*New\\-Object*) OR (winlog.event_data.ContextInfo:*\\ \\-w\\ * AND winlog.event_data.ContextInfo:*hidden* AND winlog.event_data.ContextInfo:*\\-ep* AND winlog.event_data.ContextInfo:*bypass* AND winlog.event_data.ContextInfo:*\\-Enc*) OR ((winlog.event_data.ContextInfo:*powershell* AND winlog.event_data.ContextInfo:*reg* AND winlog.event_data.ContextInfo:*add*) AND (winlog.event_data.ContextInfo:(*\\\\software\\\\microsoft\\\\windows\\\\currentversion\\\\run* OR *\\\\software\\\\wow6432node\\\\microsoft\\\\windows\\\\currentversion\\\\run* OR *\\\\software\\\\microsoft\\\\windows\\\\currentversion\\\\policies\\\\explorer\\\\run*))) OR (winlog.event_data.ContextInfo:*bypass* AND winlog.event_data.ContextInfo:*\\-noprofile* AND winlog.event_data.ContextInfo:*\\-windowstyle* AND winlog.event_data.ContextInfo:*hidden* AND winlog.event_data.ContextInfo:*new\\-object* AND winlog.event_data.ContextInfo:*system.net.webclient* AND winlog.event_data.ContextInfo:*.download*) OR (winlog.event_data.ContextInfo:*iex* AND winlog.event_data.ContextInfo:*New\\-Object* AND winlog.event_data.ContextInfo:*Net.WebClient* AND winlog.event_data.ContextInfo:*.Download*)) AND (NOT (winlog.event_data.ContextInfo:(*\\(New\\-Object\\ System.Net.WebClient\\).DownloadString\\('https\\:\\/\\/community.chocolatey.org\\/install.ps1* OR *Write\\-ChocolateyWarning*)))"
+}

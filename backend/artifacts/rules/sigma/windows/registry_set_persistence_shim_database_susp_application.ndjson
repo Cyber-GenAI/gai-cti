@@ -1,0 +1,70 @@
+{
+  "id": "bc1525a4-177f-4878-bd97-a5bda78e8d07",
+  "name": "Suspicious Shim Database Patching Activity",
+  "tags": [
+    "attack.persistence",
+    "attack.t1546.011",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects installation of new shim databases that try to patch sections of known processes for potential process injection or persistence.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "d9b480ab-e087-4bff-90ca-64e2504b5383",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/pillowmint-fin7s-monkey-thief/",
+    "https://www.fireeye.com/blog/threat-research/2017/05/fin7-shim-databases-persistence.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\SOFTWARE\\\\Microsoft\\\\Windows\\ NT\\\\CurrentVersion\\\\AppCompatFlags\\\\Custom\\\\* AND (registry.path:(*\\\\csrss.exe OR *\\\\dllhost.exe OR *\\\\explorer.exe OR *\\\\RuntimeBroker.exe OR *\\\\services.exe OR *\\\\sihost.exe OR *\\\\svchost.exe OR *\\\\taskhostw.exe OR *\\\\winlogon.exe OR *\\\\WmiPrvSe.exe))"
+}

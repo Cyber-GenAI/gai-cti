@@ -1,0 +1,74 @@
+{
+  "id": "f10ebd6b-06e8-439e-9a67-f30243b2d0ce",
+  "name": "Uncommon System Information Discovery Via Wmic.EXE",
+  "tags": [
+    "attack.discovery",
+    "attack.t1082",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of the WMI command-line (WMIC) utility to identify and display various system information,\nincluding OS, CPU, GPU, and disk drive names; memory capacity; display resolution; and baseboard, BIOS,\nand GPU driver products/versions.\nSome of these commands were used by Aurora Stealer in late 2022/early 2023.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "463b71ac-807f-48f6-9f4b-70e7cb22a652",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1082",
+          "name": "System Information Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1082/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/a2ccd19c37d0278b4ffa8583add3cf52060a5418/atomics/T1082/T1082.md#atomic-test-25---system-information-discovery-with-wmic",
+    "https://nwgat.ninja/getting-system-information-with-wmic-on-windows/",
+    "https://blog.sekoia.io/aurora-a-rising-stealer-flying-under-the-radar",
+    "https://blog.cyble.com/2023/01/18/aurora-a-stealer-using-shapeshifting-tactics/",
+    "https://app.any.run/tasks/a6aa0057-82ec-451f-8f99-55650ca537da/",
+    "https://www.virustotal.com/gui/file/d6f6bc10ae0e634ed4301d584f61418cee18e5d58ad9af72f8aa552dc4aaeca3/behavior"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.pe.description:WMI\\ Commandline\\ Utility OR process.pe.original_file_name:wmic.exe OR process.executable:*\\\\WMIC.exe) AND (process.command_line:(*LOGICALDISK\\ get\\ Name,Size,FreeSpace* OR *os\\ get\\ Caption,OSArchitecture,Version*))"
+}

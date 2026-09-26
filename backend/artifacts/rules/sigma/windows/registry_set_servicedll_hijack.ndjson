@@ -1,0 +1,88 @@
+{
+  "id": "ec537e44-ea05-42be-bd77-8912494cb3b5",
+  "name": "ServiceDll Hijack",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1543.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects changes to the \"ServiceDLL\" value related to a service in the registry.\nThis is often used as a method of persistence.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Administrative scripts",
+    "Installation of a service"
+  ],
+  "from": "now-360s",
+  "rule_id": "263d0e10-9dc8-466f-a9c0-6ab3cf8f2297",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1543",
+          "name": "Create or Modify System Process",
+          "reference": "https://attack.mitre.org/techniques/T1543/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/f339e7da7d05f6057fdfcdd3742bfcf365fee2a9/atomics/T1543.003/T1543.003.md#atomic-test-4---tinyturla-backdoor-service-w64time",
+    "https://www.hexacorn.com/blog/2013/09/19/beyond-good-ol-run-key-part-4/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((registry.path:*\\\\System\\\\* AND registry.path:*ControlSet* AND registry.path:*\\\\Services\\\\*) AND registry.path:*\\\\Parameters\\\\ServiceDll) AND (NOT (winlog.event_data.Details:C\\:\\\\Windows\\\\system32\\\\spool\\\\drivers\\\\x64\\\\3\\\\PrintConfig.dll OR (process.executable:C\\:\\\\Windows\\\\system32\\\\lsass.exe AND registry.path:*\\\\Services\\\\NTDS\\\\Parameters\\\\ServiceDll AND winlog.event_data.Details:%%systemroot%%\\\\system32\\\\ntdsa.dll) OR process.executable:C\\:\\\\Windows\\\\System32\\\\poqexec.exe)) AND (NOT (process.executable:*\\\\regsvr32.exe AND winlog.event_data.Details:C\\:\\\\Windows\\\\System32\\\\STAgent.dll))"
+}

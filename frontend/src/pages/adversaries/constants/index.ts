@@ -1,0 +1,2 @@
+export const ADVERSARIES_HEADER_TITLE = "Adversaries"
+export const ADVERSARIES_HEADER_DESCRIPTION = "The Adversaries page offers insights into known threat actors, their tactics, and associated campaigns. It helps security teams understand attacker behavior and assess potential risks."

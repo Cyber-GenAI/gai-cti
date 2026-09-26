@@ -1,0 +1,69 @@
+{
+  "id": "240139a6-a766-4c79-b587-63c545f8f86b",
+  "name": "PUA - NPS Tunneling Tool Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1090",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the use of NPS, a port forwarding and intranet penetration proxy server",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "8f707ec0-8021-4c21-aadb-b926fe96d4d3",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/ehang-io/nps"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\npc.exe OR (process.command_line:*\\ \\-server\\=* AND process.command_line:*\\ \\-vkey\\=* AND process.command_line:*\\ \\-password\\=*) OR process.command_line:*\\ \\-config\\=npc* OR (winlog.event_data.Hashes:(*MD5\\=AE8ACF66BFE3A44148964048B826D005* OR *SHA1\\=CEA49E9B9B67F3A13AD0BE1C2655293EA3C18181* OR *SHA256\\=5A456283392FFCEEEACA3D3426C306EB470304637520D72FED1CC1FEBBBD6856*))"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "749d0331-a7a6-4d13-84fc-d6904ee9077a",
+  "name": "Use of W32tm as Timer",
+  "tags": [
+    "attack.discovery",
+    "attack.t1124",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "When configured with suitable command line arguments, w32tm can act as a delay mechanism",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use"
+  ],
+  "from": "now-360s",
+  "rule_id": "167abb11-6e65-4b69-8c59-c9a968cfdf4f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0007",
+        "name": "Discovery",
+        "reference": "https://attack.mitre.org/tactics/TA0007/"
+      },
+      "technique": [
+        {
+          "id": "T1124",
+          "name": "System Time Discovery",
+          "reference": "https://attack.mitre.org/techniques/T1124/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/redcanaryco/atomic-red-team/blob/d0dad62dbcae9c60c519368e82c196a3db577055/atomics/T1124/T1124.md",
+    "https://blogs.blackberry.com/en/2022/05/dirty-deeds-done-dirt-cheap-russian-rat-offers-backdoor-bargains"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\w32tm.exe OR process.pe.original_file_name:w32time.dll) AND (process.command_line:*\\/stripchart* AND process.command_line:*\\/computer\\:* AND process.command_line:*\\/period\\:* AND process.command_line:*\\/dataonly* AND process.command_line:*\\/samples\\:*)"
+}

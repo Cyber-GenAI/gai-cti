@@ -1,0 +1,51 @@
+{
+  "id": "6be6a44a-f438-464a-bda7-47c50ceee631",
+  "name": "NetSupport Manager Service Install",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects NetSupport Manager service installation on the target system.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate use of the tool"
+  ],
+  "from": "now-360s",
+  "rule_id": "60a7b354-ea66-4911-8dac-eac1ba17a590",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "http://resources.netsupportsoftware.com/resources/manualpdfs/nsm_manual_uk.pdf"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:System AND ((winlog.provider_name:Service\\ Control\\ Manager AND event.code:7045) AND (winlog.event_data.ImagePath:*\\\\NetSupport\\ Manager\\\\client32.exe* OR winlog.event_data.ServiceName:Client32))"
+}

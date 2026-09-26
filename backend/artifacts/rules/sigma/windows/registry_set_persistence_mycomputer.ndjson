@@ -1,0 +1,51 @@
+{
+  "id": "27ab1daa-9e6e-43c0-8a40-3c42c6a7c245",
+  "name": "Potential Persistence Via MyComputer Registry Keys",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects modification to the \"Default\" value of the \"MyComputer\" key and subkeys to point to a custom binary that will be launched whenever the associated action is executed (see reference section for example)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely but if you experience FPs add specific processes and locations you would like to monitor for"
+  ],
+  "from": "now-360s",
+  "rule_id": "7b3af674-e389-4f03-9fb6-1efc445be93f",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.hexacorn.com/blog/2017/01/18/beyond-good-ol-run-key-part-55/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\MyComputer* AND registry.path:*\\(Default\\)"
+}

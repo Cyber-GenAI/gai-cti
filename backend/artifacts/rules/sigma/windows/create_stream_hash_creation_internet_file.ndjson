@@ -1,0 +1,52 @@
+{
+  "id": "ba80bb0f-5890-4f98-9581-c5ad71e7a54e",
+  "name": "Creation Of a Suspicious ADS File Outside a Browser Download",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the creation of a suspicious ADS (Alternate Data Stream) file by software other than browsers",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Other legitimate browsers not currently included in the filter (please add them)",
+    "Legitimate downloads via scripting or command-line tools (Investigate to determine if it's legitimate)"
+  ],
+  "from": "now-360s",
+  "rule_id": "a21e9435-7434-4175-a597-5ee36a8526b3",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://www.bleepingcomputer.com/news/security/exploited-windows-zero-day-lets-javascript-files-bypass-security-warnings/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(winlog.event_data.Contents:\\[ZoneTransfer\\]\\ \\ ZoneId\\=3* AND file.path:*\\:Zone.Identifier AND (file.path:(*.exe* OR *.scr* OR *.bat* OR *.cmd* OR *.docx* OR *.hta* OR *.jse* OR *.lnk* OR *.pptx* OR *.ps* OR *.reg* OR *.sct* OR *.vb* OR *.wsc* OR *.wsf* OR *.xlsx*))) AND (NOT (process.executable:*\\\\brave.exe OR (process.executable:(C\\:\\\\Program\\ Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe)) OR (process.executable:(C\\:\\\\Program\\ Files\\\\Mozilla\\ Firefox\\\\firefox.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Mozilla\\ Firefox\\\\firefox.exe)) OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Internet\\ Explorer\\\\iexplore.exe OR C\\:\\\\Program\\ Files\\\\Internet\\ Explorer\\\\iexplore.exe)) OR process.executable:*\\\\maxthon.exe OR (process.executable:C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeWebView\\\\Application\\\\* OR process.executable:*\\\\WindowsApps\\\\MicrosoftEdge.exe OR (process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe))) OR ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\Microsoft\\\\EdgeCore\\\\* OR C\\:\\\\Program\\ Files\\\\Microsoft\\\\EdgeCore\\\\*)) AND (process.executable:(*\\\\msedge.exe OR *\\\\msedgewebview2.exe))) OR process.executable:*\\\\opera.exe OR process.executable:*\\\\safari.exe OR process.executable:*\\\\seamonkey.exe OR process.executable:*\\\\vivaldi.exe OR process.executable:*\\\\whale.exe OR (process.executable:C\\:\\\\Program\\ Files\\\\WindowsApps\\\\Microsoft.ScreenSketch_* AND process.executable:*\\\\SnippingTool\\\\SnippingTool.exe AND file.path:C\\:\\\\Users\\\\* AND (file.path:*\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.ScreenSketch_* AND file.path:*\\\\TempState\\\\Screenshot\\ *) AND file.path:*.png\\:Zone.Identifier)))"
+}

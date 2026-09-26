@@ -1,0 +1,75 @@
+{
+  "id": "35c488d2-91d9-4b6b-ab8c-7dea0a93e0ec",
+  "name": "PUA - PingCastle Execution From Potentially Suspicious Parent",
+  "tags": [
+    "attack.reconnaissance",
+    "attack.t1595",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of PingCastle, a tool designed to quickly assess the Active Directory security level via a script located in a potentially suspicious or uncommon location.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2dfcd457-bd96-41d4-87d3-ba480b94ef53",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0043",
+        "name": "Reconnaissance",
+        "reference": "https://attack.mitre.org/tactics/TA0043/"
+      },
+      "technique": [
+        {
+          "id": "T1595",
+          "name": "Active Scanning",
+          "reference": "https://attack.mitre.org/techniques/T1595/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/vletoux/pingcastle",
+    "https://thedfirreport.com/2023/10/30/netsupport-intrusion-results-in-domain-compromise/",
+    "https://github.com/fengjixuchui/Start-ADEnum/blob/e237a739db98b6104427d833004836507da36a58/Functions/Start-ADEnum.ps1#L450",
+    "https://github.com/lkys37en/Start-ADEnum/blob/5b42c54215fe5f57fc59abc52c20487d15764005/Functions/Start-ADEnum.ps1#L680",
+    "https://github.com/projectHULK/AD_Recon/blob/dde2daba9b3393a9388cbebda87068972cc0bd3b/SecurityAssessment.ps1#L2699",
+    "https://github.com/802-1x/Compliance/blob/2e53df8b6e89686a0b91116b3f42c8f717dca820/Ping%20Castle/Get-PingCastle-HTMLComplianceReport.ps1#L8",
+    "https://github.com/EvotecIT/TheDashboard/blob/481a9ce8f82f2fd55fe65220ee6486bae6df0c9d/Examples/RunReports/PingCastle.ps1"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.command_line:(*.bat* OR *.chm* OR *.cmd* OR *.hta* OR *.htm* OR *.html* OR *.js* OR *.lnk* OR *.ps1* OR *.vbe* OR *.vbs* OR *.wsf*)) OR (process.parent.command_line:(*\\:\\\\Perflogs\\\\* OR *\\:\\\\Temp\\\\* OR *\\:\\\\Users\\\\Public\\\\* OR *\\:\\\\Windows\\\\Temp\\\\* OR *\\\\AppData\\\\Local\\\\Temp* OR *\\\\AppData\\\\Roaming\\\\* OR *\\\\Temporary\\ Internet*)) OR ((process.parent.command_line:*\\:\\\\Users\\\\* AND process.parent.command_line:*\\\\Favorites\\\\*) OR (process.parent.command_line:*\\:\\\\Users\\\\* AND process.parent.command_line:*\\\\Favourites\\\\*) OR (process.parent.command_line:*\\:\\\\Users\\\\* AND process.parent.command_line:*\\\\Contacts\\\\*))) AND (process.parent.command_line:(*.bat* OR *.chm* OR *.cmd* OR *.hta* OR *.htm* OR *.html* OR *.js* OR *.lnk* OR *.ps1* OR *.vbe* OR *.vbs* OR *.wsf*)) AND (process.executable:*\\\\PingCastle.exe OR process.pe.original_file_name:PingCastle.exe OR process.pe.product:Ping\\ Castle OR (process.command_line:(*\\-\\-scanner\\ aclcheck* OR *\\-\\-scanner\\ antivirus* OR *\\-\\-scanner\\ computerversion* OR *\\-\\-scanner\\ foreignusers* OR *\\-\\-scanner\\ laps_bitlocker* OR *\\-\\-scanner\\ localadmin* OR *\\-\\-scanner\\ nullsession* OR *\\-\\-scanner\\ nullsession\\-trust* OR *\\-\\-scanner\\ oxidbindings* OR *\\-\\-scanner\\ remote* OR *\\-\\-scanner\\ share* OR *\\-\\-scanner\\ smb* OR *\\-\\-scanner\\ smb3querynetwork* OR *\\-\\-scanner\\ spooler* OR *\\-\\-scanner\\ startup* OR *\\-\\-scanner\\ zerologon*)) OR process.command_line:*\\-\\-no\\-enum\\-limit* OR (process.command_line:*\\-\\-healthcheck* AND process.command_line:*\\-\\-level\\ Full*) OR (process.command_line:*\\-\\-healthcheck* AND process.command_line:*\\-\\-server\\ *))"
+}

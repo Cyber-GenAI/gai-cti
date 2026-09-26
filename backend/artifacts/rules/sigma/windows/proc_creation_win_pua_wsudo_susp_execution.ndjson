@@ -1,0 +1,70 @@
+{
+  "id": "34dc7e46-5dd4-4554-9ee8-0534705a7946",
+  "name": "PUA - Wsudo Suspicious Execution",
+  "tags": [
+    "attack.execution",
+    "attack.privilege-escalation",
+    "attack.t1059",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects usage of wsudo (Windows Sudo Utility). Which is a tool that let the user execute programs with different permissions (System, Trusted Installer, Administrator...etc)",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "a84196b5-8ba4-457e-8ff7-154bc425694c",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://github.com/M2Team/Privexec/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*\\\\wsudo.exe OR process.pe.original_file_name:wsudo.exe OR process.pe.description:Windows\\ sudo\\ utility OR process.parent.executable:*\\\\wsudo\\-bridge.exe) OR (process.command_line:(*\\-u\\ System* OR *\\-uSystem* OR *\\-u\\ TrustedInstaller* OR *\\-uTrustedInstaller* OR *\\ \\-\\-ti\\ *))"
+}

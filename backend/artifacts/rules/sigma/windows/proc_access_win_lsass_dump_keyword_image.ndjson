@@ -1,0 +1,71 @@
+{
+  "id": "8bc4c574-6403-4094-a744-6515a8ed32d4",
+  "name": "LSASS Memory Access by Tool With Dump Keyword In Name",
+  "tags": [
+    "attack.credential-access",
+    "attack.t1003.001",
+    "attack.s0002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects LSASS process access requests from a source process with the \"dump\" keyword in its image name.",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Rare programs that contain the word dump in their name and access lsass"
+  ],
+  "from": "now-360s",
+  "rule_id": "8b93ed85-791e-470d-995f-786c43a357fa",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0006",
+        "name": "Credential Access",
+        "reference": "https://attack.mitre.org/tactics/TA0006/"
+      },
+      "technique": [
+        {
+          "id": "T1003",
+          "name": "OS Credential Dumping",
+          "reference": "https://attack.mitre.org/techniques/T1003/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://twitter.com/_xpn_/status/1491557187168178176",
+    "https://www.ired.team/offensive-security/credential-access-and-credential-dumping/dump-credentials-from-lsass-process-without-mimikatz"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.event_data.TargetImage:*\\\\lsass.exe AND process.executable:*dump* AND (winlog.event_data.GrantedAccess:(*10 OR *30 OR *50 OR *70 OR *90 OR *B0 OR *D0 OR *F0 OR *18 OR *38 OR *58 OR *78 OR *98 OR *B8 OR *D8 OR *F8 OR *1A OR *3A OR *5A OR *7A OR *9A OR *BA OR *DA OR *FA OR *0x14C2 OR *FF))"
+}

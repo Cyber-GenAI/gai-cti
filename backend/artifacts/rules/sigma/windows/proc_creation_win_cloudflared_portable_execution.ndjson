@@ -1,0 +1,73 @@
+{
+  "id": "e6d46ab7-e278-40be-841f-7b3f35015959",
+  "name": "Cloudflared Portable Execution",
+  "tags": [
+    "attack.command-and-control",
+    "attack.t1090.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the execution of the \"cloudflared\" binary from a non standard location.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate usage of Cloudflared portable versions"
+  ],
+  "from": "now-360s",
+  "rule_id": "3e13a24c-4fde-4864-9c4b-5d8d791645f7",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0011",
+        "name": "Command And Control",
+        "reference": "https://attack.mitre.org/tactics/TA0011/"
+      },
+      "technique": [
+        {
+          "id": "T1090",
+          "name": "Proxy",
+          "reference": "https://attack.mitre.org/techniques/T1090/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/trycloudflare/",
+    "https://github.com/cloudflare/cloudflared",
+    "https://www.intrinsec.com/akira_ransomware/",
+    "https://www.guidepointsecurity.com/blog/tunnel-vision-cloudflared-abused-in-the-wild/",
+    "https://github.com/cloudflare/cloudflared/releases"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:*\\\\cloudflared.exe AND (NOT (process.executable:(*\\:\\\\Program\\ Files\\ \\(x86\\)\\\\cloudflared\\\\* OR *\\:\\\\Program\\ Files\\\\cloudflared\\\\*)))"
+}

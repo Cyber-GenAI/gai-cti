@@ -1,0 +1,69 @@
+{
+  "id": "faf1970b-89b3-40ed-a3e3-7f142969111b",
+  "name": "Malicious Base64 Encoded PowerShell Keywords in Command Lines",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects base64 encoded strings used in hidden malicious PowerShell command lines",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "eeea205e-4e56-461e-bbc3-cdfbf8704096",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "http://www.leeholmes.com/blog/2017/09/21/searching-for-content-in-base-64-strings/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) OR (process.pe.original_file_name:(PowerShell.EXE OR pwsh.dll))) AND process.command_line:*\\ hidden\\ * AND (process.command_line:(*AGkAdABzAGEAZABtAGkAbgAgAC8AdAByAGEAbgBzAGYAZQByA* OR *aXRzYWRtaW4gL3RyYW5zZmVy* OR *IAaQB0AHMAYQBkAG0AaQBuACAALwB0AHIAYQBuAHMAZgBlAHIA* OR *JpdHNhZG1pbiAvdHJhbnNmZX* OR *YgBpAHQAcwBhAGQAbQBpAG4AIAAvAHQAcgBhAG4AcwBmAGUAcg* OR *Yml0c2FkbWluIC90cmFuc2Zlc* OR *AGMAaAB1AG4AawBfAHMAaQB6AGUA* OR *JABjAGgAdQBuAGsAXwBzAGkAegBlA* OR *JGNodW5rX3Npem* OR *QAYwBoAHUAbgBrAF8AcwBpAHoAZQ* OR *RjaHVua19zaXpl* OR *Y2h1bmtfc2l6Z* OR *AE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4A* OR *kATwAuAEMAbwBtAHAAcgBlAHMAcwBpAG8Abg* OR *lPLkNvbXByZXNzaW9u* OR *SQBPAC4AQwBvAG0AcAByAGUAcwBzAGkAbwBuA* OR *SU8uQ29tcHJlc3Npb2* OR *Ty5Db21wcmVzc2lvb* OR *AE8ALgBNAGUAbQBvAHIAeQBTAHQAcgBlAGEAbQ* OR *kATwAuAE0AZQBtAG8AcgB5AFMAdAByAGUAYQBtA* OR *lPLk1lbW9yeVN0cmVhb* OR *SQBPAC4ATQBlAG0AbwByAHkAUwB0AHIAZQBhAG0A* OR *SU8uTWVtb3J5U3RyZWFt* OR *Ty5NZW1vcnlTdHJlYW* OR *4ARwBlAHQAQwBoAHUAbgBrA* OR *5HZXRDaHVua* OR *AEcAZQB0AEMAaAB1AG4Aaw* OR *LgBHAGUAdABDAGgAdQBuAGsA* OR *LkdldENodW5r* OR *R2V0Q2h1bm* OR *AEgAUgBFAEEARABfAEkATgBGAE8ANgA0A* OR *QASABSAEUAQQBEAF8ASQBOAEYATwA2ADQA* OR *RIUkVBRF9JTkZPNj* OR *SFJFQURfSU5GTzY0* OR *VABIAFIARQBBAEQAXwBJAE4ARgBPADYANA* OR *VEhSRUFEX0lORk82N* OR *AHIAZQBhAHQAZQBSAGUAbQBvAHQAZQBUAGgAcgBlAGEAZA* OR *cmVhdGVSZW1vdGVUaHJlYW* OR *MAcgBlAGEAdABlAFIAZQBtAG8AdABlAFQAaAByAGUAYQBkA* OR *NyZWF0ZVJlbW90ZVRocmVhZ* OR *Q3JlYXRlUmVtb3RlVGhyZWFk* OR *QwByAGUAYQB0AGUAUgBlAG0AbwB0AGUAVABoAHIAZQBhAGQA* OR *0AZQBtAG0AbwB2AGUA* OR *1lbW1vdm* OR *AGUAbQBtAG8AdgBlA* OR *bQBlAG0AbQBvAHYAZQ* OR *bWVtbW92Z* OR *ZW1tb3Zl*))"
+}

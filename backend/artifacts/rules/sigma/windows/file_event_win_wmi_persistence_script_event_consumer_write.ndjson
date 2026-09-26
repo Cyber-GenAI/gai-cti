@@ -1,0 +1,69 @@
+{
+  "id": "35775927-f9d3-46c7-8822-6ae7e4e8fa98",
+  "name": "WMI Persistence - Script Event Consumer File Write",
+  "tags": [
+    "attack.t1546.003",
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects file writes of WMI script event consumer",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Dell Power Manager (C:\\Program Files\\Dell\\PowerManager\\DpmPowerPlanSetup.exe)"
+  ],
+  "from": "now-360s",
+  "rule_id": "af7ae79d-f483-40f8-aa1a-28e980fc0b2f",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0003",
+        "name": "Persistence",
+        "reference": "https://attack.mitre.org/tactics/TA0003/"
+      },
+      "technique": [
+        {
+          "id": "T1546",
+          "name": "Event Triggered Execution",
+          "reference": "https://attack.mitre.org/techniques/T1546/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.eideon.com/2018-03-02-THL03-WMIBackdoors/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.executable:C\\:\\\\WINDOWS\\\\system32\\\\wbem\\\\scrcons.exe"
+}

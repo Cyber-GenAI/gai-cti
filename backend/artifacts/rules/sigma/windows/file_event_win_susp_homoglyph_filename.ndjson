@@ -1,0 +1,71 @@
+{
+  "id": "9be7f96b-a44b-4dcd-96ca-4e48a25396e8",
+  "name": "Potential Homoglyph Attack Using Lookalike Characters in Filename",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects the presence of unicode characters which are homoglyphs, or identical in appearance, to ASCII letter characters.\nThis is used as an obfuscation and masquerading techniques. Only \"perfect\" homoglyphs are included; these are characters that\nare indistinguishable from ASCII characters and thus may make excellent candidates for homoglyph attack characters.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "File names with legitimate Cyrillic text. Will likely require tuning (or not be usable) in countries where these alphabets are in use."
+  ],
+  "from": "now-360s",
+  "rule_id": "11e31741-a6f3-47d9-a540-9d3789534987",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://redcanary.com/threat-detection-report/threats/socgholish/#threat-socgholish",
+    "http://www.irongeek.com/homoglyph-attack-generator.php"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\u0410* OR *\u0412* OR *\u0415* OR *\u041a* OR *\u041c* OR *\u041d* OR *\u041e* OR *\u0420* OR *\u0421* OR *\u0422* OR *\u0425* OR *\u0405* OR *\u0406* OR *\u0408* OR *\u04ae* OR *\u04c0* OR *\u050c* OR *\u051a* OR *\u051c* OR *\u0391* OR *\u0392* OR *\u0395* OR *\u0396* OR *\u0397* OR *\u0399* OR *\u039a* OR *\u039c* OR *\u039d* OR *\u039f* OR *\u03a1* OR *\u03a4* OR *\u03a5* OR *\u03a7*)) OR (file.path:(*\u0430* OR *\u0435* OR *\u043e* OR *\u0440* OR *\u0441* OR *\u0445* OR *\u0455* OR *\u0456* OR *\u04cf* OR *\u0458* OR *\u04bb* OR *\u0501* OR *\u051b* OR *\u051d* OR *\u03bf*))"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "abd60b89-7e60-4115-a733-646201a5c048",
+  "name": "Renamed PsExec Service Execution",
+  "tags": [
+    "attack.execution",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious launch of a renamed version of the PSEXESVC service with, which is not often used by legitimate administrators",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative tasks"
+  ],
+  "from": "now-360s",
+  "rule_id": "7087820e-4626-4c21-a334-610ea604bac8",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/sysinternals/downloads/psexec",
+    "https://www.youtube.com/watch?v=ro2QuZTIMBM"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "process.pe.original_file_name:psexesvc.exe AND (NOT process.executable:C\\:\\\\Windows\\\\PSEXESVC.exe)"
+}

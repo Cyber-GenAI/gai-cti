@@ -1,0 +1,71 @@
+{
+  "id": "8700f21c-07ac-4a58-aaa2-cee009b4d210",
+  "name": "LOL-Binary Copied From System Directory",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1036.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects a suspicious copy operation that tries to copy a known LOLBIN from system (System32, SysWOW64, WinSxS) directories to another on disk in order to bypass detections based on locations.\n",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "0760c455-6da2-4a18-b37c-914f82b2f085",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1036",
+          "name": "Masquerading",
+          "reference": "https://attack.mitre.org/techniques/T1036/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.hybrid-analysis.com/sample/8da5b75b6380a41eee3a399c43dfe0d99eeefaa1fd21027a07b1ecaa4cd96fdd?environmentId=120",
+    "https://web.archive.org/web/20180331144337/https://www.fireeye.com/blog/threat-research/2018/03/sanny-malware-delivery-method-updated-in-recently-observed-attacks.html",
+    "https://thedfirreport.com/2023/08/28/html-smuggling-leads-to-domain-wide-ransomware/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.executable:*\\\\cmd.exe AND process.command_line:*copy\\ *) OR ((process.executable:(*\\\\powershell.exe OR *\\\\pwsh.exe)) AND (process.command_line:(*copy\\-item* OR *\\ copy\\ * OR *cpi\\ * OR *\\ cp\\ *))) OR ((process.executable:(*\\\\robocopy.exe OR *\\\\xcopy.exe)) OR (process.pe.original_file_name:(robocopy.exe OR XCOPY.EXE)))) AND ((process.command_line:(*\\\\System32* OR *\\\\SysWOW64* OR *\\\\WinSxS*)) AND (process.command_line:(*\\\\bitsadmin.exe* OR *\\\\calc.exe* OR *\\\\certutil.exe* OR *\\\\cmdl32.exe* OR *\\\\cscript.exe* OR *\\\\mshta.exe* OR *\\\\rundll32.exe* OR *\\\\wscript.exe*)))"
+}

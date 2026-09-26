@@ -1,0 +1,87 @@
+{
+  "id": "b1fceb45-a35e-4458-bc87-e24fdb32bec7",
+  "name": "Potential SmadHook.DLL Sideloading",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.privilege-escalation",
+    "attack.t1574.001",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential DLL sideloading of \"SmadHook.dll\", a DLL used by SmadAV antivirus",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unlikely"
+  ],
+  "from": "now-360s",
+  "rule_id": "c5e7f0c9-b8a0-41a9-85e8-901d814fd92e",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    },
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1574",
+          "name": "Hijack Execution Flow",
+          "reference": "https://attack.mitre.org/techniques/T1574/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://research.checkpoint.com/2023/malware-spotlight-camaro-dragons-tinynote-backdoor/",
+    "https://www.qurium.org/alerts/targeted-malware-against-crph/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(file.path:(*\\\\SmadHook32c.dll OR *\\\\SmadHook64c.dll)) AND (NOT ((process.executable:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SMADAV\\\\SmadavProtect32.exe OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SMADAV\\\\SmadavProtect64.exe OR C\\:\\\\Program\\ Files\\\\SMADAV\\\\SmadavProtect32.exe OR C\\:\\\\Program\\ Files\\\\SMADAV\\\\SmadavProtect64.exe)) AND (file.path:(C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SMADAV\\\\* OR C\\:\\\\Program\\ Files\\\\SMADAV\\\\*))))"
+}

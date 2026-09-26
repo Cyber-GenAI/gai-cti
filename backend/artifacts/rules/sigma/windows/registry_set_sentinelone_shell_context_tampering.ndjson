@@ -1,0 +1,51 @@
+{
+  "id": "48969755-a79c-455a-93f7-9d6ce349e200",
+  "name": "Potential SentinelOne Shell Context Menu Scan Command Tampering",
+  "tags": [
+    "attack.persistence",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potentially suspicious changes to the SentinelOne context menu scan command by a process other than SentinelOne.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "eb229c40-8946-4669-b2d9-ff38da3043e7",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "https://mrd0x.com/sentinelone-persistence-via-menu-context/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "registry.path:*\\\\shell\\\\SentinelOneScan\\\\command\\\\* AND (NOT (((winlog.event_data.Details:(C\\:\\\\Program\\ Files\\\\SentinelOne\\\\Sentinel\\ Agent* OR C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SentinelOne\\\\Sentinel\\ Agent*)) AND winlog.event_data.Details:*\\\\SentinelScanFromContextMenu.exe*) OR (process.executable:(*C\\:\\\\Program\\ Files\\\\SentinelOne\\\\ OR *C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\SentinelOne\\\\))))"
+}

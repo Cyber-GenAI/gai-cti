@@ -1,0 +1,70 @@
+{
+  "id": "e4bb4715-66a3-463e-abeb-4f8ab54b57ff",
+  "name": "Addition of SID History to Active Directory Object",
+  "tags": [
+    "attack.persistence",
+    "attack.privilege-escalation",
+    "attack.t1134.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "An attacker can use the SID history attribute to gain additional privileges.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Migration of an account into a new domain"
+  ],
+  "from": "now-360s",
+  "rule_id": "d12cb2e4-152b-4c9b-b5d7-4fc96784cbe5",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0004",
+        "name": "Privilege Escalation",
+        "reference": "https://attack.mitre.org/tactics/TA0004/"
+      },
+      "technique": [
+        {
+          "id": "T1134",
+          "name": "Access Token Manipulation",
+          "reference": "https://attack.mitre.org/techniques/T1134/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://adsecurity.org/?p=1772"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Security AND ((event.code:(4765 OR 4766)) OR (event.code:4738 AND (NOT (winlog.event_data.SidHistory:(\\- OR %%1793))) AND _exists_:winlog.event_data.SidHistory))"
+}

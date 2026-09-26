@@ -1,0 +1,73 @@
+{
+  "id": "3114d43f-e3fa-4842-a33f-e1f61781c6d7",
+  "name": "Windows Firewall Profile Disabled",
+  "tags": [
+    "attack.defense-evasion",
+    "attack.t1562.004",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects when a user disables the Windows Firewall via a Profile to help evade defense.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "ae3201d6-fbf6-41be-8302-7fea06e070c4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1562",
+          "name": "Impair Defenses",
+          "reference": "https://attack.mitre.org/techniques/T1562/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://learn.microsoft.com/en-us/powershell/module/netsecurity/set-netfirewallprofile?view=windowsserver2022-ps",
+    "https://www.tutorialspoint.com/how-to-get-windows-firewall-profile-settings-using-powershell",
+    "https://web.archive.org/web/20230929023836/http://powershellhelp.space/commands/set-netfirewallrule-psv5.php",
+    "http://woshub.com/manage-windows-firewall-powershell/",
+    "https://www.elastic.co/guide/en/security/current/windows-firewall-disabled-via-powershell.html"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(powershell.file.script_block_text:*Set\\-NetFirewallProfile\\ * AND powershell.file.script_block_text:*\\ \\-Enabled\\ * AND powershell.file.script_block_text:*\\ False*) AND (powershell.file.script_block_text:(*\\ \\-All\\ * OR *Public* OR *Domain* OR *Private*))"
+}

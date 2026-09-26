@@ -1,0 +1,70 @@
+{
+  "id": "465abc65-d946-43aa-8d02-1dc7fc8f393a",
+  "name": "Potential CommandLine Path Traversal Via Cmd.EXE",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.003",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects potential path traversal attempt via cmd.exe. Could indicate possible command/argument confusion/hijacking",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Java tools are known to produce false-positive when loading libraries"
+  ],
+  "from": "now-360s",
+  "rule_id": "06b00b51-d186-479a-8764-e10042ec51b4",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://hackingiscool.pl/cmdhijack-command-argument-confusion-with-path-traversal-in-cmd-exe/",
+    "https://twitter.com/Oddvarmoe/status/1270633613449723905"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "((process.parent.executable:*\\\\cmd.exe OR process.executable:*\\\\cmd.exe OR process.pe.original_file_name:cmd.exe) AND ((process.parent.command_line:(*\\/c* OR *\\/k* OR *\\/r*)) OR (process.command_line:(*\\/c* OR *\\/k* OR *\\/r*))) AND (process.parent.command_line:\\/..\\/..\\/ OR process.command_line:*\\/..\\/..\\/*)) AND (NOT process.command_line:*\\\\Tasktop\\\\keycloak\\\\bin\\\\\\/..\\/..\\/jre\\\\bin\\\\java*)"
+}

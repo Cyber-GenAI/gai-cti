@@ -1,0 +1,71 @@
+{
+  "id": "549e8f7c-a3c9-4d78-be45-d0ed8b8ece95",
+  "name": "Suspicious Scripting in a WMI Consumer",
+  "tags": [
+    "attack.execution",
+    "attack.t1059.005",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects suspicious commands that are related to scripting/powershell in WMI Event Consumers",
+  "risk_score": 80,
+  "severity": "high",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Legitimate administrative scripts"
+  ],
+  "from": "now-360s",
+  "rule_id": "054288ef-b721-4383-8add-e9ec4e4d3deb",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1059",
+          "name": "Command and Scripting Interpreter",
+          "reference": "https://attack.mitre.org/techniques/T1059/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://in.security/an-intro-into-abusing-and-identifying-wmi-event-subscriptions-for-persistence/",
+    "https://github.com/Neo23x0/signature-base/blob/615bf1f6bac3c1bdc417025c40c073e6c2771a76/yara/gen_susp_lnk_files.yar#L19",
+    "https://github.com/RiccardoAncarani/LiquidSnake"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:*new\\-object* AND process.executable:*net.webclient* AND process.executable:*.downloadstring*) OR (process.executable:*new\\-object* AND process.executable:*net.webclient* AND process.executable:*.downloadfile*) OR (process.executable:(*\\ iex\\(* OR *\\ \\-nop\\ * OR *\\ \\-noprofile\\ * OR *\\ \\-decode\\ * OR *\\ \\-enc\\ * OR *WScript.Shell* OR *System.Security.Cryptography.FromBase64Transform*))"
+}

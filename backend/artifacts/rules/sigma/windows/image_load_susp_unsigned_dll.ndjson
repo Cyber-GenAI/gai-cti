@@ -1,0 +1,72 @@
+{
+  "id": "d8821325-0ac8-4ac1-9afc-efb2527016bb",
+  "name": "Unsigned DLL Loaded by Windows Utility",
+  "tags": [
+    "attack.t1218.011",
+    "attack.t1218.010",
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects windows utilities loading an unsigned or untrusted DLL.\nAdversaries often abuse those programs to proxy execution of malicious code.\n",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "4c81c96d-fd76-445d-ae67-1555096cd047",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0005",
+        "name": "Defense Evasion",
+        "reference": "https://attack.mitre.org/tactics/TA0005/"
+      },
+      "technique": [
+        {
+          "id": "T1218",
+          "name": "System Binary Proxy Execution",
+          "reference": "https://attack.mitre.org/techniques/T1218/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://www.elastic.co/security-labs/Hunting-for-Suspicious-Windows-Libraries-for-Execution-and-Evasion",
+    "https://akhere.hashnode.dev/hunting-unsigned-dlls-using-kql",
+    "https://unit42.paloaltonetworks.com/unsigned-dlls/?web_view=true"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(process.executable:(*\\\\InstallUtil.exe OR *\\\\RegAsm.exe OR *\\\\RegSvcs.exe OR *\\\\regsvr32.exe OR *\\\\rundll32.exe)) AND (NOT (file.code_signature.signed:true OR (file.code_signature.status:(errorChaining OR errorCode_endpoint OR errorExpired OR trusted)) OR (NOT _exists_:file.code_signature.signed) OR (file.code_signature.signed:(\"\" OR \\-)) OR (NOT _exists_:file.code_signature.status) OR (file.code_signature.status:(\"\" OR \\-))))"
+}

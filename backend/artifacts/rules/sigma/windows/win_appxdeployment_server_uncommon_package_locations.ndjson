@@ -1,0 +1,54 @@
+{
+  "id": "c59990cf-4034-4c8d-9424-efad43954918",
+  "name": "Uncommon AppX Package Locations",
+  "tags": [
+    "attack.defense-evasion",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Detects an appx package added the pipeline of the \"to be processed\" packages which is located in uncommon locations",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "2a2d9028-0fbf-417b-9912-6a75db6f7209",
+  "max_signals": 100,
+  "threat": [],
+  "to": "now",
+  "references": [
+    "Internal Research",
+    "https://www.sentinelone.com/labs/inside-malicious-windows-apps-for-malware-deployment/",
+    "https://learn.microsoft.com/en-us/windows/win32/appxpkg/troubleshooting",
+    "https://news.sophos.com/en-us/2021/11/11/bazarloader-call-me-back-attack-abuses-windows-10-apps-mechanism/"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "winlog.channel:Microsoft\\-Windows\\-AppXDeploymentServer\\/Operational AND (event.code:854 AND (NOT ((winlog.event_data.Path:(*C\\:\\\\Program\\ Files\\\\WindowsApps\\\\* OR *C\\:\\\\Program\\ Files\\ \\(x86\\)\\\\* OR *C\\:\\\\Windows\\\\SystemApps\\\\* OR *C\\:\\\\Windows\\\\PrintDialog\\\\* OR *C\\:\\\\Windows\\\\ImmersiveControlPanel\\\\* OR *x\\-windowsupdate\\:\\/\\/* OR *file\\:\\/\\/\\/C\\:\\/Program%20Files*)) OR (winlog.event_data.Path:(*https\\:\\/\\/statics.teams.cdn.live.net\\/* OR *https\\:\\/\\/statics.teams.cdn.office.net\\/* OR *microsoft.com* OR *https\\:\\/\\/installer.teams.static.microsoft\\/*)))))"
+}

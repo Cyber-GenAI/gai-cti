@@ -1,0 +1,69 @@
+{
+  "id": "d2d9532a-14e1-4ae0-ac18-7ef31c522cea",
+  "name": "Enable Microsoft Dynamic Data Exchange",
+  "tags": [
+    "attack.execution",
+    "attack.t1559.002",
+    "Type: GAI_CTI_SIGMA_WINDOWS"
+  ],
+  "interval": "5m",
+  "enabled": true,
+  "revision": 0,
+  "description": "Enable Dynamic Data Exchange protocol (DDE) in all supported editions of Microsoft Word or Excel.",
+  "risk_score": 50,
+  "severity": "medium",
+  "author": [
+    "GAI_CTI"
+  ],
+  "false_positives": [
+    "Unknown"
+  ],
+  "from": "now-360s",
+  "rule_id": "236350f9-4bfd-4d8a-a228-6b27e65c4eed",
+  "max_signals": 100,
+  "threat": [
+    {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": "TA0002",
+        "name": "Execution",
+        "reference": "https://attack.mitre.org/tactics/TA0002/"
+      },
+      "technique": [
+        {
+          "id": "T1559",
+          "name": "Inter-Process Communication",
+          "reference": "https://attack.mitre.org/techniques/T1559/",
+          "subtechnique": []
+        }
+      ]
+    }
+  ],
+  "to": "now",
+  "references": [
+    "https://msrc.microsoft.com/update-guide/vulnerability/ADV170021"
+  ],
+  "version": 1,
+  "immutable": false,
+  "rule_source": {
+    "type": "internal"
+  },
+  "setup": "",
+  "type": "query",
+  "language": "lucene",
+  "index": [
+    "apm-*-transaction*",
+    "auditbeat-*",
+    "endgame-*",
+    "filebeat-*",
+    "logs-*",
+    "packetbeat-*",
+    "traces-apm*",
+    "winlogbeat-*",
+    "-*elastic-cloud-logs-*",
+    "mordor*",
+    "*packetbeat*",
+    "log*"
+  ],
+  "query": "(registry.path:*\\\\Word\\\\Security\\\\AllowDDE AND (winlog.event_data.Details:(DWORD\\ \\(0x00000001\\) OR DWORD\\ \\(0x00000002\\)))) OR ((registry.path:(*\\\\Excel\\\\Security\\\\DisableDDEServerLaunch OR *\\\\Excel\\\\Security\\\\DisableDDEServerLookup)) AND winlog.event_data.Details:DWORD\\ \\(0x00000000\\))"
+}
